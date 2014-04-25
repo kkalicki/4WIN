@@ -26,7 +26,7 @@ public:
 		1) Objekt von ostringstream erzeugen
 		2) alles fuer den String in das Objekt rein shiften
 		3) return ostringstreamObjekt.str
-		/*
+		*/
 };
 
 #endif /* STEIN_H_ */
