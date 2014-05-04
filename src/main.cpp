@@ -10,8 +10,8 @@
 int main(void){
 
 	Stein st;
-	Stein stein = new Stein(GELB);
-	cout << stein << "\n";
+	Stein *stein = new Stein(GELB);
+	cout << *stein << "\n";
 	cout << st;
 	delete stein;
 	return 0;

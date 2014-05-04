@@ -16,14 +16,16 @@ using namespace std;
 class Stein {
 public:
 	/**
-	 * Konstruktor zum erstellen eines Steins
-	 * @param farbe Entweder ROT oder GELB(Konstanten)
-	 */
-	Stein(int farbe);
-	/**
 	 * Standardkonstruktor
 	 */
 	Stein();
+	/**
+	 * Konstruktor zum erstellen eines Steins
+	 * @param farbe Entweder ROT oder GELB(Konstanten)
+	 */
+	Stein(short int farbe);
+
+
 
 	virtual ~Stein();
 

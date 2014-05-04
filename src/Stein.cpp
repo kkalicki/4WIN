@@ -12,7 +12,7 @@ Stein::Stein() {
 	this->farbe = ROT;
 }
 
-Stein::Stein(int farbe) {
+Stein::Stein(short int farbe) {
 	if ((farbe == ROT) || farbe == GELB)
 		this->farbe=farbe;
 }
@@ -21,7 +21,7 @@ Stein::~Stein() {
 	// TODO Auto-generated destructor stub
 }
 
-string Stein::toString() {
+string Stein::toString() const {
 
 	string steinfarbe;
 	steinfarbe = (this->farbe == ROT ? "Rot" : "Gelb");
