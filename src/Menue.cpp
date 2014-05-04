@@ -9,7 +9,6 @@
 #include <sstream>
 
 Menue::Menue() {
-	// TODO Auto-generated constructor stub
 
 }
 
@@ -33,8 +32,8 @@ void Menue::menueauswahl(int auswahl) {
 		sofortspielen();
 		break;
 	case 2:
-		break;
 		mehrspieler();
+		break;
 	case 0:
 		break;
 	default:
@@ -48,7 +47,7 @@ void Menue::sofortspielen() {
 }
 
 void Menue::mehrspieler() {
-	// spiel.startMP();
+	spiel.startMP();
 }
 
 Menue::~Menue() {

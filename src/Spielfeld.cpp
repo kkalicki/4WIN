@@ -10,8 +10,10 @@
 
 Spielfeld::Spielfeld() {
 	for(int i = 0; i < Y;i++)
-		for(int j = 0; j < X;j++)
+		for(int j = 0; j < X;j++){
 			feld[i][j] = 2;
+			aktuell[j] = 0;
+		}
 }
 
 
@@ -23,7 +25,7 @@ string Spielfeld::toString() const {
 	char wert;
 	out << "   1  2  3  4  5  6  7 \n";
 
-	for(int i = 0; i < Y;i++){
+	for(int i = Y-1; i >= 0;i--){
 		out << a++ << " ";
 		for(int j = 0; j < X;j++){
 			if (feld[i][j] == ROT)

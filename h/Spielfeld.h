@@ -53,6 +53,26 @@ public:
 		return feld[y][x];
 	}
 
+	/**
+	 * setzt einen Stein in das Feld
+	 * @param x wert der x-Achse
+	 * @param y Wert der y-Achse
+	 * @param wert Wert der gesetzt wird
+	 */
+	void setFeldPos(int x, int y, int wert) {
+		feld[y][x] = wert;
+		aktuell[x]++;
+	}
+
+	/**
+	 * Gibt Anzahl der schon gelegten Steine in einer Spalte zurueck
+	 * @param x gibt an welche Spalte gemeint ist
+	 * @return gibt die Anzahl der Steine in der Spalte zurueck
+	 */
+	int getSpalteSteine(int x) const{
+		return aktuell[x];
+	}
+
 
 
 private:
@@ -60,6 +80,7 @@ private:
 	 * das Spielfeld als mehrdimensionales Array
 	 */
 	int feld[Y][X];
+	int aktuell[X];
 };
 
 #endif /* SPIELFELD_H_ */
