@@ -6,17 +6,20 @@
  */
 #include "../h/Stein.h"
 #include "../h/Spielfeld.h"
+#include "../h/Menue.h"
 #include <iostream>
 
 int main(void){
 
 	Stein st;
-	Stein *stein = new Stein(GELB);
 	Spielfeld spf;
-	cout << *stein << "\n";
+	Menue m;
+
 	cout << st;
 	cout << spf;
-	delete stein;
+
+	m.start();
+
 	return 0;
 }
 

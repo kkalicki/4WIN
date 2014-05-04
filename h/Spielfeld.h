@@ -27,7 +27,7 @@ public:
 	string toString() const;
 
 	/**
-	 * Überladung des << Operators für toString-Methode
+	 * Ueberladung des << Operators für toString-Methode
 	 * @param out Variable des Outstreams
 	 * @param spf Variable der Klasse Spielfeld
 	 * @return manipulierter outstream
@@ -37,7 +37,7 @@ public:
 	virtual ~Spielfeld();
 
 	/**
-	 * gibt das komplette Feld zurück
+	 * gibt das komplette Feld zurueck
 	 * @return feld komplettes Feld
 	 */
 	const int* getFeld() const {

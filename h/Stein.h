@@ -36,7 +36,7 @@ public:
 	string toString() const;
 
 	/**
-	 * Überladung des << Operators für toString-Methode
+	 * Ueberladung des << Operators fuer toString-Methode
 	 * @param out Variable des Outstreams
 	 * @param st Variable der Klasse Stein
 	 * @return manipulierter outstream
@@ -44,7 +44,7 @@ public:
 	friend ostream& operator<<(ostream& out, Stein& st);
 
 	/**
-	 * Überladung des >> Operators
+	 * Ueberladung des >> Operators
 	 * @param in Variable des Instreams
 	 * @param st Variable der Klasse Stein
 	 * @return manipulierter instream
@@ -53,7 +53,7 @@ public:
 
 
 	/**
-	 * Übergibt den Wert des Steines
+	 * Uebergibt den Wert des Steines
 	 * @return short int farbe (ROT oder GELB)
 	 */
 	short int getFarbe() const {
