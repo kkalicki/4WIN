@@ -7,12 +7,17 @@
 
 #include "../h/Stein.h"
 
-Stein::Stein() {
-	// TODO Auto-generated constructor stub
-
+Stein::Stein(int farbe) {
+	if ((farbe == ROT) || farbe == GELB)
+		this->farbe=farbe;
 }
 
 Stein::~Stein() {
 	// TODO Auto-generated destructor stub
 }
 
+string Stein::toString() {
+	string stein;
+	stein = (farbe == ROT ? "Rot" : "Gelb");
+	return stein;
+}
