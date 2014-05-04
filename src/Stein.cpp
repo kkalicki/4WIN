@@ -6,6 +6,11 @@
  */
 
 #include "../h/Stein.h"
+#include <sstream>
+
+Stein::Stein() {
+	this->farbe = ROT;
+}
 
 Stein::Stein(int farbe) {
 	if ((farbe == ROT) || farbe == GELB)
@@ -17,7 +22,19 @@ Stein::~Stein() {
 }
 
 string Stein::toString() {
-	string stein;
-	stein = (farbe == ROT ? "Rot" : "Gelb");
-	return stein;
+
+	string steinfarbe;
+	steinfarbe = (this->farbe == ROT ? "Rot" : "Gelb");
+	ostringstream out;
+	out << "Farbe des Steines: " << steinfarbe;
+	return out.str();
+}
+
+istream& operator>>(istream& in, Stein& st){
+	return in;
+}
+
+ostream& operator<<(ostream& out, Stein& st){
+	out << st.toString();
+	return out;
 }
