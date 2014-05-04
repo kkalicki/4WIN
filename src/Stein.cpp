@@ -26,7 +26,7 @@ string Stein::toString() const {
 	string steinfarbe;
 	steinfarbe = (this->farbe == ROT ? "Rot" : "Gelb");
 	ostringstream out;
-	out << "Farbe des Steines: " << steinfarbe;
+	out << "Farbe des Steines: " << steinfarbe << "\n";
 	return out.str();
 }
 
