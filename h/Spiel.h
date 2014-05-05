@@ -10,6 +10,7 @@
 #include <string>
 #include "../h/Konstanten.h"
 #include "../h/Spielfeld.h"
+#include "../h/Spieler.h"
 #include <iostream>
 
 
@@ -33,9 +34,11 @@ public:
 	void startKI(int ki);
 
 	/**
-	 * startet ein Spiel gegen einen anderen Spieler
+	 * startet ein Spiel gegen einen anderen Spieler, und erstellt die Spieler
+	 * @param name1 Name des ersten Spielers
+	 * @param name2 Name des zweiten Spielers
 	 */
-	void startMP();
+	void startMP(string name1,string name2);
 
 	/**
 	 * Methode zur Ausgabe des Spiels
@@ -54,8 +57,19 @@ public:
 	/**
 	 * Funktion die ein stein fuer einen bestimmten Spieler ins Spielfeld wirft
 	 * @param sp variable fuer den Spieler
+	 * @return pruefzahl ob stein gelegt wurde
 	 */
-	void werfeStein(int sp);
+	int werfeStein(Spieler sp, int farbe);
+
+	int pruefeFeld(int farbe);
+
+	int checkHorizontal(int farbe);
+	int checkVertikal(int farbe);
+	int checkDiagonal(int farbe);
+
+
+
+	int spielrunde(Spieler sp1, Spieler sp2);
 
 	/**
 	 * Ueberladung des << Operators fuer toString-Methode
@@ -71,9 +85,10 @@ public:
 	virtual ~Spiel();
 private:
 	Spielfeld spf;
-//	Spieler sp1;
-//	Spieler sp2;
+	Spieler sp1;
+	Spieler sp2;
 //	Spieler ki;
+	unsigned short int runde;
 };
 
 #endif /* SPIEL_H_ */

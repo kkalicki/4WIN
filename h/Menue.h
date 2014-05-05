@@ -42,12 +42,12 @@ public:
 	/**
 	 * startet ein Spiel mit einer KI
 	 */
-	void sofortspielen();
+	void sofortspielen(string name1);
 
 	/**
 	 * startet ein Spiel im Mehrspieler Modus
 	 */
-	void mehrspieler();
+	void mehrspieler(string name1,string name2);
 
 	virtual ~Menue();
 private:

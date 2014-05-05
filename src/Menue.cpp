@@ -27,12 +27,20 @@ void Menue::start() {
 }
 
 void Menue::menueauswahl(int auswahl) {
+	string name1;
+	string name2;
 	switch(auswahl){
 	case 1:
-		sofortspielen();
+		cout << "Name Spieler 1: ";
+		cin >> name1;
+		sofortspielen(name1);
 		break;
 	case 2:
-		mehrspieler();
+		cout << "Name Spieler 1: ";
+		cin >> name1;
+		cout << "Name Spieler 2: ";
+		cin >> name2;
+		mehrspieler(name1, name2);
 		break;
 	case 0:
 		break;
@@ -42,12 +50,12 @@ void Menue::menueauswahl(int auswahl) {
 
 }
 
-void Menue::sofortspielen() {
+void Menue::sofortspielen(string name1) {
 	// spiel.startKI();
 }
 
-void Menue::mehrspieler() {
-	spiel.startMP();
+void Menue::mehrspieler(string name1,string name2) {
+	spiel.startMP(name1, name2);
 }
 
 Menue::~Menue() {

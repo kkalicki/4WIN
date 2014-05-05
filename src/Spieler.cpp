@@ -8,8 +8,9 @@
 #include "../h/Spieler.h"
 
 Spieler::Spieler() {
-	// TODO Auto-generated constructor stub
-
+}
+Spieler::Spieler(string name) {
+	this->name=name;
 }
 
 Spieler::~Spieler() {
