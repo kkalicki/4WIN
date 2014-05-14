@@ -5,7 +5,7 @@
  *      Author: K
  */
 
-#include "../h/Spiel.h"
+#include "../h/sys/Spiel.h"
 #include <stdlib.h>
 #include <sstream>
 

@@ -1,18 +1,18 @@
 /*
- * SpielerReal.cpp
+ * Spiellogik.cpp
  *
  *  Created on: 19.04.2014
  *      Author: K
  */
 
-#include "../h/SpielerReal.h"
+#include "../h/sys/Spiellogik.h"
 
-SpielerReal::SpielerReal() {
+Spiellogik::Spiellogik() {
 	// TODO Auto-generated constructor stub
 
 }
 
-SpielerReal::~SpielerReal() {
+Spiellogik::~Spiellogik() {
 	// TODO Auto-generated destructor stub
 }
 

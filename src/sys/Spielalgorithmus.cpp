@@ -1,18 +1,18 @@
 /*
- * SpielerKI.cpp
+ * Spielalgorithmus.cpp
  *
  *  Created on: 19.04.2014
  *      Author: K
  */
 
-#include "../h/SpielerKI.h"
+#include "../h/sys/Spielalgorithmus.h"
 
-SpielerKI::SpielerKI() {
+Spielalgorithmus::Spielalgorithmus() {
 	// TODO Auto-generated constructor stub
 
 }
 
-SpielerKI::~SpielerKI() {
+Spielalgorithmus::~Spielalgorithmus() {
 	// TODO Auto-generated destructor stub
 }
 

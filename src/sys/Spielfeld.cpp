@@ -5,7 +5,7 @@
  *      Author: K
  */
 
-#include "../h/Spielfeld.h"
+#include "../h/sys/Spielfeld.h"
 #include <sstream>
 
 Spielfeld::Spielfeld() {

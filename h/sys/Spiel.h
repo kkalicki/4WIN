@@ -8,9 +8,9 @@
 #ifndef SPIEL_H_
 #define SPIEL_H_
 #include <string>
-#include "../h/Konstanten.h"
-#include "../h/Spielfeld.h"
-#include "../h/Spieler.h"
+#include "../h/sys/Konstanten.h"
+#include "../h/sys/Spielfeld.h"
+#include "../h/sys/Spieler.h"
 #include <iostream>
 
 

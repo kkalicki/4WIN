@@ -8,8 +8,8 @@
 #ifndef MENUE_H_
 #define MENUE_H_
 #include <string>
-#include "../h/Konstanten.h"
-#include "../h/Spiel.h"
+#include "../h/sys/Konstanten.h"
+#include "../h/sys/Spiel.h"
 #include <iostream>
 
 using namespace std;

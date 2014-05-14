@@ -8,7 +8,7 @@
 #ifndef SPIELER_H_
 #define SPIELER_H_
 #include <string>
-#include "../h/Konstanten.h"
+#include "../h/sys/Konstanten.h"
 #include <iostream>
 
 using namespace std;

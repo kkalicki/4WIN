@@ -5,7 +5,7 @@
  *      Author: K
  */
 
-#include "../h/Stein.h"
+#include "../h/sys/Stein.h"
 #include <sstream>
 
 Stein::Stein() {

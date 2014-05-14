@@ -1,18 +1,18 @@
 /*
- * Spiellogik.cpp
+ * SpielerKI.cpp
  *
  *  Created on: 19.04.2014
  *      Author: K
  */
 
-#include "../h/Spiellogik.h"
+#include "../h/sys/SpielerKI.h"
 
-Spiellogik::Spiellogik() {
+SpielerKI::SpielerKI() {
 	// TODO Auto-generated constructor stub
 
 }
 
-Spiellogik::~Spiellogik() {
+SpielerKI::~SpielerKI() {
 	// TODO Auto-generated destructor stub
 }
 

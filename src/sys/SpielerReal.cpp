@@ -1,18 +1,18 @@
 /*
- * Spielalgorithmus.cpp
+ * SpielerReal.cpp
  *
  *  Created on: 19.04.2014
  *      Author: K
  */
 
-#include "../h/Spielalgorithmus.h"
+#include "../h/sys/SpielerReal.h"
 
-Spielalgorithmus::Spielalgorithmus() {
+SpielerReal::SpielerReal() {
 	// TODO Auto-generated constructor stub
 
 }
 
-Spielalgorithmus::~Spielalgorithmus() {
+SpielerReal::~SpielerReal() {
 	// TODO Auto-generated destructor stub
 }
 

@@ -8,8 +8,8 @@
 #ifndef SPIELFELD_H_
 #define SPIELFELD_H_
 #include <string>
-#include "../h/Konstanten.h"
-#include "../h/Stein.h"
+#include "../h/sys/Konstanten.h"
+#include "../h/sys/Stein.h"
 #include <iostream>
 
 using namespace std;
