@@ -12,10 +12,10 @@
 
 int main(void){
 
-	Stein st;
-	Spielfeld spf;
+	//Stein st;
+	//Spielfeld spf;
 	Menue m;
-	Spiel sp;
+	//Spiel sp;
 
 
 	//cout << st;

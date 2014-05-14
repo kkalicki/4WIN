@@ -12,9 +12,16 @@ Stein::Stein() {
 	this->farbe = ROT;
 }
 
-Stein::Stein(short int farbe) {
+Stein::Stein(const Stein& rhs) {
+	farbe = rhs.getFarbe();
+	*pos=*rhs.pos;
+}
+
+Stein::Stein(short int farbe, short int x, short int y) {
 	if ((farbe == ROT) || farbe == GELB)
 		this->farbe=farbe;
+	else this->farbe = 3;
+	this->setPos(x,y);
 }
 
 Stein::~Stein() {
@@ -24,10 +31,25 @@ Stein::~Stein() {
 string Stein::toString() const {
 
 	string steinfarbe;
-	steinfarbe = (this->farbe == ROT ? "Rot" : "Gelb");
+	if (this->farbe == ROT)
+		steinfarbe = "O";
+	else if (this->farbe == GELB)
+		steinfarbe = "X";
+	else steinfarbe = " ";
 	ostringstream out;
-	out << "Farbe des Steines: " << steinfarbe << "\n";
+	out << steinfarbe;
 	return out.str();
+}
+
+
+
+Stein& Stein::operator= (Stein const& rhs)
+{
+  if (this != &rhs)  //oder if (*this != rhs)
+  {
+	 Stein tmp(rhs);
+  }
+  return *this; //Referenz auf das Objekt selbst zurückgeben
 }
 
 istream& operator>>(istream& in, Stein& st){

@@ -9,6 +9,7 @@
 #define SPIELFELD_H_
 #include <string>
 #include "../h/Konstanten.h"
+#include "../h/Stein.h"
 #include <iostream>
 
 using namespace std;
@@ -40,8 +41,8 @@ public:
 	 * gibt das komplette Feld zurueck
 	 * @return feld komplettes Feld
 	 */
-	const int* getFeld() const {
-		return *feld;
+	Stein getFeld() {
+		return **feld;
 	}
 	/**
 	 * gibt den wert an der gefragten Stelle
@@ -49,7 +50,7 @@ public:
 	 * @param y Wert der y-Achse
 	 * @return
 	 */
-	int getFeldPos(int x, int y) const {
+	Stein getFeldPos(int x, int y) {
 		return feld[y][x];
 	}
 
@@ -60,7 +61,7 @@ public:
 	 * @param wert Wert der gesetzt wird
 	 */
 	void setFeldPos(int x, int y, int wert) {
-		feld[y][x] = wert;
+		feld[y][x].setFarbe(wert);
 		aktuell[x]++;
 	}
 
@@ -79,7 +80,7 @@ private:
 	/**
 	 * das Spielfeld als mehrdimensionales Array
 	 */
-	int feld[Y][X];
+	Stein feld[Y][X];
 	int aktuell[X];
 };
 

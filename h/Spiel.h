@@ -61,11 +61,11 @@ public:
 	 */
 	int werfeStein(Spieler sp, int farbe);
 
-	int pruefeFeld(int farbe);
+	int pruefeStein(int farbe, int spalte);
 
-	int checkHorizontal(int farbe);
-	int checkVertikal(int farbe);
-	int checkDiagonal(int farbe);
+	int checkHorizontal(int farbe, int spalte);
+	int checkVertikal(int farbe, int spalte);
+	int checkDiagonal(int farbe, int spalte);
 
 
 

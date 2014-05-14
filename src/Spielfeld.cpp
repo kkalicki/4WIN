@@ -11,7 +11,8 @@
 Spielfeld::Spielfeld() {
 	for(int i = 0; i < Y;i++)
 		for(int j = 0; j < X;j++){
-			feld[i][j] = 2;
+			feld[i][j].setFarbe(2);
+			feld[i][j].setPos(j,i);
 			aktuell[j] = 0;
 		}
 }
@@ -22,20 +23,14 @@ string Spielfeld::toString() const {
 	ostringstream out;
 	out << "Spielfeld: \n";
 	char a = 'a';
-	char wert;
 	out << "   1  2  3  4  5  6  7 \n";
 
 	for(int i = Y-1; i >= 0;i--){
 		out << a++ << " ";
 		for(int j = 0; j < X;j++){
-			if (feld[i][j] == ROT)
-				wert = 'R';
-			else
-				if (feld[i][j] == GELB)
-					wert = 'G';
-				else
-					wert = ' ';
-			out << "["<< wert <<"]";
+			Stein aktuell = feld[i][j];
+			//(aktuell == ROT) || (aktuell == GELB) ? out << "["<< aktuell <<"]" : out << "[X]";
+			out << "["<< aktuell <<"]";
 		}
 		out << "\n";
 	}

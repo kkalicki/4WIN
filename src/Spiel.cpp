@@ -34,7 +34,7 @@ int Spiel::werfeStein(Spieler sp, int farbe) {
 		int aktuell = spf.getSpalteSteine(spalte-1);
 		if (aktuell < Y){
 			spf.setFeldPos(spalte-1,aktuell,farbe);
-			return 0;
+			return spalte;
 		}
 		else
 			cout << "!!!!    Spalte voll    !!!!\n";
@@ -42,20 +42,21 @@ int Spiel::werfeStein(Spieler sp, int farbe) {
 	else
 		cout << "!!!!    Fehlerhafte Eingabe    !!!!\n";
 
-	werfeStein(sp,farbe);
-	return -1;
+
+	return werfeStein(sp,farbe);
 
 }
 
 int Spiel::spielrunde(Spieler spieler1, Spieler spieler2) {
 	bool check = false;
+	int spalte;
 	do{
-		this->werfeStein(spieler1, ROT);
-		check = pruefeFeld(ROT);
+		spalte = werfeStein(spieler1, ROT);
+		check = pruefeStein(ROT, spalte);
 		if (check == true)
 			return ROT;
-		this->werfeStein(spieler2, GELB);
-		check = pruefeFeld(GELB);
+		spalte = werfeStein(spieler2, GELB);
+		check = pruefeStein(GELB, spalte);
 		if (check == true)
 			return GELB;
 
@@ -64,56 +65,34 @@ int Spiel::spielrunde(Spieler spieler1, Spieler spieler2) {
 	return -1;
 }
 
-int Spiel::pruefeFeld(int farbe) {
-	if (checkHorizontal(farbe) || checkVertikal(farbe) || checkDiagonal(farbe))
+int Spiel::pruefeStein(int farbe, int spalte) {
+	if (checkHorizontal(farbe,spalte) || checkVertikal(farbe,spalte) || checkDiagonal(farbe,spalte))
 		return true;
 	else
 		return false;
 }
 
-int Spiel::checkHorizontal(int farbe) {
+int Spiel::checkHorizontal(int farbe, int spalte) {
 	int wert = (farbe==ROT) ? ROT : GELB;
-	for(int i = Y-1; i >= 0;i--){
-		for(int j = 0; j < X-3;j++){
-			if (spf.getFeldPos(j,i) == wert){
-				if (spf.getFeldPos(j+1,i) == wert){
-					if (spf.getFeldPos(j+2,i) == wert){
-						if (spf.getFeldPos(j+3,i) == wert){
-							return true;
-						}
+	int zeile = spf.getSpalteSteine(spalte);
 
-					}
 
-				}
-
-			}
-		}
-	}
 	return false;
 }
 
-int Spiel::checkVertikal(int farbe) {
+int Spiel::checkVertikal(int farbe, int spalte) {
 	int wert = (farbe==ROT) ? ROT : GELB;
-	for(int j = 0; j < X;j++){
-		for(int i = Y-1; i >= 3;i--){
-			if (spf.getFeldPos(j,i) == wert){
-				if (spf.getFeldPos(j,i-1) == wert){
-					if (spf.getFeldPos(j,i-2) == wert){
-						if (spf.getFeldPos(j,i-3) == wert){
-							return true;
-						}
+	int zeile = spf.getSpalteSteine(spalte-1);
 
-					}
+	Stein aktuell = spf.getFeldPos(zeile, spalte-1);
+	const short int *pos = aktuell.getPos();
 
-				}
-
-			}
-		}
-	}
+	cout << "\npos x: " << pos[0]  << " y: " << pos[1] << "\n";
+	cout << "CHECK VERTIKAL AKTUELL :" << aktuell << " Zeile: " << zeile  << " Spalte: " << spalte << "\n";
 	return false;
 }
 
-int Spiel::checkDiagonal(int farbe) {
+int Spiel::checkDiagonal(int farbe, int spalte) {
 	int wert = (farbe==ROT) ? ROT : GELB;
 	for(int i = Y-1; i >= 3;i--){
 		for(int j = 0; j < X-3;j++){

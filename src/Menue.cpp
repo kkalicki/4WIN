@@ -36,11 +36,11 @@ void Menue::menueauswahl(int auswahl) {
 		sofortspielen(name1);
 		break;
 	case 2:
-		cout << "Name Spieler 1: ";
-		cin >> name1;
-		cout << "Name Spieler 2: ";
-		cin >> name2;
-		mehrspieler(name1, name2);
+//		cout << "Name Spieler 1: ";
+//		cin >> name1;
+//		cout << "Name Spieler 2: ";
+//		cin >> name2;
+		mehrspieler("asdf", "fdas");
 		break;
 	case 0:
 		break;

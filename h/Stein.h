@@ -19,11 +19,13 @@ public:
 	 * Standardkonstruktor
 	 */
 	Stein();
+
+	Stein(const Stein& rhs);
 	/**
 	 * Konstruktor zum erstellen eines Steins
 	 * @param farbe Entweder ROT oder GELB(Konstanten)
 	 */
-	Stein(short int farbe);
+	Stein(short int farbe, short int x, short int y);
 
 
 
@@ -51,7 +53,12 @@ public:
 	 */
 	friend istream& operator>>(istream& in, Stein& st);
 
+	Stein& operator= (Stein const& rhs);
 
+
+	friend bool operator==(Stein const& lhs, short int const& rhs){
+		return &lhs.farbe == &rhs;
+	}
 	/**
 	 * Uebergibt den Wert des Steines
 	 * @return short int farbe (ROT oder GELB)
@@ -65,8 +72,17 @@ public:
 	 * @param farbe Farbe des Steines
 	 */
 	void setFarbe(short int farbe) {
-		if ((farbe == GELB) || (farbe == ROT))
-			this->farbe = farbe;
+		//if ((farbe == GELB) || (farbe == ROT))
+		this->farbe = farbe;
+	}
+
+	void setPos(int x, int y) {
+		pos[0] = x;
+		pos[1] = y;
+	}
+
+	const short int* getPos() const {
+		return pos;
 	}
 
 private:
@@ -75,6 +91,8 @@ private:
 	 * Farbe des Spielsteins, entweder ROT oder GELB (Konstanten)
 	 */
 	short int farbe;
+	short int pos[2];
+
 };
 
 
