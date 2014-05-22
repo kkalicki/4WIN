@@ -10,35 +10,27 @@
 #include <string>
 #include "../h/sys/Konstanten.h"
 #include "../h/sys/Spielfeld.h"
-#include "../h/sys/Spieler.h"
 #include <iostream>
 
 
 class Spiel {
 public:
-	/**
-	 * Standardkonstruktor
-	 */
-	Spiel();
+    explicit Spiel();
 
-	/**
-	 * Konstruktor mit Auswahl der KI (Schwierigkeitsstufen)
-	 * @param Int Wert fuer die Auswahl der KI
-	 */
-	Spiel(int ki);
+    virtual ~Spiel();
 
 	/**
 	 * startet ein Spiel mit der ausgewaehlten KI
 	 * @param ki wert zur Auswahl der KI
 	 */
-	void startKI(int ki);
+    //void startKI(int ki);
 
 	/**
 	 * startet ein Spiel gegen einen anderen Spieler, und erstellt die Spieler
 	 * @param name1 Name des ersten Spielers
 	 * @param name2 Name des zweiten Spielers
 	 */
-	void startMP(string name1,string name2);
+    //void startMP(string name1,string name2);
 
 	/**
 	 * Methode zur Ausgabe des Spiels
@@ -52,24 +44,26 @@ public:
 	 * @param y Wert der y-Achse
 	 * @return gibt ein komplettes Spielfeld zurueck
 	 */
-	Spielfeld erstelleSpielfeld(int x, int y);
+    //Spielfeld erstelleSpielfeld(int x, int y);
 
 	/**
 	 * Funktion die ein stein fuer einen bestimmten Spieler ins Spielfeld wirft
 	 * @param sp variable fuer den Spieler
 	 * @return pruefzahl ob stein gelegt wurde
 	 */
-	int werfeStein(Spieler sp, int farbe);
+    //int werfeStein(Spieler sp, int farbe);
 
-	int pruefeStein(int farbe, int spalte);
+    //int pruefeStein(int farbe, int spalte);
 
-	int checkHorizontal(int farbe, int spalte);
-	int checkVertikal(int farbe, int spalte);
-	int checkDiagonal(int farbe, int spalte);
+    //int checkHorizontal(int farbe, int spalte);
+    //int checkVertikal(int farbe, int spalte);
+    //int checkDiagonal(int farbe, int spalte);
 
 
 
-	int spielrunde(Spieler sp1, Spieler sp2);
+    //int spielrunde(Spieler sp1, Spieler sp2);
+
+     int naechsterZug(Spieler spieler, int spalte);
 
 	/**
 	 * Ueberladung des << Operators fuer toString-Methode
@@ -82,12 +76,18 @@ public:
 		return out;
 	}
 
-	virtual ~Spiel();
+    Spieler getAktuellerSpieler() const{
+        return aktuellerSpieler;
+    }
+
 private:
-	Spielfeld spf;
-	Spieler sp1;
-	Spieler sp2;
-//	Spieler ki;
+    void erstelleSpielfeld(unsigned short zeilen=Y, unsigned short spalten=X);
+    void wechselSpieler();
+
+    Spielfeld *spielfeld=0;
+    Spieler sp1;
+    Spieler sp2;
+    Spieler aktuellerSpieler;
 	unsigned short int runde;
 };
 

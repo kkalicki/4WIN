@@ -9,11 +9,13 @@
 
 Spieler::Spieler() {
 }
-Spieler::Spieler(string name) {
+Spieler::Spieler(string name, short farbe) {
 	this->name=name;
+    this->farbe = farbe;
 }
 
 Spieler::~Spieler() {
 	// TODO Auto-generated destructor stub
 }
+
 

@@ -55,7 +55,7 @@ void Menue::sofortspielen(string name1) {
 }
 
 void Menue::mehrspieler(string name1,string name2) {
-	spiel.startMP(name1, name2);
+    //spiel.startMP(name1, name2);
 }
 
 Menue::~Menue() {

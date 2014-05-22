@@ -10,6 +10,7 @@
 #include <string>
 #include "../h/sys/Konstanten.h"
 #include "../h/sys/Stein.h"
+#include "../h/sys/Spieler.h"
 #include <iostream>
 
 using namespace std;
@@ -19,7 +20,7 @@ public:
 	/**
 	 * Standardkonstruktor
 	 */
-	Spielfeld();
+    Spielfeld(unsigned short zeilen=Y, unsigned short spalten=X);
 
 	/**
 	 * Gibt die Groesse des Feldes als String aus
@@ -54,34 +55,46 @@ public:
 		return feld[y][x];
 	}
 
-	/**
-	 * setzt einen Stein in das Feld
-	 * @param x wert der x-Achse
-	 * @param y Wert der y-Achse
-	 * @param wert Wert der gesetzt wird
-	 */
-	void setFeldPos(int x, int y, int wert) {
-		feld[y][x].setFarbe(wert);
-		aktuell[x]++;
-	}
-
-	/**
-	 * Gibt Anzahl der schon gelegten Steine in einer Spalte zurueck
-	 * @param x gibt an welche Spalte gemeint ist
-	 * @return gibt die Anzahl der Steine in der Spalte zurueck
-	 */
-	int getSpalteSteine(int x) const{
-		return aktuell[x];
-	}
+    int werfeStein(Spieler spieler, int spalte);
 
 
 
 private:
+
+    void init();
+    /**
+     * setzt einen Stein in das Feld
+     * @param x wert der x-Achse
+     * @param y Wert der y-Achse
+     * @param wert Wert der gesetzt wird
+     */
+    void setFeldPos(int x, int y, int wert) {
+        feld[y][x].setFarbe(wert);
+        aktuell[x]++;
+    }
+
+    /**
+     * Gibt Anzahl der schon gelegten Steine in einer Spalte zurueck
+     * @param x gibt an welche Spalte gemeint ist
+     * @return gibt die Anzahl der Steine in der Spalte zurueck
+     */
+    int getSpalteSteine(int x) const{
+        return aktuell[x];
+    }
+
+    int pruefeStein(int farbe, int spalte);
+
+    int checkHorizontal(int farbe, int spalte);
+    int checkVertikal(int farbe, int spalte);
+    int checkDiagonal(int farbe, int spalte);
+
 	/**
 	 * das Spielfeld als mehrdimensionales Array
 	 */
-	Stein feld[Y][X];
+    Stein **feld;
 	int aktuell[X];
+    unsigned short zeilen;
+    unsigned short spalten;
 };
 
 #endif /* SPIELFELD_H_ */
