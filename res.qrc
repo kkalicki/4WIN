@@ -5,5 +5,17 @@
         <file>image/default.png</file>
         <file>image/red.png</file>
         <file>image/yellow.png</file>
+        <file>image/red_p.png</file>
+        <file>image/yellow_p.png</file>
+        <file>image/Logo.png</file>
+        <file>image/up.png</file>
+        <file>image/border_new.png</file>
+        <file>image/red_new.png</file>
+        <file>image/yellow_new.png</file>
+        <file>image/border_new.jpg</file>
+        <file>image/back1.png</file>
+        <file>image/back2.png</file>
+        <file>image/back3.png</file>
+        <file>image/Logo1.png</file>
     </qresource>
 </RCC>

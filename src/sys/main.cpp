@@ -18,7 +18,7 @@ int main(int argc, char* argv[]){
 
 	//Stein st;
 	//Spielfeld spf;
-	Menue m;
+    //Menue m;
 	//Spiel sp;
 
 
@@ -26,13 +26,11 @@ int main(int argc, char* argv[]){
 	//cout << spf;
 	//cout << sp;
 
-    m.start();
+    //m.start();
 
     QApplication a(argc,argv);
     MainWindow w;
     w.show();
-
-
     return a.exec();
 }
 

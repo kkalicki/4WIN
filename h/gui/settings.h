@@ -28,6 +28,7 @@ private slots:
     void on_rbopen_toggled(bool checked);
     void on_rbenter_toggled(bool checked);
     void on_btnstart_clicked();
+    void on_cbwatch_toggled(bool checked);
 };
 
 #endif // SETTINGS_H

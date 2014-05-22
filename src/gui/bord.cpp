@@ -7,9 +7,12 @@ Bord::Bord(QWidget *parent, int rowCount, int colCount) : QWidget(parent),
     ui(new Ui::bordUi)
 {
     ui->setupUi(this);
-    this->defaultImage  = new QPixmap(":/image/def.png");
-    this->redImage      = new QPixmap(":/image/red.png");
-    this->yellowImage   = new QPixmap(":/image/yellow.png");
+    this->move(START_POSITION_X,START_POSITION_Y);
+    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowMinimizeButtonHint);
+
+    this->defaultImage  = new QPixmap(":/image/border_new.png");
+    this->redImage      = new QPixmap(":/image/red_new.png");
+    this->yellowImage   = new QPixmap(":/image/yellow_new.png");
     this->rowCount      = rowCount;
     this->colCount      = colCount;
     init();
@@ -40,18 +43,20 @@ void Bord::init()
 
             QTableWidgetItem *initItem = new QTableWidgetItem();
             initItem->setFlags(Qt::NoItemFlags|Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-            initItem->setData(Qt::DecorationRole,defaultImage->scaled(IMG_SIZE,IMG_SIZE));
+            initItem->setData(Qt::DecorationRole,defaultImage->scaled(IMG_SIZE,IMG_SIZE,Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             ui->tblbord->setItem(x,y,initItem);
         }
     }
-    this->resize(IMG_SIZE * colCount,IMG_SIZE * rowCount);
-
+    int w = IMG_SIZE * colCount;
+    int h = IMG_SIZE * rowCount;
+    this->resize(w,h);
+    this->setFixedSize(w,h);
 }
 
 void Bord::on_tblbord_doubleClicked(const QModelIndex &index)
 {
     QTableWidgetItem *initItem = new QTableWidgetItem();
     initItem->setFlags(Qt::NoItemFlags|Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-    initItem->setData(Qt::DecorationRole, redImage->scaled(IMG_SIZE,IMG_SIZE));
+    initItem->setData(Qt::DecorationRole, yellowImage->scaled(IMG_SIZE,IMG_SIZE,Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
     ui->tblbord->setItem(index.row(),index.column(),initItem);
 }

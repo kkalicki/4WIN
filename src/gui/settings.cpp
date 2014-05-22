@@ -62,10 +62,23 @@ void Settings::on_rbenter_toggled(bool checked)
 {
     if(checked){
         ui->lvgames->setEnabled(true);
+        ui->cbwatch->setEnabled(true);
+    }
+    else
+    {
+        ui->cbwatch->setEnabled(false);
     }
 }
 
 void Settings::on_btnstart_clicked()
 {
     //auswerten der Settings und spiel starten....
+}
+
+void Settings::on_cbwatch_toggled(bool checked)
+{
+    if(checked)
+    {
+        //zuschauer optionen...
+    }
 }
