@@ -15,8 +15,6 @@
 
 class Spiel {
 public:
-    explicit Spiel();
-
     virtual ~Spiel();
 
 	/**
@@ -30,7 +28,7 @@ public:
 	 * @param name1 Name des ersten Spielers
 	 * @param name2 Name des zweiten Spielers
 	 */
-    //void startMP(string name1,string name2);
+    void startMP(string nameSpieler1, string nameSpieler2);
 
 	/**
 	 * Methode zur Ausgabe des Spiels
@@ -64,14 +62,14 @@ public:
     //int spielrunde(Spieler sp1, Spieler sp2);
 
      int naechsterZug(Spieler spieler, int spalte);
-
+     void erstelleSpielfeld(unsigned short zeilen=Y, unsigned short spalten=X);
 	/**
 	 * Ueberladung des << Operators fuer toString-Methode
 	 * @param out Variable des Outstreams
 	 * @param sp Variable der Klasse Spiel
 	 * @return manipulierter outstream
 	 */
-	friend ostream& operator<<(ostream& out, Spiel& sp){
+    friend ostream& operator<<(ostream& out, Spiel& sp){
 		out << sp.toString();
 		return out;
 	}
@@ -81,14 +79,12 @@ public:
     }
 
 private:
-    void erstelleSpielfeld(unsigned short zeilen=Y, unsigned short spalten=X);
-    void wechselSpieler();
-
-    Spielfeld *spielfeld=0;
-    Spieler sp1;
-    Spieler sp2;
+    Spielfeld *spielfeld;
+    Spieler *sp1;
+    Spieler *sp2;
     Spieler aktuellerSpieler;
 	unsigned short int runde;
+    void wechselSpieler();
 };
 
 #endif /* SPIEL_H_ */

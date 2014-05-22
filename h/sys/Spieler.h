@@ -15,7 +15,6 @@ using namespace std;
 
 class Spieler {
 public:
-	Spieler();
     Spieler(string name="Spieler", short farbe=0);
 
 	virtual ~Spieler();
@@ -36,9 +35,20 @@ public:
         this->farbe = farbe;
     }
 
+    int getIstAmZug() const
+    {
+        return istAmZug;
+    }
+
+    void setIstAmZug(int value)
+    {
+        istAmZug = value;
+    }
+
 private:
     string name;
     short farbe;
+    int istAmZug;
 };
 
 #endif /* SPIELER_H_ */

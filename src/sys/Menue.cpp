@@ -6,6 +6,7 @@
  */
 
 #include "../h/sys/Menue.h"
+#include "../h/sys/FourWinExceptions.h"
 #include <sstream>
 
 Menue::Menue() {
@@ -47,7 +48,6 @@ void Menue::menueauswahl(int auswahl) {
 	default:
 		cout << "Fehlerhafte Eingaben\n";
 	}
-
 }
 
 void Menue::sofortspielen(string name1) {
@@ -55,7 +55,36 @@ void Menue::sofortspielen(string name1) {
 }
 
 void Menue::mehrspieler(string name1,string name2) {
-    //spiel.startMP(name1, name2);
+
+     //Alles noch schön !!!
+    cout<< "starte Spiel..." << endl;
+    cout.flush();
+    spiel.erstelleSpielfeld(6,7);
+    spiel.startMP(name1, name2);
+
+    cout<<"Spieler " << spiel.getAktuellerSpieler().getName() << " [" <<spiel.getAktuellerSpieler().getFarbe()  <<"] << faengt an!" << endl;
+    cout.flush();
+
+    cout << spiel; cout.flush();
+
+    int spalte;
+    int ende = 0;
+    while(ende != -1)
+    {
+        try{
+            cout<<"Spalte eingeben!" << endl;
+            cin >> spalte;
+            ende = spiel.naechsterZug(spiel.getAktuellerSpieler(),spalte);
+            cout<<"ROW: " << ende << endl;
+            cout << spiel; cout.flush();
+        }
+        catch(EingabeException& e){
+            cout << e.what() << endl;
+        }
+        catch(SpielFeldException& e){
+            cout << e.what() << endl;
+        }
+    }
 }
 
 Menue::~Menue() {

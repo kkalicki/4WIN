@@ -28,22 +28,63 @@
  * - kein Attribut Spielfeld mehr am Spiel, sondern nur noch ein Objekt des Interfaces ILogik4WinSpielfeld (hierdurch abstrahiert und austauschbar...)
  * - eigentliche KI-Logik als Objekt an Spielfeld --> erster Step --> zweiter Stepp evtl. vererbungshirarchie über ILogik4WinSpielfeld oder direkt an Spielfeld implementieren (erst Überblick der bis dahin implementierten Stuktur schaffen --> Klassendiagramm spätestens jetzt bis zum aktuellen Stand vervollständigen)
  * - Testen mit Menuestruktur... Wenn ein Spiel nur mit Ein- und Ausgaben der Menüstruktur bedienbar ist --> Menuestrukur ersetzen durch GUI!
+ *
+ *
+ *TODO: return von werfeStein() ist spalten und nicht row
+ *      werte > spalte --> Programmabsturtz
+ *      dynamisches Spielfeld erzeugt sich nicht korrekt
+ *      wurf in letzte spalte --> Absturtz --> Kalle klaeren
+ *      Auswertung, ob gewonnen greift nicht --> Kalle klaeren
+ *      Testen, Testen, Testen....
+ *
  */
-
-
-Spiel::Spiel()
-{
-
-}
 
 Spiel::~Spiel() {
 
     if(spielfeld != 0)
         delete spielfeld;
+
+    delete sp1;
+    delete sp2;
+    delete &aktuellerSpieler;
 }
 
 void Spiel::erstelleSpielfeld(unsigned short zeilen, unsigned short spalten) {
     this->spielfeld = new Spielfeld(zeilen,spalten);
+}
+
+void Spiel::startMP(string nameSpieler1, string nameSpieler2)
+{
+
+    this->sp1 = new Spieler(nameSpieler1);
+    this->sp2 = new Spieler(nameSpieler2);
+
+    time_t t;
+    time(&t);
+    srand((unsigned int)t);
+
+    //auslosen wer ROT und wer Gelb ist
+    if((rand() % 2) == 0){
+        sp1->setFarbe(ROT);
+        sp2->setFarbe(GELB);
+    }
+    else{
+        sp1->setFarbe(GELB);
+        sp2->setFarbe(ROT);
+    }
+
+    //Auslosen wer anfaengt
+    if((rand() % 2) == 0){
+        //selsames vorgehen, aber Spieler wird nur auf
+        //aktuellen spieler gewechselt, wenn er vorher auf false gestanden hat
+        //nur zum initialisieren... da es nur abhaengt von sp1 brauch man in beiden faellen auch nur sp1
+        //zusetzten
+        sp1->setIstAmZug(false);
+    }
+    else{
+         sp1->setIstAmZug(true);
+    }
+    wechselSpieler();
 }
 
 
@@ -56,8 +97,15 @@ int Spiel::naechsterZug(Spieler spieler, int spalte)
     }
 
     int rslt = spielfeld->werfeStein(spieler,spalte);
-    if(rslt > -1)            //sonst kann nur -1 kommen, dann isses Spiel eh rum oder ne Exception, dann throwt der automatisch nach aussen....
+    if(rslt > -1){ //sonst kann nur -1 kommen, dann isses Spiel eh rum oder ne Exception, dann throwt der automatisch nach aussen....
+        runde++;
         wechselSpieler();
+
+        //hier werden alle Events gefeuert die bei einem Spielerwechsel erforderlich sind... bspweise: broadcast füer zuschauen mit den daten, die wir noch nicht haben :-D
+        //...
+        //..
+        //..
+    }
 
     return rslt;
 }
@@ -66,14 +114,16 @@ int Spiel::naechsterZug(Spieler spieler, int spalte)
 
 void Spiel::wechselSpieler()
 {
-    runde++;
-
-    //spieler wechsel... zuweisungen, instanzuebergabe an aktuellen spieler, bool switchen , blaa blubb...
-
-    //hier werden alle Events gefeuert die bei einem Spielerwechsel erforderlich sind... bspweise: broadcast füer zuschauen mit den daten, die wir noch nicht haben :-D
-    //...
-    //..
-    //..
+    if(sp1->getIstAmZug()){
+        sp1->setIstAmZug(false);
+        sp2->setIstAmZug(true);
+        aktuellerSpieler = *sp2;
+    }
+    else{
+        sp2->setIstAmZug(false);
+        sp1->setIstAmZug(true);
+        aktuellerSpieler = *sp1;
+    }
 }
 
 string Spiel::toString() const{

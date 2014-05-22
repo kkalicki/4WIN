@@ -54,7 +54,7 @@ private:
 	/**
 	 * Instanz des Spiels
 	 */
-	Spiel spiel;
+    Spiel spiel;
 };
 
 #endif /* MENUE_H_ */

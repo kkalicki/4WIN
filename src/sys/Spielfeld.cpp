@@ -137,7 +137,16 @@ string Spielfeld::toString() const {
     ostringstream out;
     out << "Spielfeld: \n";
     char a = 'a';
-    out << "   1  2  3  4  5  6  7 \n";
+    int headercount = 0;
+
+    out << "  ";
+
+    //header...
+    do{
+     out <<" "<< ++headercount << " ";
+    }while(headercount < spalten);
+
+    out << endl;
 
     for(int i = zeilen-1; i >= 0;i--){
         out << a++ << " ";
