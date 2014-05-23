@@ -11,6 +11,7 @@
 
 Menue::Menue() {
 
+    this->spiel = 0;
 }
 
 string Menue::menue() const {
@@ -41,7 +42,7 @@ void Menue::menueauswahl(int auswahl) {
 //		cin >> name1;
 //		cout << "Name Spieler 2: ";
 //		cin >> name2;
-		mehrspieler("asdf", "fdas");
+        mehrspieler("sp1", "sp2");
 		break;
 	case 0:
 		break;
@@ -56,35 +57,57 @@ void Menue::sofortspielen(string name1) {
 
 void Menue::mehrspieler(string name1,string name2) {
 
-     //Alles noch schön !!!
-    cout<< "starte Spiel..." << endl;
-    cout.flush();
-    spiel.erstelleSpielfeld(6,7);
-    spiel.startMP(name1, name2);
+    erstelleSpiel();
+    cout<< "********STARTE SPIEL**********" << endl;
+    spiel->startMP(name1, name2);
 
-    cout<<"Spieler " << spiel.getAktuellerSpieler().getName() << " [" <<spiel.getAktuellerSpieler().getFarbe()  <<"] << faengt an!" << endl;
-    cout.flush();
+    cout<<"Spieler " << spiel->getAktuellerSpieler().getName()
+                     << "[" << (spiel->getAktuellerSpieler().getFarbe() == ROT ? "ROT" : "GELB")
+                     <<"] faengt an!" << endl << endl;
 
-    cout << spiel; cout.flush();
 
-    int spalte;
-    int ende = 0;
-    while(ende != -1)
-    {
+    cout << *spiel << flush;
+
+    int spalte, ende = 0;
+    do{
         try{
             cout<<"Spalte eingeben!" << endl;
             cin >> spalte;
-            ende = spiel.naechsterZug(spiel.getAktuellerSpieler(),spalte);
-            cout<<"ROW: " << ende << endl;
-            cout << spiel; cout.flush();
-        }
-        catch(EingabeException& e){
+            ende = spiel->naechsterZug(spiel->getAktuellerSpieler(),spalte);
+            if(ende == -1){
+                cout << "GEWONNEN (YEAHHH!)" << endl;
+            }
+            cout << *spiel << endl;
+            cout <<"ROW: " << ende << endl;
+        }catch(EingabeException& e){
+            cout << e.what() << endl;
+        }catch(SpielFeldException& e){
             cout << e.what() << endl;
         }
-        catch(SpielFeldException& e){
-            cout << e.what() << endl;
-        }
-    }
+    }while(ende != -1);
+    clear();
+}
+
+void Menue::erstelleSpiel()
+{
+    int zeilen, spalten;
+
+    cout<<"Anzahl Zeilen: " << endl;
+    cin >> zeilen;
+
+    cout<<"Anzahl Spalten: "<< endl;
+    cin >> spalten;
+
+    //erstelle Spiel
+    this->spiel = new Spiel(zeilen, spalten);
+}
+
+void Menue::clear()
+{
+    if(spiel != 0)
+        delete spiel;
+
+    this->spiel = 0;
 }
 
 Menue::~Menue() {

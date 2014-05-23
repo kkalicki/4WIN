@@ -3,21 +3,24 @@
 
 #include <QWidget>
 #include "ui_bord.h"
-
+#include <../h/gui/I4WinWidget.h>
+#include <../h/sys/Spieler.h>
 namespace Ui {
 class bordUi;
 }
 
-class Bord : public QWidget
+class Bord : public QWidget, public I4WinWidget
 {
     Q_OBJECT
 public:
     explicit Bord(QWidget *parent = 0, int rowCount = 6, int colCount = 7);
     ~Bord();
-
-    void init();
+    void setMove(Spieler player, int row, int col);
+    void preExecute();
+    void postExecute();
 
 private:
+    int isLocked;
     int rowCount;
     int colCount;
     QPixmap *defaultImage ;
@@ -27,6 +30,9 @@ private:
     static const int IMG_SIZE = 80;
     static const int START_POSITION_X = 200;
     static const int START_POSITION_Y = 180;
+    void init();
+    void clear();
+
 signals:
 
 public slots:

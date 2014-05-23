@@ -3,7 +3,12 @@
 Settings::Settings(QWidget *parent) :
     QWidget(parent), ui(new Ui::settingsUi)
 {
-     ui->setupUi(this);
+    ui->setupUi(this);
+}
+
+void Settings::test()
+{
+
 }
 
 void Settings::on_rbsvs_toggled(bool checked)
@@ -72,7 +77,8 @@ void Settings::on_rbenter_toggled(bool checked)
 
 void Settings::on_btnstart_clicked()
 {
-    //auswerten der Settings und spiel starten....
+    int t = 5;
+    emit rsltSetting(t);
 }
 
 void Settings::on_cbwatch_toggled(bool checked)

@@ -13,10 +13,11 @@ class Settings : public QWidget
     Q_OBJECT
 public:
     explicit Settings(QWidget *parent = 0);
-
+    void test();
 private:
     Ui::settingsUi * ui;
 signals:
+    void rsltSetting(int t);
 
 public slots:
 

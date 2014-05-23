@@ -49,12 +49,15 @@ public:
 	 */
 	void mehrspieler(string name1,string name2);
 
+    void clear();
+    void erstelleSpiel();
+
 	virtual ~Menue();
 private:
 	/**
 	 * Instanz des Spiels
 	 */
-    Spiel spiel;
+    Spiel *spiel;
 };
 
 #endif /* MENUE_H_ */

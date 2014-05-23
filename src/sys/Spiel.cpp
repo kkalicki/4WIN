@@ -33,29 +33,28 @@
  *TODO: return von werfeStein() ist spalten und nicht row
  *      werte > spalte --> Programmabsturtz
  *      dynamisches Spielfeld erzeugt sich nicht korrekt
- *      wurf in letzte spalte --> Absturtz --> Kalle klaeren
- *      Auswertung, ob gewonnen greift nicht --> Kalle klaeren
+ *      wurf in letzte spalte --> !!!!!!nach dynamischer Objektreferzierung nicht mehr vorgekommen!
+ *      Auswertung, ob gewonnen greift nicht
  *      Testen, Testen, Testen....
- *
  */
+
+Spiel::Spiel(unsigned short zeilen, unsigned short spalten)
+{
+    this->spielfeld = new Spielfeld(zeilen,spalten);
+    this->runde = 0;
+}
 
 Spiel::~Spiel() {
 
-    if(spielfeld != 0)
-        delete spielfeld;
-
+    delete spielfeld;
     delete sp1;
     delete sp2;
-    delete &aktuellerSpieler;
+    delete &aktuellerSpieler; //<-- ist unoetig da nicht mit new erzeugt!
 }
 
-void Spiel::erstelleSpielfeld(unsigned short zeilen, unsigned short spalten) {
-    this->spielfeld = new Spielfeld(zeilen,spalten);
-}
 
 void Spiel::startMP(string nameSpieler1, string nameSpieler2)
 {
-
     this->sp1 = new Spieler(nameSpieler1);
     this->sp2 = new Spieler(nameSpieler2);
 
@@ -75,10 +74,6 @@ void Spiel::startMP(string nameSpieler1, string nameSpieler2)
 
     //Auslosen wer anfaengt
     if((rand() % 2) == 0){
-        //selsames vorgehen, aber Spieler wird nur auf
-        //aktuellen spieler gewechselt, wenn er vorher auf false gestanden hat
-        //nur zum initialisieren... da es nur abhaengt von sp1 brauch man in beiden faellen auch nur sp1
-        //zusetzten
         sp1->setIstAmZug(false);
     }
     else{
@@ -87,30 +82,27 @@ void Spiel::startMP(string nameSpieler1, string nameSpieler2)
     wechselSpieler();
 }
 
+void Spiel::aufgeben() //braucht evtl. noch Parameter...
+{
+    //implementieren...
+}
+
 
 int Spiel::naechsterZug(Spieler spieler, int spalte)
 {
-    if(spielfeld == 0)
-    {
-        // -->RuntimeException, sollte eigentlich von RuntimeException abgeleitet werden.. //TODO String in Konstante
-        throw SpielFeldException("Spielfeld ist nit initialisiert -> erst Funktion erstelleSpielfeld() aufrufen!");
-    }
-
     int rslt = spielfeld->werfeStein(spieler,spalte);
     if(rslt > -1){ //sonst kann nur -1 kommen, dann isses Spiel eh rum oder ne Exception, dann throwt der automatisch nach aussen....
         runde++;
         wechselSpieler();
 
         //hier werden alle Events gefeuert die bei einem Spielerwechsel erforderlich sind... bspweise: broadcast füer zuschauen mit den daten, die wir noch nicht haben :-D
-        //...
+        //Funktion postExecute() anlegen
         //..
         //..
     }
 
     return rslt;
 }
-
-
 
 void Spiel::wechselSpieler()
 {
@@ -126,95 +118,19 @@ void Spiel::wechselSpieler()
     }
 }
 
+ostream& operator<<(ostream& out, Spiel& sp){
+    out << sp.toString();
+    return out;
+}
+
 string Spiel::toString() const{
 
-    //ein aufruf nach jeder runde von aussen und alles wird auf einmal ausgegeben....
-    //beide Spieler toString()
-    //rounde toString()
-
     ostringstream out;
-    out << spielfeld->toString();
-
+    out << *sp1 << endl;
+    out << *sp2 << endl;
+    out << "Runde : " << runde << endl;
+    out << *spielfeld << endl;
     return out.str();
 }
-
-
-//------------------------------------------KOMMT WEG--------------------------------------
-/*
-//TODO Farbe abfangen;
-int Spiel::werfeStein(Spieler sp, int farbe) {
-    int spalte;
-
-    cout << spf;
-    cout << "Runde: " << this->runde << "\n";
-    string name = sp.getName();
-	(farbe == ROT ) ? cout << "Spieler 1 (ROT) = " << name : cout << "Spieler 2 (GELB) = " << name;
-	cout << "\n";
-	cout << "Spalte: ";
-	cin >> spalte;
-	if (spalte > 0 && spalte <= X){
-		int aktuell = spf.getSpalteSteine(spalte-1);
-		if (aktuell < Y){
-			spf.setFeldPos(spalte-1,aktuell,farbe);
-			return spalte;
-		}
-		else
-			cout << "!!!!    Spalte voll    !!!!\n";
-	}
-	else
-		cout << "!!!!    Fehlerhafte Eingabe    !!!!\n";
-
-
-    return werfeStein(sp,farbe);
-
-}
-
-int Spiel::spielrunde(Spieler spieler1, Spieler spieler2) {
-	bool check = false;
-	int spalte;
-	do{
-		spalte = werfeStein(spieler1, ROT);
-		check = pruefeStein(ROT, spalte);
-		if (check == true)
-			return ROT;
-		spalte = werfeStein(spieler2, GELB);
-		check = pruefeStein(GELB, spalte);
-		if (check == true)
-			return GELB;
-
-		runde++;
-	}while(check == false);
-	return -1;
-}
-*/
-
-/*
-void Spiel::startKI(int ki) {
-}
-*/
-
-
-/*
-void Spiel::startMP(string name1,string name2) {
-	sp1.setName(name1);
-	sp2.setName(name2);
-	int zufall = rand() % (2-1);
-	int gewinner;
-	if (zufall == 0)
-		gewinner = spielrunde(sp1,sp2);
-	else
-		gewinner = spielrunde(sp2,sp1);
-
-	cout << spf;
-	if (gewinner == ROT)
-		cout << "ROT HAT GEWONNEN\n";
-	else
-		cout << "GELB HAT GEWONNEN\n";
-
-
-
-
-}
-*/
 
 

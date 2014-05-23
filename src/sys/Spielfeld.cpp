@@ -13,6 +13,7 @@ Spielfeld::Spielfeld(unsigned short zeilen, unsigned short spalten)
 {
     this->zeilen = zeilen;
     this->spalten = spalten;
+    this->aktuell = new int[spalten];
     init();
 }
 
@@ -22,6 +23,7 @@ Spielfeld::~Spielfeld() {
        delete [] feld[j];
    }
    delete [] feld;
+   delete aktuell;
 }
 
 void Spielfeld::init()
@@ -49,10 +51,11 @@ int Spielfeld::werfeStein(Spieler spieler, int spalte)
         if (aktuell < zeilen){
             setFeldPos(spalte-1,aktuell,spieler.getFarbe());
 
-            if(pruefeStein(spieler.getFarbe(), spalte))
-            return -1;
+            if(pruefeStein(spieler.getFarbe(), spalte)){
+              return -1;
+            }
 
-            return spalte;
+            return getSpalteSteine(spalte -1);
         }
         else{
             throw SpielFeldException("Spalte ist Voll!");
@@ -73,23 +76,46 @@ int Spielfeld::pruefeStein(int farbe, int spalte) {
 
 int Spielfeld::checkHorizontal(int farbe, int spalte) {
     int wert = (farbe==ROT) ? ROT : GELB;
-    int zeile = getSpalteSteine(spalte);
+        for(int i = Y-1; i >= 0;i--){
+            for(int j = 0; j < X-3;j++){
+                if (getFeldPos(j,i) == wert){
+                    if (getFeldPos(j+1,i) == wert){
+                        if (getFeldPos(j+2,i) == wert){
+                            if (getFeldPos(j+3,i) == wert){
+                                return true;
+                            }
 
+                        }
 
-    return false;
+                    }
+
+                }
+            }
+        }
+        return false;
 }
+
 
 int Spielfeld::checkVertikal(int farbe, int spalte) {
     int wert = (farbe==ROT) ? ROT : GELB;
-    int zeile = getSpalteSteine(spalte-1);
+        for(int j = 0; j < X;j++){
+            for(int i = Y-1; i >= 3;i--){
+                if (getFeldPos(j,i) == wert){
+                    if (getFeldPos(j,i-1) == wert){
+                        if (getFeldPos(j,i-2) == wert){
+                            if (getFeldPos(j,i-3) == wert){
+                                return true;
+                            }
 
-    Stein aktuell = getFeldPos(zeile, spalte-1);
-    const short int *pos = aktuell.getPos();
+                        }
 
-    //cout << "\npos x: " << pos[0]  << " y: " << pos[1] << "\n";
-    //cout << "CHECK VERTIKAL AKTUELL :" << aktuell << " Zeile: " << zeile  << " Spalte: " << spalte << "\n";
-    return false;
-}
+                    }
+
+                }
+            }
+        }
+        return false;
+    }
 
 int Spielfeld::checkDiagonal(int farbe, int spalte) {
     int wert = (farbe==ROT) ? ROT : GELB;
@@ -135,13 +161,11 @@ ostream& operator<<(ostream& out, Spielfeld& spf){
 
 string Spielfeld::toString() const {
     ostringstream out;
-    out << "Spielfeld: \n";
     char a = 'a';
     int headercount = 0;
 
+    //erstelle header...
     out << "  ";
-
-    //header...
     do{
      out <<" "<< ++headercount << " ";
     }while(headercount < spalten);
@@ -152,7 +176,6 @@ string Spielfeld::toString() const {
         out << a++ << " ";
         for(int j = 0; j < spalten;j++){
             Stein aktuell = feld[i][j];
-            //(aktuell == ROT) || (aktuell == GELB) ? out << "["<< aktuell <<"]" : out << "[X]";
             out << "["<< aktuell <<"]";
         }
         out << "\n";

@@ -45,6 +45,9 @@ public:
         istAmZug = value;
     }
 
+    friend ostream& operator<<(ostream& out, Spieler& spieler);
+
+    string toString();
 private:
     string name;
     short farbe;

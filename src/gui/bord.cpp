@@ -1,7 +1,8 @@
 #include "../h/gui/bord.h"
+#include "../h/gui/fourwinitemdelegate.h"
+#include "../h/sys/Konstanten.h"
 #include <QtGui>
 #include <QLabel>
-#include "h/gui/fourwinitemdelegate.h"
 
 Bord::Bord(QWidget *parent, int rowCount, int colCount) : QWidget(parent),
     ui(new Ui::bordUi)
@@ -12,10 +13,10 @@ Bord::Bord(QWidget *parent, int rowCount, int colCount) : QWidget(parent),
 
     this->defaultImage  = new QPixmap(":/image/border_new.png");
     this->redImage      = new QPixmap(":/image/red_new.png");
-    this->yellowImage   = new QPixmap(":/image/yellow_new.png");
+    this->yellowImage   = new QPixmap(":/image/yellow_new2.png");
     this->rowCount      = rowCount;
     this->colCount      = colCount;
-    init();
+    isLocked = false;
 }
 
 Bord::~Bord()
@@ -36,10 +37,8 @@ void Bord::init()
     ui->tblbord->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     ui->tblbord->setItemDelegate(new FourWinItemDelegate(ui->tblbord));
 
-    for(int x = 0; x < rowCount; x++)
-    {
-        for(int y = 0; y < colCount; y++)
-        {
+    for(int x = 0; x < rowCount; x++){
+        for(int y = 0; y < colCount; y++){
 
             QTableWidgetItem *initItem = new QTableWidgetItem();
             initItem->setFlags(Qt::NoItemFlags|Qt::ItemIsSelectable|Qt::ItemIsEnabled);
@@ -51,12 +50,55 @@ void Bord::init()
     int h = IMG_SIZE * rowCount;
     this->resize(w,h);
     this->setFixedSize(w,h);
+    isLocked=true;
+}
+
+void Bord::clear()
+{
+    for(int x = 0; x < rowCount; x++){
+        for(int y = 0; y < colCount; y++){
+               delete ui->tblbord->item(x,y);
+        }
+    }
+}
+
+void Bord::setMove(Spieler player, int row, int col)
+{
+    delete ui->tblbord->item(row,col);
+    QTableWidgetItem *initItem = new QTableWidgetItem();
+    initItem->setFlags(Qt::NoItemFlags|Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+
+    switch (player.getFarbe()) {
+    case ROT:
+        initItem->setData(Qt::DecorationRole, redImage->scaled(IMG_SIZE,IMG_SIZE,Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        break;
+    case GELB:
+        initItem->setData(Qt::DecorationRole, yellowImage->scaled(IMG_SIZE,IMG_SIZE,Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        break;
+    default:
+            //kann ned sinn...!!
+        break;
+    }
+    ui->tblbord->setItem(row,col,initItem);
+}
+
+void Bord::preExecute()
+{
+    isLocked = false;
+    clear();
+    init();
+}
+
+void Bord::postExecute()
+{
+    isLocked = true;
 }
 
 void Bord::on_tblbord_doubleClicked(const QModelIndex &index)
 {
-    QTableWidgetItem *initItem = new QTableWidgetItem();
-    initItem->setFlags(Qt::NoItemFlags|Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-    initItem->setData(Qt::DecorationRole, yellowImage->scaled(IMG_SIZE,IMG_SIZE,Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
-    ui->tblbord->setItem(index.row(),index.column(),initItem);
+    if(!isLocked){
+        Spieler p;
+        p.setFarbe(ROT);
+        setMove(p,index.row(),index.column());
+    }
 }

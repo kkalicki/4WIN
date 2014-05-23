@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     this->setFixedSize(this->size().width(),this->size().height());
     this->setStyleSheet("MainWindow {border-image: url(:/image/back3.png); };");
     load4WinWidgets();
+    preExecute();
 }
 
 void MainWindow::load4WinWidgets()
@@ -25,7 +26,8 @@ void MainWindow::load4WinWidgets()
     bordWidget->show();
     bordWidget->setFocus(Qt::ActiveWindowFocusReason);
 
-
+    this->settingsWidget = new Settings();
+    connect( settingsWidget, SIGNAL(rsltSetting(int)), this, SLOT(on_resultSettings(int)));
 }
 
 void MainWindow::closeAllWidgets()
@@ -42,6 +44,25 @@ void MainWindow::closeAllWidgets()
     this->close();
 }
 
+void MainWindow::end()
+{
+    //Messagebox show wer hat gewonnen und so weiter...
+
+    postExecute();
+}
+
+void MainWindow::preExecute()
+{
+    bordWidget->preExecute();
+    gameInfoWidget->preExecute();
+}
+
+void MainWindow::postExecute()
+{
+    bordWidget->postExecute();
+    gameInfoWidget->postExecute();
+}
+
 
 MainWindow::~MainWindow()
 {
@@ -49,6 +70,14 @@ MainWindow::~MainWindow()
     delete settingsWidget;
     delete bordWidget;
     delete gameInfoWidget;
+}
+
+void MainWindow::on_resultSettings(int t)
+{
+    //string test = "Hallo: " + t;
+    QMessageBox msg;
+    msg.setText("hallo");
+    msg.exec();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -66,6 +95,5 @@ void MainWindow::on_actionNeu_triggered()
     if(settingsWidget != 0)
         settingsWidget->close();
 
-    this->settingsWidget = new Settings();
     settingsWidget->show();
 }

@@ -101,7 +101,7 @@
      <string>Spieler 2</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_2">
+   <widget class="QPushButton" name="btnlooseright">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -118,16 +118,16 @@
     <property name="geometry">
      <rect>
       <x>60</x>
-      <y>60</y>
-      <width>31</width>
-      <height>31</height>
+      <y>50</y>
+      <width>41</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="../res.qrc">:/image/red_p.png</pixmap>
+     <pixmap resource="../res.qrc">:/image/red_point.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -264,7 +264,7 @@
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_3">
+   <widget class="QPushButton" name="btnlooseleft">
     <property name="geometry">
      <rect>
       <x>120</x>
@@ -348,16 +348,16 @@
     <property name="geometry">
      <rect>
       <x>60</x>
-      <y>60</y>
-      <width>31</width>
-      <height>31</height>
+      <y>50</y>
+      <width>41</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="../res.qrc">:/image/yellow_p.png</pixmap>
+     <pixmap resource="../res.qrc">:/image/yellow_point.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>

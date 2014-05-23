@@ -92,7 +92,7 @@ private:
 	 * das Spielfeld als mehrdimensionales Array
 	 */
     Stein **feld;
-	int aktuell[X];
+    int *aktuell;
     unsigned short zeilen;
     unsigned short spalten;
 };
