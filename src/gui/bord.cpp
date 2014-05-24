@@ -96,26 +96,6 @@ void Bord::postExecute()
     clear();
     init();
 }
-unsigned short Bord::getRowCount() const
-{
-    return rowCount;
-}
-
-void Bord::setRowCount(unsigned short value)
-{
-    rowCount = value;
-}
-unsigned short Bord::getColCount() const
-{
-    return colCount;
-}
-
-void Bord::setColCount(unsigned short value)
-{
-    colCount = value;
-}
-
-
 
 void Bord::on_tblbord_doubleClicked(const QModelIndex &index)
 {

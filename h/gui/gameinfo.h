@@ -22,11 +22,9 @@ public:
     virtual void postExecute();
     void lock();
     void unlock();
-    void changePlayer();
+    void changePlayer(const Spieler& currentPlayer, unsigned short round, string lastMove);
     void initPlayerDisplays(const Spieler& player1,const Spieler& player2);
     void initfirstPlayer(const Spieler& firstPlayer);
-    void setLastMove(string move);
-    void setRound(unsigned short round);
     ~GameInfo();
 
 private slots:
@@ -44,6 +42,8 @@ private:
      Ui::gameinfoUi *ui;
      static const int START_POSITION_X = 0;
      static const int START_POSITION_Y = 0;
+     void setLastMove(string move);
+     void setRound(unsigned short round);
 };
 
 #endif // GAMEINFO_H

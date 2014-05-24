@@ -56,8 +56,11 @@ void GameInfo::unlock()
 
 }
 
-void GameInfo::changePlayer()
+void GameInfo::changePlayer(const Spieler& currentPlayer, unsigned short round, string lastMove)
 {
+    setRound(round);
+    setLastMove(lastMove);
+    this->currentPlayer = currentPlayer;
     if(ui->lblleft->isVisible()){
          ui->lblleft->setVisible(false);
          ui->lblright->setVisible(true);
@@ -105,9 +108,9 @@ void GameInfo::initfirstPlayer(const Spieler& firstPlayer)
 void GameInfo::setLastMove(string move)
 {
     if(player1.getFarbe() == currentPlayer.getFarbe())
-        ui->lblmove1->setText(QString::fromStdString(move);
+        ui->lblmove1->setText(QString::fromStdString(move));
     else
-        ui->lblmove2->setText(QString::fromStdString(move);
+        ui->lblmove2->setText(QString::fromStdString(move));
 }
 
 void GameInfo::setRound(unsigned short round)

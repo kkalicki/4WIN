@@ -110,14 +110,14 @@ void MainWindow::on_executeMove(unsigned short column)
             postExecute();
         }
         else{
+
+           //Bord bedienen...
            bordWidget->setMove(currentPlayer,rslt,column);
 
-           //Ab hier geknaubt ... UNBEDING an Konzept init/pre/post/change-Execute halten...
-           gameInfoWidget->changePlayer();
-           gameInfoWidget->setRound(game->getRunde());
+           //GameInfo bedienen...
            ostringstream o;
-           o<< rslt << " - "<< column;
-           gameInfoWidget->setLastMove(o.str());
+           o<< (rslt) << " - "<< column;
+           gameInfoWidget->changePlayer(currentPlayer,game->getRunde(),o.str());
         }
     }
     catch(EingabeException& e){
