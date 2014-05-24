@@ -47,7 +47,7 @@ public:
 
     friend ostream& operator<<(ostream& out, Spieler& spieler);
 
-    string toString();
+    string toString() const;
 private:
     string name;
     short farbe;

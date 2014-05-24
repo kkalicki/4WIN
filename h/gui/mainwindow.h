@@ -6,6 +6,7 @@
 #include <../h/gui/settings.h>
 #include <../h/gui/gameinfo.h>
 #include <../h/gui/history.h>
+#include <../h/sys/spiel.h>
 #include <QMainWindow>
 
 namespace Ui {
@@ -28,7 +29,8 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_resultSettings(int t);
+    void on_executeMove(unsigned short column);
+    void on_resultSettings(GameSettings* gameSettings);
     void on_actionBeenden_triggered();
     void on_actionNeu_triggered();
 
@@ -41,8 +43,10 @@ private:
     Bord *bordWidget;
     GameInfo *gameInfoWidget;
     History * historyWidget;
-    static const int START_POSITION_X = 260;
+    static const int START_POSITION_X = 230;
     static const int START_POSITION_Y = 0;
+
+    Spiel *game;
 };
 
 #endif // MAINWINDOW_H

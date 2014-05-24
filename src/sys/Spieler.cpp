@@ -23,8 +23,7 @@ ostream& operator<<(ostream& out, Spieler& spieler)
     return out;
 }
 
-string Spieler::toString()
-{
+string Spieler::toString() const{
     ostringstream o;
     o << "Spieler: " << name << endl;
     o << "Farbe  : " << (farbe == ROT ? "ROT" : "GELB") << endl;

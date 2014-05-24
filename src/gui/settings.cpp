@@ -1,14 +1,16 @@
 #include "../h/gui/settings.h"
+#include <QMessageBox>
 
 Settings::Settings(QWidget *parent) :
     QWidget(parent), ui(new Ui::settingsUi)
 {
     ui->setupUi(this);
+    this->gameSettings = new GameSettings();
 }
 
-void Settings::test()
+Settings::~Settings()
 {
-
+    delete gameSettings;
 }
 
 void Settings::on_rbsvs_toggled(bool checked)
@@ -77,8 +79,32 @@ void Settings::on_rbenter_toggled(bool checked)
 
 void Settings::on_btnstart_clicked()
 {
-    int t = 5;
-    emit rsltSetting(t);
+    if(!ui->leplayer1->text().isEmpty()){
+       if(!ui->leplayer2->text().isEmpty()){
+
+            //create setting-Object
+            gameSettings->setMode(getGameMode());
+            gameSettings->setPlayer1Name(ui->leplayer1->text().toStdString());
+            gameSettings->setPlayer2Name(ui->leplayer2->text().toStdString());
+            gameSettings->setBordRows(ui->sbrow->text().toShort());
+            gameSettings->setBordColumns(ui->sbcolumn->text().toShort());
+            gameSettings->setCellSize(ui->sbcellsize->text().toShort());
+            gameSettings->setNetworkMode(getNetworkMode());
+            gameSettings->setIsFollow(ui->cbwatch->isChecked());
+
+            emit resultSettings(gameSettings);
+       }
+       else{
+           QMessageBox info;
+           info.setText("Namen für Player2 eingeben!");
+           info.exec();
+       }
+    }
+    else{
+        QMessageBox info;
+        info.setText("Namen für Player1 eingeben!");
+        info.exec();
+    }
 }
 
 void Settings::on_cbwatch_toggled(bool checked)
@@ -87,4 +113,28 @@ void Settings::on_cbwatch_toggled(bool checked)
     {
         //zuschauer optionen...
     }
+}
+
+GameMode Settings::getGameMode()
+{
+    if(ui->rbsvs->isChecked())
+        return SVS;
+
+    if(ui->rbsvc->isChecked())
+        return SVC;
+
+    if(ui->rbsvc->isChecked())
+        return CVC;
+}
+
+NetworkMode Settings::getNetworkMode()
+{
+    if(ui->rblocal->isChecked())
+        return LOCAL;
+
+    if(ui->rbopen->isChecked())
+        return OPEN;
+
+    if(ui->rbenter->isChecked())
+        return JOIN;
 }

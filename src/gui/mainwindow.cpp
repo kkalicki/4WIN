@@ -4,7 +4,12 @@
 #include "../h/gui/test.h"
 #include "../h/gui/gameinfo.h"
 #include "../h/gui/bord.h"
+#include "../h/sys/FourWinExceptions.h"
+
+#include "../h/sys/Spieler.h"
+
 #include <QMessageBox>
+#include <sstream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -21,7 +26,8 @@ void MainWindow::init()
     this->setStyleSheet("MainWindow {border-image: url(:/image/back3.png); };");
     load4WinWidgets();
 
-    connect( settingsWidget, SIGNAL(rsltSetting(int)), this, SLOT(on_resultSettings(int)));
+    connect( settingsWidget, SIGNAL(resultSettings(GameSettings*)), this, SLOT(on_resultSettings(GameSettings*)));
+    //connect( bordWidget, SIGNAL(executeMove(unsigned short)), this, SLOT(on_executeMove(unsigned short)));
 }
 
 void MainWindow::load4WinWidgets()
@@ -85,10 +91,69 @@ MainWindow::~MainWindow()
     delete bordWidget;
     delete gameInfoWidget;
     delete historyWidget;
+
+    delete game;
 }
 
-void MainWindow::on_resultSettings(int t)
+void MainWindow::on_executeMove(unsigned short column)
 {
+    Spieler currentPlayer = game->getAktuellerSpieler();
+    int rslt;
+    try
+    {
+        rslt = game->naechsterZug(currentPlayer,column);
+        if(rslt == -1){
+            //Gewonnen
+            //MessageBox show!!!!! sound abspielen: WE ARE THE CHAMPIONS :-D
+
+            //fuer alle postExecute aufrufen...
+            postExecute();
+        }
+        else{
+           bordWidget->setMove(currentPlayer,rslt,column);
+
+           //Ab hier geknaubt ... UNBEDING an Konzept init/pre/post/change-Execute halten...
+           gameInfoWidget->changePlayer();
+           gameInfoWidget->setRound(game->getRunde());
+           ostringstream o;
+           o<< rslt << " - "<< column;
+           gameInfoWidget->setLastMove(o.str());
+        }
+    }
+    catch(EingabeException& e){
+        QMessageBox msg;
+        msg.setText(e.what());
+        msg.exec();
+    }
+    catch(SpielFeldException& e){
+        QMessageBox msg;
+        msg.setText(e.what());
+        msg.exec();
+    }
+
+    //Catch Spielfeld voll!! --> Messagebox --> postExecute()
+
+
+}
+
+void MainWindow::on_resultSettings(GameSettings* gameSettings)
+{
+    settingsWidget->hide();
+
+    //Bord init...
+    bordWidget->hide();
+    delete bordWidget;
+    this->bordWidget = new Bord(gameSettings->getBordRows(),gameSettings->getBordColumns(),gameSettings->getCellSize());
+    connect( bordWidget, SIGNAL(executeMove(unsigned short)), this, SLOT(on_executeMove(unsigned short)));
+    bordWidget->show();
+
+    //game init...
+    this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
+    game->startMP(gameSettings->getPlayer1Name(),gameSettings->getPlayer2Name());
+
+    //gameinfo init..
+    gameInfoWidget->initPlayerDisplays(game->getSp1(),game->getSp2());
+    gameInfoWidget->initfirstPlayer(game->getAktuellerSpieler());
 
     //fuer Alle preExecute aufrufen
     preExecute();

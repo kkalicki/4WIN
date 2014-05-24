@@ -78,12 +78,36 @@ public:
         return aktuellerSpieler;
     }
 
+    Spieler getSp1() const{
+        return sp1;
+    }
+
+    void setSp1(const Spieler &value){
+        sp1 = value;
+    }
+
+    Spieler getSp2() const{
+        return sp2;
+    }
+
+    void setSp2(const Spieler &value){
+        sp2 = value;
+    }
+
+    unsigned short getRunde() const{
+        return runde;
+    }
+
+    void setRunde(unsigned short value){
+        runde = value;
+    }
+
 private:
     Spielfeld *spielfeld;
-    Spieler *sp1;
-    Spieler *sp2;
+    Spieler sp1;
+    Spieler sp2;
     Spieler aktuellerSpieler;
-	unsigned short int runde;
+    unsigned short runde;
     void wechselSpieler();
 };
 

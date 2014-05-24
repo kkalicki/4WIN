@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "ui_settings.h"
+#include "../h/gui/gamesettings.h"
 
 namespace Ui {
 class settingsUi;
@@ -13,11 +14,15 @@ class Settings : public QWidget
     Q_OBJECT
 public:
     explicit Settings(QWidget *parent = 0);
-    void test();
+    ~Settings();
+    GameMode getGameMode();
+    NetworkMode getNetworkMode();
+
 private:
     Ui::settingsUi * ui;
+    GameSettings * gameSettings;
 signals:
-    void rsltSetting(int t);
+    void resultSettings(GameSettings* gameSettings);
 
 public slots:
 

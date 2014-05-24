@@ -22,7 +22,7 @@ public:
 
 private:
     Ui::historyUi *ui;
-    static const int START_POSITION_X = 0;
+    static const int START_POSITION_X = 20;
     static const int START_POSITION_Y = 0;
 };
 

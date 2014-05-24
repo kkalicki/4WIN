@@ -3,8 +3,9 @@
 #include "../h/sys/Konstanten.h"
 #include <QtGui>
 #include <QLabel>
+#include <QMessageBox>
 
-Bord::Bord(QWidget *parent, int rowCount, int colCount) : QWidget(parent),
+Bord::Bord(unsigned short rowCount, unsigned short colCount, unsigned short cellSize, QWidget *parent) : QWidget(parent),
     ui(new Ui::bordUi)
 {
     ui->setupUi(this);
@@ -13,6 +14,7 @@ Bord::Bord(QWidget *parent, int rowCount, int colCount) : QWidget(parent),
     this->yellowImage   = new QPixmap(":/image/yellow_new2.png");
     this->rowCount      = rowCount;
     this->colCount      = colCount;
+    this->cellSize      = cellSize;
     init();
 }
 
@@ -31,8 +33,8 @@ void Bord::init()
 
     ui->tblbord->setColumnCount(colCount);
     ui->tblbord->setRowCount(rowCount);
-    ui->tblbord->horizontalHeader()->setDefaultSectionSize(IMG_SIZE);
-    ui->tblbord->verticalHeader()->setDefaultSectionSize(IMG_SIZE);
+    ui->tblbord->horizontalHeader()->setDefaultSectionSize(cellSize);
+    ui->tblbord->verticalHeader()->setDefaultSectionSize(cellSize);
     ui->tblbord->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     ui->tblbord->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     ui->tblbord->setItemDelegate(new FourWinItemDelegate(ui->tblbord));
@@ -42,12 +44,12 @@ void Bord::init()
 
             QTableWidgetItem *initItem = new QTableWidgetItem();
             initItem->setFlags(Qt::NoItemFlags|Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-            initItem->setData(Qt::DecorationRole,defaultImage->scaled(IMG_SIZE,IMG_SIZE,Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+            initItem->setData(Qt::DecorationRole,defaultImage->scaled(cellSize,cellSize,Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
             ui->tblbord->setItem(x,y,initItem);
         }
     }
-    int w = IMG_SIZE * colCount;
-    int h = IMG_SIZE * rowCount;
+    int w = cellSize * colCount;
+    int h = cellSize * rowCount;
     this->resize(w,h);
     this->setFixedSize(w,h);
     isLocked=true;
@@ -64,23 +66,24 @@ void Bord::clear()
 
 void Bord::setMove(Spieler player, int row, int col)
 {
+    row = rowCount - row--;
+    col--;
     delete ui->tblbord->item(row,col);
     QTableWidgetItem *initItem = new QTableWidgetItem();
     initItem->setFlags(Qt::NoItemFlags|Qt::ItemIsSelectable|Qt::ItemIsEnabled);
 
     switch (player.getFarbe()) {
     case ROT:
-        initItem->setData(Qt::DecorationRole, redImage->scaled(IMG_SIZE,IMG_SIZE,Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        initItem->setData(Qt::DecorationRole, redImage->scaled(cellSize,cellSize,Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         break;
     case GELB:
-        initItem->setData(Qt::DecorationRole, yellowImage->scaled(IMG_SIZE,IMG_SIZE,Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        initItem->setData(Qt::DecorationRole, yellowImage->scaled(cellSize,cellSize,Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         break;
     default:
             //kann ned sinn...!!
         break;
     }
     ui->tblbord->setItem(row,col,initItem);
-    isLocked = true;
 }
 
 void Bord::preExecute()
@@ -93,12 +96,48 @@ void Bord::postExecute()
     clear();
     init();
 }
+unsigned short Bord::getRowCount() const
+{
+    return rowCount;
+}
+
+void Bord::setRowCount(unsigned short value)
+{
+    rowCount = value;
+}
+unsigned short Bord::getColCount() const
+{
+    return colCount;
+}
+
+void Bord::setColCount(unsigned short value)
+{
+    colCount = value;
+}
+
+
 
 void Bord::on_tblbord_doubleClicked(const QModelIndex &index)
 {
     if(!isLocked){
+        emit executeMove(index.column() + 1);
+        
+        /*
         Spieler p;
         p.setFarbe(ROT);
         setMove(p,index.row(),index.column());
+        */
+    }
+    else{
+
+    }
+}
+
+void Bord::on_tblbord_clicked(const QModelIndex &index)
+{
+    if(isLocked){
+        QMessageBox msg;
+        msg.setText("Neues Spiel erstellen!  Menü->Spiel->Neu");
+        msg.exec();
     }
 }
