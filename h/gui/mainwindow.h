@@ -21,7 +21,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     void load4WinWidgets();
     void closeAllWidgets();
-    void end();
     virtual void init();
     virtual void preExecute();
     virtual void postExecute();
@@ -29,6 +28,7 @@ public:
     ~MainWindow();
 
 private slots:
+    void on_endGame(Spieler* winner);
     void on_executeMove(unsigned short column);
     void on_resultSettings(GameSettings* gameSettings);
     void on_actionBeenden_triggered();

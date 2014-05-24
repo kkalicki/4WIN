@@ -27,7 +27,7 @@ void MainWindow::init()
     load4WinWidgets();
 
     connect( settingsWidget, SIGNAL(resultSettings(GameSettings*)), this, SLOT(on_resultSettings(GameSettings*)));
-    //connect( bordWidget, SIGNAL(executeMove(unsigned short)), this, SLOT(on_executeMove(unsigned short)));
+    connect( gameInfoWidget, SIGNAL(loose(Spieler*)), this, SLOT(on_endGame(Spieler*)));
 }
 
 void MainWindow::load4WinWidgets()
@@ -42,31 +42,6 @@ void MainWindow::load4WinWidgets()
 
     this->historyWidget = new History();
     historyWidget->show();
-
-}
-
-void MainWindow::closeAllWidgets()
-{
-    if(settingsWidget != 0)
-        settingsWidget->close();
-
-    if(bordWidget != 0)
-        bordWidget->close();
-
-    if(gameInfoWidget != 0)
-        gameInfoWidget->close();
-
-    if(historyWidget != 0)
-        historyWidget->close();
-
-    this->close();
-}
-
-void MainWindow::end()
-{
-    //Messagebox show wer hat gewonnen und so weiter...
-
-    postExecute();
 }
 
 void MainWindow::preExecute()
@@ -83,16 +58,39 @@ void MainWindow::postExecute()
     historyWidget->postExecute();
 }
 
+void MainWindow::on_endGame(Spieler* winner)
+{
+    postExecute();
+
+    if(winner == 0)
+    {
+        //UNENTSCHIEDEN...
+        QMessageBox msg;
+        msg.setText("Unentschieden!");
+        msg.exec();
+    }
+    else
+    {
+        //Gewonnen
+        //MessageBox show!!!!! sound abspielen: WE ARE THE CHAMPIONS :-D
+        QMessageBox msg;
+        string strmsg = winner->getName() + " hat gewonnen!";
+        msg.setText(QString::fromStdString(strmsg));
+        msg.exec();
+    }
+}
 
 MainWindow::~MainWindow()
 {
-    delete ui;
     delete settingsWidget;
     delete bordWidget;
-    delete gameInfoWidget;
     delete historyWidget;
+    //delete gameInfoWidget; wird mit ui destruiert, da widget in Mainwin steckt
 
-    delete game;
+    if(game != 0)
+        delete game;
+
+    delete ui;
 }
 
 void MainWindow::on_executeMove(unsigned short column)
@@ -103,13 +101,10 @@ void MainWindow::on_executeMove(unsigned short column)
     {
         rslt = game->naechsterZug(currentPlayer,column);
         if(rslt == -1){
-            //Gewonnen
-            //MessageBox show!!!!! sound abspielen: WE ARE THE CHAMPIONS :-D
-
-            //fuer alle postExecute aufrufen...
-            postExecute();
+            //Spiel zu ende...
+            on_endGame(&currentPlayer);
         }
-        else{
+        else {  //else if Catch Spielfeld voll!! --> on_endGame(0);
 
            //Bord bedienen...
            bordWidget->setMove(currentPlayer,rslt,column);
@@ -117,7 +112,7 @@ void MainWindow::on_executeMove(unsigned short column)
            //GameInfo bedienen...
            ostringstream o;
            o<< (rslt) << " - "<< column;
-           gameInfoWidget->changePlayer(currentPlayer,game->getRunde(),o.str());
+           gameInfoWidget->changePlayer(&currentPlayer,game->getRunde(),o.str());
         }
     }
     catch(EingabeException& e){
@@ -130,8 +125,6 @@ void MainWindow::on_executeMove(unsigned short column)
         msg.setText(e.what());
         msg.exec();
     }
-
-    //Catch Spielfeld voll!! --> Messagebox --> postExecute()
 
 
 }
@@ -152,8 +145,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     game->startMP(gameSettings->getPlayer1Name(),gameSettings->getPlayer2Name());
 
     //gameinfo init..
-    gameInfoWidget->initPlayerDisplays(game->getSp1(),game->getSp2());
-    gameInfoWidget->initfirstPlayer(game->getAktuellerSpieler());
+    gameInfoWidget->initPlayer(game->getSp1(),game->getSp2());
 
     //fuer Alle preExecute aufrufen
     preExecute();
@@ -167,6 +159,23 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::on_actionBeenden_triggered()
 {
      closeAllWidgets();
+}
+
+void MainWindow::closeAllWidgets()
+{
+    if(settingsWidget != 0)
+        settingsWidget->close();
+
+    if(bordWidget != 0)
+        bordWidget->close();
+
+    if(gameInfoWidget != 0)
+        gameInfoWidget->close();
+
+    if(historyWidget != 0)
+        historyWidget->close();
+
+    this->close();
 }
 
 void MainWindow::on_actionNeu_triggered()

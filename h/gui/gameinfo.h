@@ -1,12 +1,15 @@
 #ifndef GAMEINFO_H
 #define GAMEINFO_H
 
-#include <QWidget>
-#include "ui_gameinfo.h"
 #include "../h/gui/I4WinWidget.h"
 #include "../h/sys/Spieler.h"
+#include "../h/gui/timer4Win.h"
+#include <QWidget>
 #include <QPixmap>
 #include <string>
+#include <QThread>
+
+#include "ui_gameinfo.h"
 
 namespace Ui {
 class gameinfoUi;
@@ -22,16 +25,19 @@ public:
     virtual void postExecute();
     void lock();
     void unlock();
-    void changePlayer(const Spieler& currentPlayer, unsigned short round, string lastMove);
+    void initPlayer(const Spieler& player1,const Spieler& player2);
+    void changePlayer(const Spieler* currentPlayer, unsigned short round, string lastMove);
     void initPlayerDisplays(const Spieler& player1,const Spieler& player2);
     void initfirstPlayer(const Spieler& firstPlayer);
     ~GameInfo();
 
 private slots:
-
     void on_btnlooseleft_clicked();
-
     void on_btnlooseright_clicked();
+    void on_timeChange();
+
+signals:
+    void loose(Spieler* winner);
 
 private:
      QPixmap imgRed;
@@ -39,11 +45,21 @@ private:
      Spieler player1;
      Spieler player2;
      Spieler currentPlayer;
+     QThread *timer;
+     Timer4Win *timerWorker;
+     unsigned long timePlayer1;
+     unsigned long timePlayer2;
      Ui::gameinfoUi *ui;
      static const int START_POSITION_X = 0;
      static const int START_POSITION_Y = 0;
      void setLastMove(string move);
      void setRound(unsigned short round);
+     void initPlayerDisplays();
+     void setTimePlayer1();
+     void setTimePlayer2();
+     void clearTimePlayer1();
+     void clearTimePlayer2();
+     string convertMillToTime(unsigned long ms);
 };
 
 #endif // GAMEINFO_H

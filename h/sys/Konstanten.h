@@ -9,5 +9,6 @@ const static unsigned short int GELB = 0;
 const static unsigned short int X       = 7; //umbenennen in ROWS
 const static unsigned short int Y       = 6; //COLUMNS
 const static unsigned short CELL_SIZE   = 80;
+const static unsigned short SEC_IN_MS   = 1000;
 
 #endif /* SPIELFELD_H_ */

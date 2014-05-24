@@ -52,6 +52,7 @@ void Bord::init()
     int h = cellSize * rowCount;
     this->resize(w,h);
     this->setFixedSize(w,h);
+    this->show();
     isLocked=true;
 }
 
@@ -93,24 +94,13 @@ void Bord::preExecute()
 
 void Bord::postExecute()
 {
-    clear();
-    init();
+    isLocked = true;
 }
 
 void Bord::on_tblbord_doubleClicked(const QModelIndex &index)
 {
-    if(!isLocked){
+    if(!isLocked)
         emit executeMove(index.column() + 1);
-        
-        /*
-        Spieler p;
-        p.setFarbe(ROT);
-        setMove(p,index.row(),index.column());
-        */
-    }
-    else{
-
-    }
 }
 
 void Bord::on_tblbord_clicked(const QModelIndex &index)

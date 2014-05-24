@@ -1,6 +1,7 @@
 #include "../h/gui/gameinfo.h"
 #include "../h/sys/Konstanten.h"
 #include <sstream>
+#include <QMessageBox>
 
 
 GameInfo::GameInfo(QWidget *parent) : QWidget(parent),
@@ -12,6 +13,8 @@ GameInfo::GameInfo(QWidget *parent) : QWidget(parent),
 
 GameInfo::~GameInfo()
 {
+    delete timer;
+    delete timerWorker;
     delete &imgRed;
     delete &imgYellow;
 }
@@ -25,22 +28,33 @@ void GameInfo::init()
     this->setFixedSize(this->size().width(),this->size().height());
     ui->lblleft->setVisible(false);
     ui->lblright->setVisible(false);
+
+    timer = new QThread;
+    timerWorker = new Timer4Win();
+    timerWorker->moveToThread(timer);
+    connect(timer, SIGNAL(started()), timerWorker, SLOT(process()));
+    connect( timerWorker, SIGNAL(timeChange()), this, SLOT(on_timeChange()));
+
+    timePlayer1 = 0;
+    timePlayer2 = 0;
     lock();
 }
 
 void GameInfo::preExecute()
 {
     unlock();
+    ui->lblmove1->setText("0 - 0");
+    ui->lblmove2->setText("0 - 0");
 
-    //zeit auf 0 Stellen...
-
-    //Wurf loeschen
-
+    clearTimePlayer1();
+    clearTimePlayer2();
+    timer->start();
 }
 
 void GameInfo::postExecute()
 {
     lock();
+    timerWorker->stop();
 }
 
 void GameInfo::lock()
@@ -56,11 +70,28 @@ void GameInfo::unlock()
 
 }
 
-void GameInfo::changePlayer(const Spieler& currentPlayer, unsigned short round, string lastMove)
+void GameInfo::initPlayer(const Spieler &player1, const Spieler &player2)
 {
+    this->player1 = player1;
+    this->player2 = player2;
+
+    if(player1.getIstAmZug()){
+       currentPlayer = player1;
+       ui->lblleft->setVisible(true);
+    }
+    else{
+         currentPlayer = player2;
+         ui->lblright->setVisible(true);
+    }
+    initPlayerDisplays();
+
+}
+
+void GameInfo::changePlayer(const Spieler* currentPlayer, unsigned short round, string lastMove)
+{
+    this->currentPlayer = *currentPlayer;
     setRound(round);
     setLastMove(lastMove);
-    this->currentPlayer = currentPlayer;
     if(ui->lblleft->isVisible()){
          ui->lblleft->setVisible(false);
          ui->lblright->setVisible(true);
@@ -73,11 +104,8 @@ void GameInfo::changePlayer(const Spieler& currentPlayer, unsigned short round, 
     //Uhren stoppen und starten
 }
 
-void GameInfo::initPlayerDisplays(const Spieler& player1,const Spieler& player2)
+void GameInfo::initPlayerDisplays()
 {
-    this->player1 = player1;
-    this->player2 = player2;
-
     //init player1...
     ui->lblplayer1->setText(QString::fromStdString(player1.getName()));
 
@@ -93,16 +121,6 @@ void GameInfo::initPlayerDisplays(const Spieler& player1,const Spieler& player2)
         ui->lblimg2->setPixmap(imgRed);
     else
         ui->lblimg2->setPixmap(imgYellow);
-}
-
-void GameInfo::initfirstPlayer(const Spieler& firstPlayer)
-{
-    //hier ganz dringen == ueberladen
-    this->currentPlayer = firstPlayer;
-    if(player1.getFarbe() == currentPlayer.getFarbe())
-        ui->lblleft->setVisible(true);
-    else
-        ui->lblleft->setVisible(true);
 }
 
 void GameInfo::setLastMove(string move)
@@ -122,10 +140,81 @@ void GameInfo::setRound(unsigned short round)
 
 void GameInfo::on_btnlooseleft_clicked()
 {
-
+    emit loose(&player2);
 }
 
 void GameInfo::on_btnlooseright_clicked()
 {
+    emit loose(&player1);
+}
 
+void GameInfo::on_timeChange()
+{
+    if(player1.getFarbe() == currentPlayer.getFarbe())
+        setTimePlayer1();
+    else
+        setTimePlayer2();
+}
+
+void GameInfo::setTimePlayer1()
+{
+    timePlayer1 += SEC_IN_MS;
+    ui->lbltime1->setText(QString::fromStdString(convertMillToTime(timePlayer1)));
+}
+
+void GameInfo::setTimePlayer2()
+{
+     timePlayer2 += SEC_IN_MS;
+     ui->lbltime2->setText(QString::fromStdString(convertMillToTime(timePlayer2)));
+}
+
+void GameInfo::clearTimePlayer1()
+{
+    timePlayer1 = 0;
+    ui->lbltime1->setText(QString::fromStdString(convertMillToTime(timePlayer1)));
+}
+
+void GameInfo::clearTimePlayer2()
+{
+    timePlayer2 = 0;
+    ui->lbltime2->setText(QString::fromStdString(convertMillToTime(timePlayer2)));
+}
+
+string GameInfo::convertMillToTime(unsigned long ms)
+{
+    int seconds = (int) (ms / 1000) % 60 ;
+    int minutes = (int) ((ms / (1000*60)) % 60);
+    int hours   = (int) ((ms / (1000*60*60)) % 24);
+
+    ostringstream strsec;
+    if(seconds < 10){
+        strsec << 0 << seconds;
+    }
+    else{
+        strsec << seconds;
+    }
+    string sec = strsec.str();
+
+    ostringstream strmin;
+    if(minutes < 10){
+        strmin << 0 << minutes;
+    }
+    else{
+        strmin << minutes;
+    }
+    string min = strmin.str();
+
+    ostringstream strh;
+    if(hours < 10){
+        strh << 0 << hours;
+    }
+    else{
+        strh << hours;
+    }
+    string std = strh.str();
+
+    ostringstream rslt;
+    rslt << std << ":" << min << ":" << sec;
+
+    return rslt.str();
 }
