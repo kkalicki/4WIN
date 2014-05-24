@@ -36,6 +36,9 @@
  *      wurf in letzte spalte --> !!!!!!nach dynamischer Objektreferzierung nicht mehr vorgekommen!
  *      Auswertung, ob gewonnen greift nicht
  *      Testen, Testen, Testen....
+ *      Klasse history anlegen
+ *      Klasse transportItem anlegen (netzwerk)
+ *
  */
 
 Spiel::Spiel(unsigned short zeilen, unsigned short spalten)

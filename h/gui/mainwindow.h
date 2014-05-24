@@ -2,10 +2,11 @@
 #define MAINWINDOW_H
 
 #include <../4WIN/h/gui/I4WinWidget.h>
+#include <../h/gui/bord.h>
+#include <../h/gui/settings.h>
+#include <../h/gui/gameinfo.h>
+#include <../h/gui/history.h>
 #include <QMainWindow>
-#include <./h/gui/bord.h>
-#include <./h/gui/settings.h>
-#include <./h/gui/gameinfo.h>
 
 namespace Ui {
 class MainWindow;
@@ -20,6 +21,7 @@ public:
     void load4WinWidgets();
     void closeAllWidgets();
     void end();
+    virtual void init();
     virtual void preExecute();
     virtual void postExecute();
 
@@ -38,7 +40,8 @@ private:
     Settings *settingsWidget;
     Bord *bordWidget;
     GameInfo *gameInfoWidget;
-    static const int START_POSITION_X = 200;
+    History * historyWidget;
+    static const int START_POSITION_X = 260;
     static const int START_POSITION_Y = 0;
 };
 

@@ -16,8 +16,9 @@ public:
     explicit Bord(QWidget *parent = 0, int rowCount = 6, int colCount = 7);
     ~Bord();
     void setMove(Spieler player, int row, int col);
-    void preExecute();
-    void postExecute();
+    virtual void init();
+    virtual void preExecute();
+    virtual void postExecute();
 
 private:
     int isLocked;
@@ -28,9 +29,8 @@ private:
     QPixmap *yellowImage ;
     Ui::bordUi* ui;
     static const int IMG_SIZE = 80;
-    static const int START_POSITION_X = 200;
+    static const int START_POSITION_X = 260;
     static const int START_POSITION_Y = 180;
-    void init();
     void clear();
 
 signals:

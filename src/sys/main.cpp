@@ -16,8 +16,8 @@
 
 int main(int argc, char* argv[]){
 
-    Menue m;
-    m.start();
+    //Menue m;
+    //m.start();
 
     QApplication a(argc,argv);
     MainWindow w;

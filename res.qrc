@@ -20,5 +20,6 @@
         <file>image/red_point.png</file>
         <file>image/yellow_new2.png</file>
         <file>image/yellow_point.png</file>
+        <file>image/backroundhistory1.png</file>
     </qresource>
 </RCC>

@@ -11,11 +11,17 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    init();
+}
+
+void MainWindow::init()
+{
     this->move(START_POSITION_X,START_POSITION_Y);
     this->setFixedSize(this->size().width(),this->size().height());
     this->setStyleSheet("MainWindow {border-image: url(:/image/back3.png); };");
     load4WinWidgets();
-    preExecute();
+
+    connect( settingsWidget, SIGNAL(rsltSetting(int)), this, SLOT(on_resultSettings(int)));
 }
 
 void MainWindow::load4WinWidgets()
@@ -27,7 +33,10 @@ void MainWindow::load4WinWidgets()
     bordWidget->setFocus(Qt::ActiveWindowFocusReason);
 
     this->settingsWidget = new Settings();
-    connect( settingsWidget, SIGNAL(rsltSetting(int)), this, SLOT(on_resultSettings(int)));
+
+    this->historyWidget = new History();
+    historyWidget->show();
+
 }
 
 void MainWindow::closeAllWidgets()
@@ -40,6 +49,9 @@ void MainWindow::closeAllWidgets()
 
     if(gameInfoWidget != 0)
         gameInfoWidget->close();
+
+    if(historyWidget != 0)
+        historyWidget->close();
 
     this->close();
 }
@@ -55,12 +67,14 @@ void MainWindow::preExecute()
 {
     bordWidget->preExecute();
     gameInfoWidget->preExecute();
+    historyWidget->preExecute();
 }
 
 void MainWindow::postExecute()
 {
     bordWidget->postExecute();
     gameInfoWidget->postExecute();
+    historyWidget->postExecute();
 }
 
 
@@ -70,14 +84,14 @@ MainWindow::~MainWindow()
     delete settingsWidget;
     delete bordWidget;
     delete gameInfoWidget;
+    delete historyWidget;
 }
 
 void MainWindow::on_resultSettings(int t)
 {
-    //string test = "Hallo: " + t;
-    QMessageBox msg;
-    msg.setText("hallo");
-    msg.exec();
+
+    //fuer Alle preExecute aufrufen
+    preExecute();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

@@ -8,15 +8,12 @@ Bord::Bord(QWidget *parent, int rowCount, int colCount) : QWidget(parent),
     ui(new Ui::bordUi)
 {
     ui->setupUi(this);
-    this->move(START_POSITION_X,START_POSITION_Y);
-    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowMinimizeButtonHint);
-
     this->defaultImage  = new QPixmap(":/image/border_new.png");
     this->redImage      = new QPixmap(":/image/red_new.png");
     this->yellowImage   = new QPixmap(":/image/yellow_new2.png");
     this->rowCount      = rowCount;
     this->colCount      = colCount;
-    isLocked = false;
+    init();
 }
 
 Bord::~Bord()
@@ -29,6 +26,9 @@ Bord::~Bord()
 
 void Bord::init()
 {
+    this->move(START_POSITION_X,START_POSITION_Y);
+    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::WindowMinimizeButtonHint);
+
     ui->tblbord->setColumnCount(colCount);
     ui->tblbord->setRowCount(rowCount);
     ui->tblbord->horizontalHeader()->setDefaultSectionSize(IMG_SIZE);
@@ -80,18 +80,18 @@ void Bord::setMove(Spieler player, int row, int col)
         break;
     }
     ui->tblbord->setItem(row,col,initItem);
+    isLocked = true;
 }
 
 void Bord::preExecute()
 {
     isLocked = false;
-    clear();
-    init();
 }
 
 void Bord::postExecute()
 {
-    isLocked = true;
+    clear();
+    init();
 }
 
 void Bord::on_tblbord_doubleClicked(const QModelIndex &index)

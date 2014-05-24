@@ -6,15 +6,14 @@ GameInfo::GameInfo(QWidget *parent) : QWidget(parent),
     ui(new Ui::gameinfoUi)
 {
     ui->setupUi(this);
+    init();
+}
+
+void GameInfo::init()
+{
     this->move(START_POSITION_X,START_POSITION_Y);
     this->setFixedSize(this->size().width(),this->size().height());
     lock();
-
-    /*QPalette p(palette());
-    p.setColor(QPalette::Ba);
-    this->setAutoFillBackground(false);
-    this->setPalette(p);*/
-
 }
 
 void GameInfo::preExecute()

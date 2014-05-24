@@ -14,6 +14,7 @@ class GameInfo : public QWidget, public I4WinWidget
     Q_OBJECT
 public:
     explicit GameInfo(QWidget * parent=0);
+    virtual void init();
     virtual void preExecute();
     virtual void postExecute();
     void lock();
