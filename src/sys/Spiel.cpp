@@ -7,6 +7,7 @@
 
 #include "../h/sys/Spiel.h"
 #include "../h/sys/FourWinExceptions.h"
+#include "../h/sys/HisEintrag.h"
 #include <stdlib.h>
 #include <sstream>
 
@@ -43,6 +44,7 @@
 
 Spiel::Spiel(unsigned short zeilen, unsigned short spalten)
 {
+    this->historie = new Historie();
     this->spielfeld = new Spielfeld(zeilen,spalten);
     this->runde = 0;
 }
@@ -52,7 +54,8 @@ Spiel::~Spiel() {
     delete spielfeld;
     delete &sp1;
     delete &sp2;
-    delete &aktuellerSpieler; //<-- ist unoetig da nicht mit new erzeugt!
+    delete &aktuellerSpieler;
+    delete historie;
 }
 
 
@@ -90,18 +93,31 @@ void Spiel::aufgeben() //braucht evtl. noch Parameter...
     //implementieren...
 }
 
+void Spiel::erstelleNeuenHisEintrag(Spieler spieler, unsigned short zeile, unsigned short spalte, unsigned short runde)
+{
+    HisEintrag neuerEintrag = *new HisEintrag(spieler,zeile,spalte,runde);
+    historie->hinzufuegenEintrag(neuerEintrag);
+}
+
 
 int Spiel::naechsterZug(Spieler spieler, int spalte)
 {
     int rslt = spielfeld->werfeStein(spieler,spalte);
     if(rslt > -1){ //sonst kann nur -1 kommen, dann isses Spiel eh rum oder ne Exception, dann throwt der automatisch nach aussen....
+
         runde++;
+
+        //muss auf jedenfall vor wechsel spieler stattfinden
+        erstelleNeuenHisEintrag(getAktuellerSpieler(),rslt,spalte,runde);
         wechselSpieler();
 
         //hier werden alle Events gefeuert die bei einem Spielerwechsel erforderlich sind... bspweise: broadcast füer zuschauen mit den daten, die wir noch nicht haben :-D
         //Funktion postExecute() anlegen
         //..
         //..
+    }else if(rslt == -1){
+        //letzter Zug soll noch Eingetragen werden...
+        erstelleNeuenHisEintrag(getAktuellerSpieler(),rslt,spalte,runde);
     }
 
     return rslt;
@@ -133,6 +149,7 @@ string Spiel::toString() const{
     out << sp2.toString() << endl;
     out << "Runde : " << runde << endl;
     out << *spielfeld << endl;
+    out << historie->toString() << endl;
     return out.str();
 }
 

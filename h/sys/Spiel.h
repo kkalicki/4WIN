@@ -10,6 +10,7 @@
 #include <string>
 #include "../h/sys/Konstanten.h"
 #include "../h/sys/Spielfeld.h"
+#include "../h/sys/Historie.h"
 #include <iostream>
 
 
@@ -32,6 +33,7 @@ public:
     void startMP(string nameSpieler1, string nameSpieler2);
     int naechsterZug(Spieler spieler, int spalte);
     void aufgeben();
+    void erstelleNeuenHisEintrag(Spieler spieler, unsigned short zeile, unsigned short spalte, unsigned short runde);
 
 	/**
 	 * Methode zur Ausgabe des Spiels
@@ -104,6 +106,7 @@ public:
 
 private:
     Spielfeld *spielfeld;
+    Historie *historie;
     Spieler sp1;
     Spieler sp2;
     Spieler aktuellerSpieler;
