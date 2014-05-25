@@ -34,7 +34,7 @@ public:
     int naechsterZug(Spieler spieler, int spalte);
     void aufgeben();
     void erstelleNeuenHisEintrag(Spieler spieler, unsigned short zeile, unsigned short spalte, unsigned short runde);
-
+    HisEintrag* getLetztenHisEintrag();
 	/**
 	 * Methode zur Ausgabe des Spiels
 	 * @return gibt die das Spiel mit Spielfeld aus
@@ -103,6 +103,18 @@ public:
     void setRunde(unsigned short value){
         runde = value;
     }
+
+    Historie *getHistorie() const
+    {
+        return historie;
+    }
+
+    void setHistorie(Historie *value)
+    {
+        historie = value;
+    }
+
+
 
 private:
     Spielfeld *spielfeld;

@@ -99,7 +99,6 @@ void Spiel::erstelleNeuenHisEintrag(Spieler spieler, unsigned short zeile, unsig
     historie->hinzufuegenEintrag(neuerEintrag);
 }
 
-
 int Spiel::naechsterZug(Spieler spieler, int spalte)
 {
     int rslt = spielfeld->werfeStein(spieler,spalte);
@@ -152,7 +151,6 @@ string Spiel::toString() const{
     out << historie->toString() << endl;
     return out.str();
 }
-
 
 
 

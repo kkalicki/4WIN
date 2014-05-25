@@ -114,6 +114,9 @@ void MainWindow::on_executeMove(unsigned short column)
            o<< (rslt) << " - "<< column;
            gameInfoWidget->changePlayer(&currentPlayer,game->getRunde(),o.str());
         }
+
+        //history add..
+        historyWidget->addHisItem(game->getHistorie()->getLetztenEintrag());
     }
     catch(EingabeException& e){
         QMessageBox msg;
@@ -153,6 +156,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    postExecute();
     closeAllWidgets();
 }
 

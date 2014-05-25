@@ -17,6 +17,8 @@ GameInfo::~GameInfo()
     delete timerWorker;
     delete &imgRed;
     delete &imgYellow;
+    delete gifRedMovie;
+    delete gifYellowMovie;
 }
 
 
@@ -28,16 +30,17 @@ void GameInfo::init()
     this->setFixedSize(this->size().width(),this->size().height());
     ui->lblleft->setVisible(false);
     ui->lblright->setVisible(false);
-
-    timer = new QThread;
-    timerWorker = new Timer4Win();
-    timerWorker->moveToThread(timer);
-    connect(timer, SIGNAL(started()), timerWorker, SLOT(process()));
-    connect( timerWorker, SIGNAL(timeChange()), this, SLOT(on_timeChange()));
-
+    timer = 0;
+    timerWorker = 0;
     timePlayer1 = 0;
     timePlayer2 = 0;
     lock();
+
+    ui->lblimg1->setVisible(false);
+    ui->lblimg2->setVisible(false);
+
+    gifRedMovie = new QMovie(":/image/recright_red.gif");
+    gifYellowMovie = new QMovie(":/image/recright_yellow.gif");
 }
 
 void GameInfo::preExecute()
@@ -48,6 +51,17 @@ void GameInfo::preExecute()
 
     clearTimePlayer1();
     clearTimePlayer2();
+
+    if(timer != 0)
+        delete timer;
+    if(timer != 0)
+        delete timerWorker;
+
+    timer = new QThread;
+    timerWorker = new Timer4Win();
+    timerWorker->moveToThread(timer);
+    connect(timer, SIGNAL(started()), timerWorker, SLOT(process()));
+    connect( timerWorker, SIGNAL(timeChange()), this, SLOT(on_timeChange()));
     timer->start();
 }
 
@@ -55,6 +69,8 @@ void GameInfo::postExecute()
 {
     lock();
     timerWorker->stop();
+    ui->lblleft->setVisible(false);
+    ui->lblright->setVisible(false);
 }
 
 void GameInfo::lock()
@@ -80,8 +96,7 @@ void GameInfo::initPlayer(const Spieler &player1, const Spieler &player2)
        ui->lblleft->setVisible(true);
     }
     else{
-         currentPlayer = player2;
-         ui->lblright->setVisible(true);
+       ui->lblright->setVisible(true);
     }
     initPlayerDisplays();
 
@@ -109,18 +124,30 @@ void GameInfo::initPlayerDisplays()
     //init player1...
     ui->lblplayer1->setText(QString::fromStdString(player1.getName()));
 
-    if(player1.getFarbe() == ROT)
+    if(player1.getFarbe() == ROT){
         ui->lblimg1->setPixmap(imgRed);
-    else
+        ui->lblleft->setMovie(gifRedMovie);
+    }
+    else{
         ui->lblimg1->setPixmap(imgYellow);
+        ui->lblleft->setMovie(gifYellowMovie);
+    }
+
 
     //init player1...
     ui->lblplayer2->setText(QString::fromStdString(player2.getName()));
 
-    if(player2.getFarbe() == ROT)
+    if(player2.getFarbe() == ROT){
         ui->lblimg2->setPixmap(imgRed);
-    else
+        ui->lblright->setMovie(gifRedMovie);
+    }
+    else{
         ui->lblimg2->setPixmap(imgYellow);
+        ui->lblright->setMovie(gifYellowMovie);
+    }
+
+    gifRedMovie->start();
+    gifYellowMovie->start();
 }
 
 void GameInfo::setLastMove(string move)

@@ -30,7 +30,7 @@
     <number>0</number>
    </property>
    <item row="0" column="0">
-    <widget class="QListView" name="listView">
+    <widget class="QListView" name="lvhistorie">
      <property name="styleSheet">
       <string notr="true">background-image: url(:/image/backroundhistory1.png);</string>
      </property>

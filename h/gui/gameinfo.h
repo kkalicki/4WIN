@@ -8,6 +8,7 @@
 #include <QPixmap>
 #include <string>
 #include <QThread>
+#include <QMovie>
 
 #include "ui_gameinfo.h"
 
@@ -47,6 +48,8 @@ private:
      Spieler currentPlayer;
      QThread *timer;
      Timer4Win *timerWorker;
+     QMovie* gifRedMovie;
+     QMovie* gifYellowMovie;
      unsigned long timePlayer1;
      unsigned long timePlayer2;
      Ui::gameinfoUi *ui;
