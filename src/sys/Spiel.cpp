@@ -52,17 +52,16 @@ Spiel::Spiel(unsigned short zeilen, unsigned short spalten)
 Spiel::~Spiel() {
 
     delete spielfeld;
-    delete &sp1;
-    delete &sp2;
-    delete &aktuellerSpieler;
+    delete sp1;
+    delete sp2;
     delete historie;
 }
 
 
 void Spiel::startMP(string nameSpieler1, string nameSpieler2)
 {
-    this->sp1 = *new Spieler(nameSpieler1);
-    this->sp2 = *new Spieler(nameSpieler2);
+    this->sp1 = new Spieler(nameSpieler1);
+    this->sp2 = new Spieler(nameSpieler2);
 
     time_t t;
     time(&t);
@@ -70,20 +69,20 @@ void Spiel::startMP(string nameSpieler1, string nameSpieler2)
 
     //auslosen wer ROT und wer Gelb ist
     if((rand() % 2) == 0){
-        sp1.setFarbe(ROT);
-        sp2.setFarbe(GELB);
+        sp1->setFarbe(ROT);
+        sp2->setFarbe(GELB);
     }
     else{
-        sp1.setFarbe(GELB);
-        sp2.setFarbe(ROT);
+        sp1->setFarbe(GELB);
+        sp2->setFarbe(ROT);
     }
 
     //Auslosen wer anfaengt
     if((rand() % 2) == 0){
-        sp1.setIstAmZug(false);
+        sp1->setIstAmZug(false);
     }
     else{
-         sp1.setIstAmZug(true);
+         sp1->setIstAmZug(true);
     }
     wechselSpieler();
 }
@@ -93,13 +92,13 @@ void Spiel::aufgeben() //braucht evtl. noch Parameter...
     //implementieren...
 }
 
-void Spiel::erstelleNeuenHisEintrag(Spieler spieler, unsigned short zeile, unsigned short spalte, unsigned short runde)
+void Spiel::erstelleNeuenHisEintrag(Spieler* spieler, unsigned short zeile, unsigned short spalte, unsigned short runde)
 {
-    HisEintrag neuerEintrag = *new HisEintrag(spieler,zeile,spalte,runde);
+    HisEintrag* neuerEintrag = new HisEintrag(spieler,zeile,spalte,runde);
     historie->hinzufuegenEintrag(neuerEintrag);
 }
 
-int Spiel::naechsterZug(Spieler spieler, int spalte)
+int Spiel::naechsterZug(Spieler* spieler, int spalte)
 {
     int rslt = spielfeld->werfeStein(spieler,spalte);
     if(rslt > -1){ //sonst kann nur -1 kommen, dann isses Spiel eh rum oder ne Exception, dann throwt der automatisch nach aussen....
@@ -123,14 +122,14 @@ int Spiel::naechsterZug(Spieler spieler, int spalte)
 
 void Spiel::wechselSpieler()
 {
-    if(sp1.getIstAmZug()){
-        sp1.setIstAmZug(false);
-        sp2.setIstAmZug(true);
+    if(sp1->getIstAmZug()){
+        sp1->setIstAmZug(false);
+        sp2->setIstAmZug(true);
         aktuellerSpieler = sp2;
     }
     else{
-        sp2.setIstAmZug(false);
-        sp1.setIstAmZug(true);
+        sp2->setIstAmZug(false);
+        sp1->setIstAmZug(true);
         aktuellerSpieler = sp1;
     }
 }
@@ -143,8 +142,8 @@ ostream& operator<<(ostream& out, Spiel& sp){
 string Spiel::toString() const{
 
     ostringstream out;
-    out << sp1.toString() << endl; //nur spieler shiften...nix toString()
-    out << sp2.toString() << endl;
+    out << sp1->toString() << endl; //nur spieler shiften...nix toString()
+    out << sp2->toString() << endl;
     out << "Runde : " << runde << endl;
     out << *spielfeld << endl;
     out << historie->toString() << endl;

@@ -13,10 +13,14 @@ GameInfo::GameInfo(QWidget *parent) : QWidget(parent),
 
 GameInfo::~GameInfo()
 {
-    delete timer;
-    delete timerWorker;
-    delete &imgRed;
-    delete &imgYellow;
+    if(timer != 0)
+        delete timer;
+
+    if(timerWorker != 0)
+        delete timerWorker;
+
+    //delete &imgRed;
+    //delete &imgYellow;
     delete gifRedMovie;
     delete gifYellowMovie;
 }
@@ -24,8 +28,8 @@ GameInfo::~GameInfo()
 
 void GameInfo::init()
 {
-    this->imgRed = *new QPixmap(":/image/red_point.png");
-    this->imgYellow = *new QPixmap(":/image/yellow_point.png");;
+    //this->imgRed = *new QPixmap(":/image/red_point.png");
+    //this->imgYellow = *new QPixmap(":/image/yellow_point.png");;
     this->move(START_POSITION_X,START_POSITION_Y);
     this->setFixedSize(this->size().width(),this->size().height());
     ui->lblleft->setVisible(false);
@@ -53,11 +57,6 @@ void GameInfo::preExecute()
     clearTimePlayer1();
     clearTimePlayer2();
 
-    if(timer != 0)
-        delete timer;
-    if(timer != 0)
-        delete timerWorker;
-
     timer = new QThread;
     timerWorker = new Timer4Win();
     timerWorker->moveToThread(timer);
@@ -69,8 +68,18 @@ void GameInfo::preExecute()
 void GameInfo::postExecute()
 {
     lock();
-    timerWorker->stop();
-    timer->quit();
+    if(timerWorker != 0){
+        timerWorker->stop();
+    }
+    if(timer != 0){
+        timer->quit();
+        timer->wait();
+        delete timer;
+        timer = 0;
+
+        delete timerWorker;
+        timerWorker = 0;
+    }
     ui->lblleft->setVisible(false);
     ui->lblright->setVisible(false);
 }
@@ -88,12 +97,12 @@ void GameInfo::unlock()
 
 }
 
-void GameInfo::initPlayer(const Spieler &player1, const Spieler &player2)
+void GameInfo::initPlayer(Spieler *player1,Spieler* player2)
 {
     this->player1 = player1;
     this->player2 = player2;
 
-    if(player1.getIstAmZug()){
+    if(player1->getIstAmZug()){
        currentPlayer = player1;
        ui->lblleft->setVisible(true);
     }
@@ -105,7 +114,7 @@ void GameInfo::initPlayer(const Spieler &player1, const Spieler &player2)
 
 }
 
-void GameInfo::changePlayer(const Spieler& currentPlayer, unsigned short round, string lastMove)
+void GameInfo::changePlayer(Spieler* currentPlayer, unsigned short round, string lastMove)
 {
     setRound(round);
     setLastMove(lastMove);
@@ -123,26 +132,26 @@ void GameInfo::changePlayer(const Spieler& currentPlayer, unsigned short round, 
 void GameInfo::initPlayerDisplays()
 {
     //init player1...
-    ui->lblplayer1->setText(QString::fromStdString(player1.getName()));
+    ui->lblplayer1->setText(QString::fromStdString(player1->getName()));
 
-    if(player1.getFarbe() == ROT){
-        ui->lblimg1->setPixmap(imgRed);
+    if(player1->getFarbe() == ROT){
+        //ui->lblimg1->setPixmap(imgRed);
         ui->lblleft->setMovie(gifRedMovie);
     }
     else{
-        ui->lblimg1->setPixmap(imgYellow);
+        //ui->lblimg1->setPixmap(imgYellow);
         ui->lblleft->setMovie(gifYellowMovie);
     }
 
     //init player2...
-    ui->lblplayer2->setText(QString::fromStdString(player2.getName()));
+    ui->lblplayer2->setText(QString::fromStdString(player2->getName()));
 
-    if(player2.getFarbe() == ROT){
-        ui->lblimg2->setPixmap(imgRed);
+    if(player2->getFarbe() == ROT){
+        //ui->lblimg2->setPixmap(imgRed);
         ui->lblright->setMovie(gifRedMovie);
     }
     else{
-        ui->lblimg2->setPixmap(imgYellow);
+        //ui->lblimg2->setPixmap(imgYellow);
         ui->lblright->setMovie(gifYellowMovie);
     }
 
@@ -152,7 +161,7 @@ void GameInfo::initPlayerDisplays()
 
 void GameInfo::setLastMove(string move)
 {
-    if(player1.getFarbe() == currentPlayer.getFarbe())
+    if(player1->getFarbe() == currentPlayer->getFarbe())
         ui->lblmove1->setText(QString::fromStdString(move));
     else
         ui->lblmove2->setText(QString::fromStdString(move));
@@ -167,17 +176,17 @@ void GameInfo::setRound(unsigned short round)
 
 void GameInfo::on_btnlooseleft_clicked()
 {
-    emit loose(&player2);
+    emit loose(player2);
 }
 
 void GameInfo::on_btnlooseright_clicked()
 {
-    emit loose(&player1);
+    emit loose(player1);
 }
 
 void GameInfo::on_timeChange()
 {
-    if(player1.getFarbe() == currentPlayer.getFarbe()){
+    if(player1->getFarbe() == currentPlayer->getFarbe()){
         setTimePlayer1();
     }
     else{

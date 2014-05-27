@@ -19,12 +19,27 @@ MainWindow::MainWindow(QWidget *parent) :
     init();
 }
 
+MainWindow::~MainWindow()
+{
+    delete settingsWidget;
+    delete bordWidget;
+    delete historyWidget;
+    delete gameInfoWidget;
+
+    if(game != 0)
+        delete game;
+
+    delete ui;
+}
+
+
 void MainWindow::init()
 {
     this->move(START_POSITION_X,START_POSITION_Y);
     this->setFixedSize(this->size().width(),this->size().height());
     this->setStyleSheet("MainWindow {border-image: url(:/image/back3.png); };");
     load4WinWidgets();
+    this->game = 0;
 
     connect( settingsWidget, SIGNAL(resultSettings(GameSettings*)), this, SLOT(on_resultSettings(GameSettings*)));
     connect( gameInfoWidget, SIGNAL(loose(Spieler*)), this, SLOT(on_endGame(Spieler*)));
@@ -58,51 +73,42 @@ void MainWindow::postExecute()
     historyWidget->postExecute();
 }
 
-void MainWindow::on_endGame(Spieler* winner)
+void MainWindow::on_resultSettings(GameSettings* gameSettings)
 {
-    postExecute();
+    settingsWidget->hide();
 
-    if(winner == 0)
-    {
-        //UNENTSCHIEDEN...
-        QMessageBox msg;
-        msg.setText("Unentschieden!");
-        msg.exec();
-    }
-    else
-    {
-        //Gewonnen
-        //MessageBox show!!!!! sound abspielen: WE ARE THE CHAMPIONS :-D
-        QMessageBox msg;
-        string strmsg = winner->getName() + " hat gewonnen!";
-        msg.setText(QString::fromStdString(strmsg));
-        msg.exec();
-    }
-}
-
-MainWindow::~MainWindow()
-{
-    delete settingsWidget;
+    //Bord init...
+    bordWidget->hide();
     delete bordWidget;
-    delete historyWidget;
-    //delete gameInfoWidget; wird mit ui destruiert, da widget in Mainwin steckt
+    this->bordWidget = new Bord(gameSettings->getBordRows(),gameSettings->getBordColumns(),gameSettings->getCellSize());
+    connect( bordWidget, SIGNAL(executeMove(unsigned short)), this, SLOT(on_executeMove(unsigned short)));
+    bordWidget->show();
 
+    //game init...
     if(game != 0)
-        //delete game;
+        delete game;
 
-    delete ui;
+    this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
+    game->startMP(gameSettings->getPlayer1Name(),gameSettings->getPlayer2Name());
+
+    //gameinfo init..
+    gameInfoWidget->initPlayer(game->getSp1(),game->getSp2());
+
+    //fuer Alle preExecute aufrufen
+    preExecute();
 }
+
 
 void MainWindow::on_executeMove(unsigned short column)
 {
-    Spieler currentPlayer = game->getAktuellerSpieler();
+    Spieler* currentPlayer = game->getAktuellerSpieler();
     int rslt;
     try
     {
         rslt = game->naechsterZug(currentPlayer,column);
         if(rslt == -1){
             //Spiel zu ende...
-            on_endGame(&currentPlayer);
+            on_endGame(currentPlayer);
         }
         else {  //else if Catch Spielfeld voll!! --> on_endGame(0);
 
@@ -132,26 +138,26 @@ void MainWindow::on_executeMove(unsigned short column)
 
 }
 
-void MainWindow::on_resultSettings(GameSettings* gameSettings)
+void MainWindow::on_endGame(Spieler* winner)
 {
-    settingsWidget->hide();
+    postExecute();
 
-    //Bord init...
-    bordWidget->hide();
-    delete bordWidget;
-    this->bordWidget = new Bord(gameSettings->getBordRows(),gameSettings->getBordColumns(),gameSettings->getCellSize());
-    connect( bordWidget, SIGNAL(executeMove(unsigned short)), this, SLOT(on_executeMove(unsigned short)));
-    bordWidget->show();
-
-    //game init...
-    this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
-    game->startMP(gameSettings->getPlayer1Name(),gameSettings->getPlayer2Name());
-
-    //gameinfo init..
-    gameInfoWidget->initPlayer(game->getSp1(),game->getSp2());
-
-    //fuer Alle preExecute aufrufen
-    preExecute();
+    if(winner == 0)
+    {
+        //UNENTSCHIEDEN...
+        QMessageBox msg;
+        msg.setText("Unentschieden!");
+        msg.exec();
+    }
+    else
+    {
+        //Gewonnen
+        //MessageBox show!!!!! sound abspielen: WE ARE THE CHAMPIONS :-D
+        QMessageBox msg;
+        string strmsg = winner->getName() + " hat gewonnen!";
+        msg.setText(QString::fromStdString(strmsg));
+        msg.exec();
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

@@ -4,27 +4,28 @@
 
 Historie::Historie()
 {
-    this->hisList = *new vector<HisEintrag>();
+    this->hisList = new vector<HisEintrag>();
 }
 
 Historie::~Historie()
 {
-    delete &hisList;
+    loeschenHistorie();
+    delete hisList;
 }
 
-void Historie::hinzufuegenEintrag(const HisEintrag &hisEintrag)
+void Historie::hinzufuegenEintrag(HisEintrag* hisEintrag)
 {
-    hisList.push_back(hisEintrag);
+    hisList->push_back(*hisEintrag);
 }
 
 
 void Historie::loeschenEintrag(int index)
 {
-    vector<HisEintrag>::iterator i = hisList.begin() + index;
-    hisList.erase(i);
+    vector<HisEintrag>::iterator i = hisList->begin() + index;
+    hisList->erase(i);
 }
 
-int Historie::loeschenEintrag(const HisEintrag &hisEintrag)
+int Historie::loeschenEintrag(HisEintrag* hisEintrag)
 {
     //vector<HisEintrag>::iterator i = find(hisList.begin(), hisList.end(), hisEintrag);
     //hisList.erase(i);
@@ -32,36 +33,36 @@ int Historie::loeschenEintrag(const HisEintrag &hisEintrag)
 
 void Historie::loeschenHistorie()
 {
-    hisList.clear();
+    hisList->clear();
 }
 
 HisEintrag* Historie::getEintrag(int index)
 {
-    if(hisList.size() > (unsigned long)index)
-      return &hisList[index];
+    if(hisList->size() > (unsigned long)index)
+      return &hisList->at(index);
 
     return NULL;
 }
 
 HisEintrag* Historie::getLetztenEintrag()
 {
-    if(hisList.size() > 0)
-       return &hisList[hisList.size() - 1];
+    if(hisList->size() > 0)
+       return &hisList->at(hisList->size() - 1);
 
     return NULL;
 }
 
-vector<HisEintrag> Historie::getEintraegeAb(const HisEintrag &hisEintrag)
+vector<HisEintrag> Historie::getEintraegeAb(HisEintrag *hisEintrag)
 {
     //noch zu implementieren..
 }
 
 string Historie::toString()
 {
-    int s = hisList.size();
+    int s = hisList->size();
     ostringstream o;
     for(int i = 0; i < s; i++) {
-        HisEintrag out = hisList[i];
+        HisEintrag out = hisList->at(i);
         o << out.toString() << endl;
     }
     return o.str();

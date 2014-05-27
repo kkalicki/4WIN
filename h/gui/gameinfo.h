@@ -26,10 +26,10 @@ public:
     virtual void postExecute();
     void lock();
     void unlock();
-    void initPlayer(const Spieler& player1,const Spieler& player2);
-    void changePlayer(const Spieler& currentPlayer, unsigned short round, string lastMove);
-    void initPlayerDisplays(const Spieler& player1,const Spieler& player2);
-    void initfirstPlayer(const Spieler& firstPlayer);
+    void initPlayer(Spieler* player1,Spieler* player2);
+    void changePlayer(Spieler* currentPlayer, unsigned short round, string lastMove);
+    void initPlayerDisplays(Spieler* player1,Spieler* player2);
+    void initfirstPlayer(Spieler* firstPlayer);
     ~GameInfo();
 
 private slots:
@@ -41,11 +41,11 @@ signals:
     void loose(Spieler* winner);
 
 private:
-     QPixmap imgRed;
-     QPixmap imgYellow;
-     Spieler player1;
-     Spieler player2;
-     Spieler currentPlayer;
+     //QPixmap imgRed;
+     //QPixmap imgYellow;
+     Spieler *player1;
+     Spieler *player2;
+     Spieler *currentPlayer;
      QThread *timer;
      Timer4Win *timerWorker;
      QMovie* gifRedMovie;

@@ -31,9 +31,9 @@ public:
 	 * @param name2 Name des zweiten Spielers
 	 */
     void startMP(string nameSpieler1, string nameSpieler2);
-    int naechsterZug(Spieler spieler, int spalte);
+    int naechsterZug(Spieler* spieler, int spalte);
     void aufgeben();
-    void erstelleNeuenHisEintrag(Spieler spieler, unsigned short zeile, unsigned short spalte, unsigned short runde);
+    void erstelleNeuenHisEintrag(Spieler* spieler, unsigned short zeile, unsigned short spalte, unsigned short runde);
     HisEintrag* getLetztenHisEintrag();
 	/**
 	 * Methode zur Ausgabe des Spiels
@@ -76,23 +76,23 @@ public:
 	 */
     friend ostream& operator<<(ostream& out, Spiel& sp);
 
-    Spieler getAktuellerSpieler() const{
+    Spieler* getAktuellerSpieler() const {
         return aktuellerSpieler;
     }
 
-    Spieler getSp1() const{
+    Spieler* getSp1() const{
         return sp1;
     }
 
-    void setSp1(const Spieler &value){
+    void setSp1(Spieler* value){
         sp1 = value;
     }
 
-    Spieler getSp2() const{
+    Spieler* getSp2() const{
         return sp2;
     }
 
-    void setSp2(const Spieler &value){
+    void setSp2(Spieler* value){
         sp2 = value;
     }
 
@@ -119,9 +119,9 @@ public:
 private:
     Spielfeld *spielfeld;
     Historie *historie;
-    Spieler sp1;
-    Spieler sp2;
-    Spieler aktuellerSpieler;
+    Spieler *sp1;
+    Spieler *sp2;
+    Spieler *aktuellerSpieler;
     unsigned short runde;
     void wechselSpieler();
 };

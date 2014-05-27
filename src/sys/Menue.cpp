@@ -61,8 +61,8 @@ void Menue::mehrspieler(string name1,string name2) {
     cout<< "********STARTE SPIEL**********" << endl;
     spiel->startMP(name1, name2);
 
-    cout<<"Spieler " << spiel->getAktuellerSpieler().getName()
-                     << "[" << (spiel->getAktuellerSpieler().getFarbe() == ROT ? "ROT" : "GELB")
+    cout<<"Spieler " << spiel->getAktuellerSpieler()->getName()
+                     << "[" << (spiel->getAktuellerSpieler()->getFarbe() == ROT ? "ROT" : "GELB")
                      <<"] faengt an!" << endl << endl;
 
 

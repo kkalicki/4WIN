@@ -6,11 +6,11 @@
 
 class HisEintrag{
 public:
-    HisEintrag(const Spieler& spieler, unsigned short zeile=0, unsigned short spalte=0, unsigned short runde=0);
+    HisEintrag(Spieler* spieler, unsigned short zeile=0, unsigned short spalte=0, unsigned short runde=0);
     ~HisEintrag();
 
-    Spieler getSpieler() const;
-    void setSpieler(const Spieler &value);
+    Spieler* getSpieler() const;
+    void setSpieler(Spieler* value);
 
     unsigned short getZeile() const;
     void setZeile(unsigned short value);
@@ -32,7 +32,7 @@ public:
 
 
 private:
-    Spieler spieler;
+    Spieler* spieler;
     unsigned short zeile;
     unsigned short spalte;
     unsigned short runde;

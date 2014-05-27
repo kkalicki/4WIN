@@ -40,7 +40,7 @@ void History::postExecute()
 void History::addHisItem(HisEintrag * addItem)
 {
     ostringstream o;
-    o << addItem->getRunde()<< ") " << addItem->getSpieler().getName() << " : " << addItem->getZeile() << " - " << addItem->getSpalte();
+    o << addItem->getRunde()<< ") " << addItem->getSpieler()->getName() << " : " << addItem->getZeile() << " - " << addItem->getSpalte();
     //QStandardItem * newItem = new QStandardItem(QString::fromStdString(o.str()));
 
     //model->appendRow(newItem);

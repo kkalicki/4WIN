@@ -11,7 +11,7 @@ HistoryItem::HistoryItem(HisEintrag *item, QWidget *parent): QWidget(parent),
     //this->sesetSizeConstraint( QLayout::SetFixedSize );
     this->hisEintrag = item;
 
-    if(item->getSpieler().getFarbe() == ROT){
+    if(item->getSpieler()->getFarbe() == ROT){
         //load redImage...
         this->image = new QPixmap(":/image/red_point.png");
     }
@@ -20,7 +20,6 @@ HistoryItem::HistoryItem(HisEintrag *item, QWidget *parent): QWidget(parent),
     }
     initControls();
 }
-
 
 HistoryItem::~HistoryItem()
 {

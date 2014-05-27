@@ -55,7 +55,7 @@ public:
 		return feld[y][x];
 	}
 
-    int werfeStein(Spieler spieler, int spalte);
+    int werfeStein(Spieler* spieler, int spalte);
 
 
 

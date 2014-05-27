@@ -44,14 +44,14 @@ void Spielfeld::init()
     }
 }
 
-int Spielfeld::werfeStein(Spieler spieler, int spalte)
+int Spielfeld::werfeStein(Spieler* spieler, int spalte)
 {
      if (spalte > 0 && spalte <= spalten){
         int aktuell = getSpalteSteine(spalte-1);
         if (aktuell < zeilen){
-            setFeldPos(spalte-1,aktuell,spieler.getFarbe());
+            setFeldPos(spalte-1,aktuell,spieler->getFarbe());
 
-            if(pruefeStein(spieler.getFarbe(), spalte)){
+            if(pruefeStein(spieler->getFarbe(), spalte)){
               return -1;
             }
 

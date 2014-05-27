@@ -65,7 +65,7 @@ void Bord::clear()
     }
 }
 
-void Bord::setMove(Spieler player, int row, int col)
+void Bord::setMove(Spieler* player, int row, int col)
 {
     row = rowCount - row--;
     col--;
@@ -73,7 +73,7 @@ void Bord::setMove(Spieler player, int row, int col)
     QTableWidgetItem *initItem = new QTableWidgetItem();
     initItem->setFlags(Qt::NoItemFlags|Qt::ItemIsSelectable|Qt::ItemIsEnabled);
 
-    switch (player.getFarbe()) {
+    switch (player->getFarbe()) {
     case ROT:
         initItem->setData(Qt::DecorationRole, redImage->scaled(cellSize,cellSize,Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
         break;

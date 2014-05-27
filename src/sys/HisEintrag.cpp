@@ -2,7 +2,7 @@
 #include "../h/sys/HisEintrag.h"
 #include <sstream>
 
-HisEintrag::HisEintrag(const Spieler& spieler, unsigned short zeile, unsigned short spalte, unsigned short runde)
+HisEintrag::HisEintrag(Spieler* spieler, unsigned short zeile, unsigned short spalte, unsigned short runde)
 {
     this->spieler = spieler;
     this->zeile = zeile;
@@ -16,12 +16,12 @@ HisEintrag::~HisEintrag()
     //nix...
 }
 
-Spieler HisEintrag::getSpieler() const
+Spieler* HisEintrag::getSpieler() const
 {
     return spieler;
 }
 
-void HisEintrag::setSpieler(const Spieler &value)
+void HisEintrag::setSpieler(Spieler* value)
 {
     spieler = value;
 }
@@ -74,8 +74,8 @@ void HisEintrag::setTimestamp(const time_t &value)
 string HisEintrag::toString()
 {
     ostringstream o;
-    o << "Name : " << spieler.getName() << endl;
-    o << "Farbe: " << spieler.getFarbe() << endl;
+    o << "Name : " << spieler->getName() << endl;
+    o << "Farbe: " << spieler->getFarbe() << endl;
     o << "Zug  : " << zeile << " - " << spalte << endl;
     o << "Runde: " << runde << endl;
     o << "Zeit : " << zeitStempel() << endl;

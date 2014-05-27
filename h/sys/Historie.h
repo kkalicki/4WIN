@@ -10,17 +10,17 @@ class Historie{
 public:
     Historie();
     ~Historie();
-    void hinzufuegenEintrag(const HisEintrag& hisEintrag);
+    void hinzufuegenEintrag(HisEintrag* hisEintrag);
     void loeschenEintrag(int index);
-    int  loeschenEintrag(const HisEintrag& hisEintrag);
+    int  loeschenEintrag(HisEintrag* hisEintrag);
     void loeschenHistorie();
     HisEintrag*  getEintrag(int index);
     HisEintrag* getLetztenEintrag();
-    vector<HisEintrag> getEintraegeAb(const HisEintrag& hisEintrag);
+    vector<HisEintrag> getEintraegeAb(HisEintrag* hisEintrag);
 
     string toString();
 private:
-    vector<HisEintrag> hisList;
+    vector<HisEintrag>* hisList;
 };
 
 #endif // HISTORIE_H

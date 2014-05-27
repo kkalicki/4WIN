@@ -17,7 +17,7 @@ class Bord : public QWidget, public I4WinWidget
 public:
     explicit Bord(unsigned short rowCount = Y, unsigned short colCount = X,unsigned short cellSize=CELL_SIZE, QWidget *parent=0);
     ~Bord();
-    void setMove(Spieler player, int row, int col);
+    void setMove(Spieler* player, int row, int col);
     virtual void init();
     virtual void preExecute();
     virtual void postExecute();
