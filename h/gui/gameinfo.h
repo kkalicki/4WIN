@@ -27,7 +27,7 @@ public:
     void lock();
     void unlock();
     void initPlayer(const Spieler& player1,const Spieler& player2);
-    void changePlayer(const Spieler* currentPlayer, unsigned short round, string lastMove);
+    void changePlayer(const Spieler& currentPlayer, unsigned short round, string lastMove);
     void initPlayerDisplays(const Spieler& player1,const Spieler& player2);
     void initfirstPlayer(const Spieler& firstPlayer);
     ~GameInfo();

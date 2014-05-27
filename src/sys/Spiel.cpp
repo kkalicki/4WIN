@@ -46,7 +46,7 @@ Spiel::Spiel(unsigned short zeilen, unsigned short spalten)
 {
     this->historie = new Historie();
     this->spielfeld = new Spielfeld(zeilen,spalten);
-    this->runde = 0;
+    this->runde = 1;
 }
 
 Spiel::~Spiel() {
@@ -104,11 +104,10 @@ int Spiel::naechsterZug(Spieler spieler, int spalte)
     int rslt = spielfeld->werfeStein(spieler,spalte);
     if(rslt > -1){ //sonst kann nur -1 kommen, dann isses Spiel eh rum oder ne Exception, dann throwt der automatisch nach aussen....
 
-        runde++;
-
         //muss auf jedenfall vor wechsel spieler stattfinden
         erstelleNeuenHisEintrag(getAktuellerSpieler(),rslt,spalte,runde);
         wechselSpieler();
+        runde++;
 
         //hier werden alle Events gefeuert die bei einem Spielerwechsel erforderlich sind... bspweise: broadcast füer zuschauen mit den daten, die wir noch nicht haben :-D
         //Funktion postExecute() anlegen

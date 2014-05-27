@@ -46,6 +46,7 @@ void GameInfo::init()
 void GameInfo::preExecute()
 {
     unlock();
+    setRound(1);
     ui->lblmove1->setText("0 - 0");
     ui->lblmove2->setText("0 - 0");
 
@@ -69,6 +70,7 @@ void GameInfo::postExecute()
 {
     lock();
     timerWorker->stop();
+    timer->quit();
     ui->lblleft->setVisible(false);
     ui->lblright->setVisible(false);
 }
@@ -96,17 +98,18 @@ void GameInfo::initPlayer(const Spieler &player1, const Spieler &player2)
        ui->lblleft->setVisible(true);
     }
     else{
-       ui->lblright->setVisible(true);
+        currentPlayer = player2;
+        ui->lblright->setVisible(true);
     }
     initPlayerDisplays();
 
 }
 
-void GameInfo::changePlayer(const Spieler* currentPlayer, unsigned short round, string lastMove)
+void GameInfo::changePlayer(const Spieler& currentPlayer, unsigned short round, string lastMove)
 {
-    this->currentPlayer = *currentPlayer;
     setRound(round);
     setLastMove(lastMove);
+    this->currentPlayer = currentPlayer;
     if(ui->lblleft->isVisible()){
          ui->lblleft->setVisible(false);
          ui->lblright->setVisible(true);
@@ -115,8 +118,6 @@ void GameInfo::changePlayer(const Spieler* currentPlayer, unsigned short round, 
         ui->lblleft->setVisible(true);
         ui->lblright->setVisible(false);
     }
-
-    //Uhren stoppen und starten
 }
 
 void GameInfo::initPlayerDisplays()
@@ -133,8 +134,7 @@ void GameInfo::initPlayerDisplays()
         ui->lblleft->setMovie(gifYellowMovie);
     }
 
-
-    //init player1...
+    //init player2...
     ui->lblplayer2->setText(QString::fromStdString(player2.getName()));
 
     if(player2.getFarbe() == ROT){
@@ -177,10 +177,13 @@ void GameInfo::on_btnlooseright_clicked()
 
 void GameInfo::on_timeChange()
 {
-    if(player1.getFarbe() == currentPlayer.getFarbe())
+    if(player1.getFarbe() == currentPlayer.getFarbe()){
         setTimePlayer1();
-    else
+    }
+    else{
         setTimePlayer2();
+    }
+
 }
 
 void GameInfo::setTimePlayer1()

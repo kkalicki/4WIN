@@ -88,7 +88,7 @@ MainWindow::~MainWindow()
     //delete gameInfoWidget; wird mit ui destruiert, da widget in Mainwin steckt
 
     if(game != 0)
-        delete game;
+        //delete game;
 
     delete ui;
 }
@@ -112,7 +112,7 @@ void MainWindow::on_executeMove(unsigned short column)
            //GameInfo bedienen...
            ostringstream o;
            o<< (rslt) << " - "<< column;
-           gameInfoWidget->changePlayer(&currentPlayer,game->getRunde(),o.str());
+           gameInfoWidget->changePlayer(game->getAktuellerSpieler(),game->getRunde(),o.str());
         }
 
         //history add..

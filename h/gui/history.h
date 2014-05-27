@@ -27,7 +27,7 @@ public:
 
 private:
     Ui::historyUi *ui;
-    QStandardItemModel * model;
+    //QStandardItemModel * model;
     static const int START_POSITION_X = 20;
     static const int START_POSITION_Y = 0;
 };
