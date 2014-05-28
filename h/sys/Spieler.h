@@ -45,7 +45,21 @@ public:
         istAmZug = value;
     }
 
-    friend ostream& operator<<(ostream& out, Spieler& spieler);
+    friend ostream& operator<<(ostream& out, Spieler& object)
+    {
+        out << object.name;
+        out << object.farbe;
+        out << object.istAmZug;
+        return out;
+    }
+
+    friend istream &operator>>( istream  &input, Spieler &object )
+    {
+        input >> object.name;
+        input >> object.farbe;
+        input >> object.istAmZug;
+        return input;
+    }
 
     string toString() const;
 private:

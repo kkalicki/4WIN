@@ -17,12 +17,6 @@ Spieler::Spieler(string name, short farbe) {
 Spieler::~Spieler() {
 }
 
-ostream& operator<<(ostream& out, Spieler& spieler)
-{
-    out << spieler.toString();
-    return out;
-}
-
 string Spieler::toString() const{
     ostringstream o;
     o << "Spieler: " << name << endl;

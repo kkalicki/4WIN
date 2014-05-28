@@ -13,8 +13,8 @@
 #include "../h/sys/Historie.h"
 #include <iostream>
 
-
 class Spiel {
+
 public:
     Spiel(unsigned short zeilen=Y, unsigned short spalten=X);
     virtual ~Spiel();
@@ -116,7 +116,7 @@ public:
 
 
 
-private:
+protected:
     Spielfeld *spielfeld;
     Historie *historie;
     Spieler *sp1;

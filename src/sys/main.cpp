@@ -8,6 +8,8 @@
 #include "../h/sys/Spielfeld.h"
 #include "../h/sys/Menue.h"
 #include "../h/sys/Spiel.h"
+#include "../h/net/tcpserver.h"
+#include "../h/net/tcpclient.h"
 
 #include "../h/gui/mainwindow.h"
 #include <QApplication>
@@ -15,6 +17,19 @@
 #include <iostream>
 
 int main(int argc, char* argv[]){
+
+    /*
+    TcpServer t(8000);
+    t.start();
+
+    TcpClient tc;
+    tc.sendLoginReply();
+    tc.sendLoginRequest();*/
+
+    //t.stop();
+
+
+    //while(true){};
 
     //Menue m;
     //m.start();
