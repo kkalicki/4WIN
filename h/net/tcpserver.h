@@ -35,6 +35,9 @@ public:
     int getSock() const;
     void setSock(int value);
 
+    int getIsActive() const;
+    void setIsActive(int value);
+
 private:
     pthread_t tcpServerThread;
     string ipAdresse;

@@ -20,7 +20,9 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
 NetzwerkSpiel::~NetzwerkSpiel()
 {
     std::cout << "schließe Netzwerkspiel!!!" << endl;
-    // tcpserver.close();
+    if(tcpServer->getIsActive())
+        tcpServer->stop();
+
     delete tcpServer;
     delete tcpClient;
     std::cout << "Netzwerkspiel geschlossen!!!" << endl;
@@ -70,7 +72,6 @@ void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
     std::cout << "System ready!!!" << endl;
     std::cout << *sp1 << endl;
     std::cout << *sp2 << endl;
-
     tcpServer->stop();
 }
 

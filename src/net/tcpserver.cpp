@@ -26,6 +26,16 @@ void TcpServer::setSock(int value)
 {
     sock = value;
 }
+int TcpServer::getIsActive() const
+{
+    return isActive;
+}
+
+void TcpServer::setIsActive(int value)
+{
+    isActive = value;
+}
+
 
 TcpServer::~TcpServer()
 {
@@ -42,8 +52,8 @@ void TcpServer::start()
 
 void TcpServer::stop()
 {
-    cout << "stoppe Server!" << endl;
     isActive = false;
+    cout << "stoppe Server!" << endl;
     if(sock > -1)
     {
         close(sock);
@@ -200,7 +210,7 @@ void TcpServer::process(connection_t * conn, void *ptr)
             read(conn->sock, loginRequest, sizeof(LoginRequest));
             string name = loginRequest->getPlayerName();
             ((TcpServer *)ptr)->LoginRequestSignal(name);
-            //delete loginRequest;
+            delete loginRequest;
         }
         break;
         case LOGINREPLY:
@@ -209,7 +219,7 @@ void TcpServer::process(connection_t * conn, void *ptr)
             read(conn->sock, loginReply, sizeof(LoginReply));
             Spieler incomingPlayer = loginReply->getSpieler();
             ((TcpServer *)ptr)->LoginReplySignal(incomingPlayer);
-            //delete loginReply;
+            delete loginReply;
         }
         break;
         default:

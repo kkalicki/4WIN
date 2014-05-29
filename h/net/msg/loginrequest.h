@@ -17,7 +17,7 @@ public:
     string toString();
 
     friend ostream& operator<< (ostream& out, LoginRequest& object) {
-    out << object.playerName;  //The space (" ") is necessari for separete elements
+    out << object.playerName;
     return out;
     }
 

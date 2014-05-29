@@ -18,13 +18,19 @@ Spiel::Spiel(unsigned short zeilen, unsigned short spalten)
     this->historie = new Historie();
     this->spielfeld = new Spielfeld(zeilen,spalten);
     this->runde = 1;
+    this->sp1 = 0;
+    this->sp2 = 0;
 }
 
 Spiel::~Spiel() {
 
     delete spielfeld;
-    delete sp1;
-    delete sp2;
+
+    if(sp1 != 0)
+        delete sp1;
+    if(sp2 != 0)
+        delete sp2;
+
     delete historie;
 }
 

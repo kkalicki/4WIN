@@ -56,12 +56,15 @@ void TcpClient::disconnect()
 void TcpClient::sendLoginRequest()
 {
     openConnection();
-    LoginRequest* testRequest = new LoginRequest("MAX_REQUEST");
+    LoginRequest *testRequest = new LoginRequest("MAX_REQUEST");
     NetworkMessage msg = LOGINREQUEST;
     write(sock, &msg, sizeof(NetworkMessage));
-    write(sock, testRequest,sizeof(LoginRequest));
+    int rslt = write(sock, testRequest,sizeof(LoginRequest));
+
+    //sleep(5);
+    cout << "sleep finished" << endl;
     disconnect();
-    delete testRequest;
+    //delete testRequest;
 }
 
 void TcpClient::sendLoginReply()
