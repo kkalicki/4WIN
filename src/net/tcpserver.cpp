@@ -25,7 +25,7 @@ void TcpServer::start()
 {
     isActive = true;
     cout << "starte Server!" << endl;
-    pthread_create(&tcpServerThread, 0, startServerThread, 0);
+    pthread_create(&tcpServerThread, 0, startServerThread, this);
     pthread_detach(tcpServerThread);
 }
 
@@ -38,9 +38,9 @@ void TcpServer::stop()
 
 void *TcpServer::startServerThread(void * ptr)
 {
+    int port =  ((TcpServer *)ptr)->port;
     int sock = -1;
     struct sockaddr_in address;
-    int port = 8000;
     connection_t * connection;
     //pthread_t thread;
 
@@ -87,7 +87,7 @@ void *TcpServer::startServerThread(void * ptr)
             cout << "Verbindungen eingegangen.." << endl;
             /*pthread_create(&thread, 0, process, (void *)connection);
             pthread_detach(thread);*/
-            process(connection);
+            process(connection,ptr);
             close(connection->sock);
             free(connection);
        // }
@@ -164,7 +164,7 @@ void *TcpServer::processThread(void * ptr)
     pthread_exit(0);
 }
 
-void TcpServer::process(connection_t * conn)
+void TcpServer::process(connection_t * conn, void *ptr)
 {
     cout << "starte verarbeitung!" << endl;
 
@@ -176,7 +176,9 @@ void TcpServer::process(connection_t * conn)
         {
             LoginRequest* loginRequest = new LoginRequest();
             read(conn->sock, loginRequest, sizeof(LoginRequest));
-            cout << *loginRequest << endl;
+            //cout << *loginRequest << endl;
+            string name = loginRequest->getPlayerName();
+            ((TcpServer *)ptr)->LoginRequestSignal(name);
             //delete loginRequest;
         }
         break;
@@ -184,7 +186,8 @@ void TcpServer::process(connection_t * conn)
         {
             LoginReply* loginReply = new LoginReply();
             read(conn->sock, loginReply, sizeof(LoginReply));
-            cout << *loginReply << endl;
+            Spieler incomingPlayer = loginReply->getSpieler();
+            ((TcpServer *)ptr)->LoginReplySignal(incomingPlayer);
             //delete loginReply;
         }
         break;

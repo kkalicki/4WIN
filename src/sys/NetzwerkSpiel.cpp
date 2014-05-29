@@ -1,44 +1,72 @@
 
 #include "../h/sys/NetzwerkSpiel.h"
-
+#include "../h/net/tcpclient.h"
+#include "boost/bind.hpp"
+#include "iostream"
 
 NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Spiel(zeilen,spalten)
 {
-    this->tcpserver = new TcpServer();
+    this->tcpServer = new TcpServer();
+    tcpServer->LoginRequestSignal.connect(boost::bind(&NetzwerkSpiel::on_loginRequest, this,_1));
+
+    tcpServer->LoginReplySignal.connect(boost::bind(&NetzwerkSpiel::on_loginReply, this,_1));
+    tcpServer->IncomingMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_incomingMove, this,_1));
+    tcpServer->start();
+
+    this->tcpClient = new TcpClient();
+    tcpClient->sendLoginRequest();
 }
 
 NetzwerkSpiel::~NetzwerkSpiel()
 {
    // tcpserver.close();
-    delete tcpserver;
+    delete tcpServer;
+    delete tcpClient;
 }
 
 void NetzwerkSpiel::starteNetzwerkSpiel(string spielerName)
 {
     this->sp1 = new Spieler(spielerName);
-
-    //warte bis spieler sich anmeldet...
-
-    //dann...rueckgabe eigene Spielerinfo
-    rueckgabeSpielerInfo(sp1);
 }
 
 void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2)
 {
     this->sp2 = new Spieler(nameSpieler2);
 
-    //warten auf rueckgabe vom Server
-
-    //wenn rueckgabe da ist, dann werte aus wer an der reihe ist
-    if(sp1->getFarbe() == aktuellerSpieler->getFarbe())
-    {
-        //der andere faengt an... ich warte bis nachricht mit seinem zug rein kommt und setzte
-    }
+    //anmeldung erfolgreich sende eigene Daten zurueck...
+    tcpClient->sendLoginReply();
 }
 
-void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler *spieler)
+void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
 {
-    //sende spieler heraus....
+    //zuweisungsoperator ueberschreiben
+    this->sp1 = new Spieler(spieler.getName());
+    sp1->setIstAmZug(spieler.getIstAmZug());
+    sp1->setFarbe(spieler.getFarbe());
+
+    if(sp1->getFarbe() == ROT)
+    {
+        sp2->setFarbe(GELB);
+    }
+    else{
+        sp2->setFarbe(ROT);
+    }
+
+    //finde heraus wer anfaengt!
+    if(sp1->getIstAmZug())
+    {
+        sp2->setIstAmZug(false);
+        aktuellerSpieler = sp1;
+    }
+    else
+    {
+        sp2->setIstAmZug(true);
+        aktuellerSpieler = sp2;
+    }
+
+    std::cout << "System ready!!!" << endl;
+    std::cout << *sp1 << endl;
+    std::cout << *sp2 << endl;
 }
 
 void NetzwerkSpiel::abmeldenNetzwerk()
@@ -46,18 +74,19 @@ void NetzwerkSpiel::abmeldenNetzwerk()
     //Blaa Blaa Blubb....
 }
 
-/*
-void NetzwerkSpiel::on_loginReply(Spieler *player)
-{
-
-}
-
 void NetzwerkSpiel::on_loginRequest(string loginPlayerName)
 {
-
+    //std::cout << "HELLO WORLD " << loginPlayerName << endl;
+    anmeldenNetzwerk(loginPlayerName);
 }
 
-void NetzwerkSpiel::on_nextMove(int column)
+void NetzwerkSpiel::on_loginReply(Spieler spieler)
+{
+    //std::cout << "HELLO WORLD " << spieler << endl;
+    rueckgabeSpielerInfo(spieler);
+}
+
+void NetzwerkSpiel::on_incomingMove(unsigned short column)
 {
 
-}*/
+}

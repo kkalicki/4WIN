@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 #include "../h/sys/Konstanten.h"
+#include "../h/sys/Spieler.h"
+#include "boost/signals2.hpp"
 
 using namespace std;
 
@@ -23,7 +25,11 @@ public:
     void stop();
     static void * startServerThread(void * ptr);
     static void * processThread(void * ptr);
-    static void process(connection_t * conn);
+    static void process(connection_t * conn, void * ptr);
+
+    boost::signals2::signal<void(string)> LoginRequestSignal;
+    boost::signals2::signal<void(Spieler)> LoginReplySignal;
+    boost::signals2::signal<void(unsigned short)> IncomingMoveSignal;
 
 private:
     pthread_t tcpServerThread;

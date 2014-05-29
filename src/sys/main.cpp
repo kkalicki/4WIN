@@ -8,6 +8,7 @@
 #include "../h/sys/Spielfeld.h"
 #include "../h/sys/Menue.h"
 #include "../h/sys/Spiel.h"
+#include "../h/sys/NetzwerkSpiel.h"
 #include "../h/net/tcpserver.h"
 #include "../h/net/tcpclient.h"
 
@@ -28,6 +29,7 @@ int main(int argc, char* argv[]){
 
     //t.stop();
 
+    NetzwerkSpiel test;
 
     //while(true){};
 

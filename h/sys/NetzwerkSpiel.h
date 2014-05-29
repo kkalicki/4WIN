@@ -5,6 +5,7 @@
 #include "../h/sys/Spieler.h"
 #include "../h/sys/Konstanten.h"
 #include "../h/net/tcpserver.h"
+#include "../h/net/tcpclient.h"
 
 class NetzwerkSpiel : Spiel
 {
@@ -14,10 +15,15 @@ public:
     void starteNetzwerkSpiel(string spielerName);
     void anmeldenNetzwerk(string nameSpieler2);
     void abmeldenNetzwerk();
-    void rueckgabeSpielerInfo(Spieler * spieler);
+    void rueckgabeSpielerInfo(Spieler spieler);
+
+    void on_loginRequest(string loginPlayerName);
+    void on_loginReply(Spieler spieler);
+    void on_incomingMove(unsigned short column);
 
 protected:
-    TcpServer* tcpserver;
+    TcpServer* tcpServer;
+    TcpClient* tcpClient;
 };
 
 #endif // NETZWERKSPIEL_H

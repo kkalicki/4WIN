@@ -1,9 +1,12 @@
 #ifndef TCPCLIENT_H
 #define TCPCLIENT_H
+
+#include "../h/sys/Konstanten.h"
+
 class TcpClient
 {
 public:
-  TcpClient(int port=8000);
+  TcpClient(int port=DEFAULT_PORT_TCP);
   ~TcpClient();
   void openConnection();
   void disconnect();
