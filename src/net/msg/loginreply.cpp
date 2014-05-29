@@ -6,7 +6,7 @@ LoginReply::LoginReply() //: NetworkMessage(LOGINREPLY)
     //do Nothing...
 }
 
-LoginReply::LoginReply(Spieler spieler) //: NetworkMessage(LOGINREPLY)
+LoginReply::LoginReply(const Spieler& spieler) //: NetworkMessage(LOGINREPLY)
 {
     this->spieler = spieler;
 }

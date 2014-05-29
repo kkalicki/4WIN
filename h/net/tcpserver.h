@@ -23,6 +23,7 @@ public:
     ~TcpServer();
     void start();
     void stop();
+    int sock;
     static void * startServerThread(void * ptr);
     static void * processThread(void * ptr);
     static void process(connection_t * conn, void * ptr);
@@ -30,6 +31,9 @@ public:
     boost::signals2::signal<void(string)> LoginRequestSignal;
     boost::signals2::signal<void(Spieler)> LoginReplySignal;
     boost::signals2::signal<void(unsigned short)> IncomingMoveSignal;
+
+    int getSock() const;
+    void setSock(int value);
 
 private:
     pthread_t tcpServerThread;

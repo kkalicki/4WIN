@@ -19,9 +19,11 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
 
 NetzwerkSpiel::~NetzwerkSpiel()
 {
-   // tcpserver.close();
+    std::cout << "schließe Netzwerkspiel!!!" << endl;
+    // tcpserver.close();
     delete tcpServer;
     delete tcpClient;
+    std::cout << "Netzwerkspiel geschlossen!!!" << endl;
 }
 
 void NetzwerkSpiel::starteNetzwerkSpiel(string spielerName)
@@ -34,6 +36,7 @@ void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2)
     this->sp2 = new Spieler(nameSpieler2);
 
     //anmeldung erfolgreich sende eigene Daten zurueck...
+    std::cout << *sp2 << endl;
     tcpClient->sendLoginReply();
 }
 
@@ -67,6 +70,8 @@ void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
     std::cout << "System ready!!!" << endl;
     std::cout << *sp1 << endl;
     std::cout << *sp2 << endl;
+
+    tcpServer->stop();
 }
 
 void NetzwerkSpiel::abmeldenNetzwerk()

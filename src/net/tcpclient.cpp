@@ -56,30 +56,24 @@ void TcpClient::disconnect()
 void TcpClient::sendLoginRequest()
 {
     openConnection();
-    LoginRequest test("Max");
-    /*stringstream ss;
-    ss << test;*/
+    LoginRequest* testRequest = new LoginRequest("MAX_REQUEST");
     NetworkMessage msg = LOGINREQUEST;
     write(sock, &msg, sizeof(NetworkMessage));
-    write(sock, &test,sizeof(LoginRequest));
-    //write(sock, ss.str().c_str(), sizeof(ss.str().c_str()) );
+    write(sock, testRequest,sizeof(LoginRequest));
     disconnect();
+    delete testRequest;
 }
 
 void TcpClient::sendLoginReply()
 {
     openConnection();
-    Spieler test2("MAXIMILIAN");
-    LoginReply test(test2);
-    /*int len = sizeof(test);
-    stringstream ss;
-    ss << test;*/
+    Spieler test2("MAXIMILIAN_REPLAY");
+    LoginReply* testReplay = new LoginReply(test2);
     NetworkMessage msg = LOGINREPLY;
     write(sock, &msg, sizeof(NetworkMessage) );
-    write(sock, &test, sizeof(LoginReply) );
-    /*
-    write(sock, ss.str().c_str(), sizeof(ss.str().c_str()));*/
+    write(sock, testReplay, sizeof(LoginReply) );
     disconnect();
+    //delete testReplay;
 }
 
 void TcpClient::sendMove()

@@ -8,7 +8,7 @@ class LoginReply //: public NetworkMessage
 {
 public:
     LoginReply();
-    LoginReply(Spieler spieler);
+    LoginReply(const Spieler& spieler);
     ~LoginReply();
 
     Spieler getSpieler() const;

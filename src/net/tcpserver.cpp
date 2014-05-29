@@ -14,6 +14,17 @@ TcpServer::TcpServer(int port)
 {
     this->ipAdresse = ipAdresse;
     this->port = port;
+    this->sock = -1;
+}
+
+int TcpServer::getSock() const
+{
+    return sock;
+}
+
+void TcpServer::setSock(int value)
+{
+    sock = value;
 }
 
 TcpServer::~TcpServer()
@@ -31,8 +42,16 @@ void TcpServer::start()
 
 void TcpServer::stop()
 {
+    cout << "stoppe Server!" << endl;
     isActive = false;
+    if(sock > -1)
+    {
+        close(sock);
+        cout << "Socket geschlossen" << endl;
+    }
+
     pthread_cancel(tcpServerThread);
+    cout << "Serverthread geschlossen!" << endl;
 }
 
 
@@ -40,17 +59,20 @@ void *TcpServer::startServerThread(void * ptr)
 {
     int port =  ((TcpServer *)ptr)->port;
     int sock = -1;
+
     struct sockaddr_in address;
     connection_t * connection;
     //pthread_t thread;
 
     cout << "erstelle Socket!" << endl;
-    sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    sock = (socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
     if (sock <= 0)
     {
+        //Throw Exception
         //fprintf(stderr, "%s: error: cannot create socket\n", argv[0]);
         //return -3;
     }
+    ((TcpServer *)ptr)->setSock(sock);
 
     /* bind socket to port */
     address.sin_family = AF_INET;
@@ -176,7 +198,6 @@ void TcpServer::process(connection_t * conn, void *ptr)
         {
             LoginRequest* loginRequest = new LoginRequest();
             read(conn->sock, loginRequest, sizeof(LoginRequest));
-            //cout << *loginRequest << endl;
             string name = loginRequest->getPlayerName();
             ((TcpServer *)ptr)->LoginRequestSignal(name);
             //delete loginRequest;
