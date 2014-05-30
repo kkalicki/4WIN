@@ -134,8 +134,6 @@ void MainWindow::on_executeMove(unsigned short column)
         msg.setText(e.what());
         msg.exec();
     }
-
-
 }
 
 void MainWindow::on_endGame(Spieler* winner)

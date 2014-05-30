@@ -7,6 +7,8 @@
 #include "../h/net/netmessage.h"
 #include "../h/net/msg/loginrequest.h"
 #include "../h/net/msg/loginreply.h"
+#include "../h/net/msg/remotemove.h"
+
 #include <sstream>
 
 
@@ -57,7 +59,7 @@ void TcpServer::stop()
     if(sock > -1)
     {
         close(sock);
-        cout << "Socket geschlossen" << endl;
+        cout << "Socket geschlossen!" << endl;
     }
 
     pthread_cancel(tcpServerThread);
@@ -199,7 +201,6 @@ void *TcpServer::processThread(void * ptr)
 void TcpServer::process(connection_t * conn, void *ptr)
 {
     cout << "starte verarbeitung!" << endl;
-
     NetworkMessage incomingMessage;
     read(conn->sock, &incomingMessage, sizeof(NetworkMessage));
     switch(incomingMessage.getId())
@@ -220,6 +221,13 @@ void TcpServer::process(connection_t * conn, void *ptr)
             Spieler incomingPlayer = loginReply->getSpieler();
             ((TcpServer *)ptr)->LoginReplySignal(incomingPlayer);
             delete loginReply;
+        }
+        break;
+        case REMOTEMOVE:
+        {
+            RemoteMove remoteMove;
+            read(conn->sock, &remoteMove, sizeof(RemoteMove));
+            ((TcpServer *)ptr)->RemoteMoveSignal(remoteMove.getColumn());
         }
         break;
         default:

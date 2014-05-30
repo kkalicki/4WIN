@@ -11,21 +11,14 @@ class LoginRequest //: public NetworkMessage
 public:
     LoginRequest(string playerName="Player");
     ~LoginRequest();
+
     string getPlayerName() const;
     void setPlayerName(const string &value);
 
+    friend ostream& operator<< (ostream& out, LoginRequest& object);
+    friend istream& operator>>(istream& in, LoginRequest &object );
+
     string toString();
-
-    friend ostream& operator<< (ostream& out, LoginRequest& object) {
-    out << object.playerName;
-    return out;
-    }
-
-    friend istream &operator>>( istream  &input, LoginRequest &object )
-    {
-        input >> object.playerName;
-        return input;
-    }
 
 private:
     string playerName;

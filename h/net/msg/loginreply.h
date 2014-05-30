@@ -3,27 +3,22 @@
 
 #include "../h/net/netmessage.h"
 #include "../h/sys/Spieler.h"
+#include <string>
 
 class LoginReply //: public NetworkMessage
 {
 public:
     LoginReply();
-    LoginReply(const Spieler& spieler);
+    LoginReply(Spieler spieler);
     ~LoginReply();
 
     Spieler getSpieler() const;
-    void setSpieler(const Spieler &value);
+    void setSpieler(Spieler value);
 
-    friend ostream& operator<< (ostream& out, LoginReply& object) {
-    out << object.spieler;
-    return out;
-    }
+    friend ostream& operator<<(ostream& out, LoginReply& object);
+    friend istream& operator>>(istream& in, LoginReply& object);
 
-    friend istream &operator>>( istream  &input, LoginReply &object )
-    {
-        input >> object.spieler;
-        return input;
-    }
+    string toString();
 
 private:
     Spieler spieler;

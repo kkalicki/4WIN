@@ -10,6 +10,7 @@ LoginRequest::~LoginRequest()
 {
     //nicht implementiert -> kein new...
 }
+
 string LoginRequest::getPlayerName() const
 {
     return playerName;
@@ -18,6 +19,18 @@ string LoginRequest::getPlayerName() const
 void LoginRequest::setPlayerName(const string &value)
 {
     playerName = value;
+}
+
+ostream& operator<<(ostream& out, LoginRequest& object) {
+
+    out << object.playerName;
+    return out;
+}
+
+istream& operator>>(istream& in, LoginRequest& object)
+{
+    in >> object.playerName;
+    return in;
 }
 
 string LoginRequest::toString()

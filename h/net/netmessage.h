@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-enum NetMessageType{NOTYPE=0,LOGINREQUEST=1, LOGINREPLY=2, MOVEMESSAGE=3};
+enum NetMessageType{NOTYPE=0,LOGINREQUEST=1, LOGINREPLY=2, REMOTEMOVE=3};
 
 class NetworkMessage{
 public:
@@ -32,8 +32,8 @@ public:
         case LOGINREPLY:
             object.id = LOGINREPLY;
             break;
-        case MOVEMESSAGE:
-            object.id = MOVEMESSAGE;
+        case REMOTEMOVE:
+            object.id = REMOTEMOVE;
             break;
           default:
             break;

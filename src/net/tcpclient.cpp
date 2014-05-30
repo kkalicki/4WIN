@@ -1,6 +1,7 @@
 #include "../h/net/tcpclient.h"
 #include "../h/net/msg/loginreply.h"
 #include "../h/net/msg/loginrequest.h"
+#include "../h/net/msg/remotemove.h"
 
 #include <sys/socket.h>
 #include <netdb.h>
@@ -15,11 +16,16 @@ TcpClient::TcpClient(int port)
 {
     this->port = port;
     this->sock = -1;
+    this->remoteMove = new RemoteMove();
+    this->loginRequest = new LoginRequest();
+    this->loginReply = new LoginReply();
 }
 
 TcpClient::~TcpClient()
 {
-
+   delete loginRequest;
+   delete loginReply;
+   delete remoteMove;
 }
 
 void TcpClient::openConnection()
@@ -53,33 +59,32 @@ void TcpClient::disconnect()
     close(sock);
 }
 
-void TcpClient::sendLoginRequest()
+void TcpClient::sendLoginRequest(string playerName)
 {
     openConnection();
-    LoginRequest *testRequest = new LoginRequest("MAX_REQUEST");
+    loginRequest->setPlayerName(playerName);
     NetworkMessage msg = LOGINREQUEST;
     write(sock, &msg, sizeof(NetworkMessage));
-    int rslt = write(sock, testRequest,sizeof(LoginRequest));
-
-    //sleep(5);
-    cout << "sleep finished" << endl;
+    write(sock, loginRequest,sizeof(LoginRequest));
     disconnect();
-    //delete testRequest;
 }
 
-void TcpClient::sendLoginReply()
+void TcpClient::sendLoginReply(Spieler* player)
 {
     openConnection();
-    Spieler test2("MAXIMILIAN_REPLAY");
-    LoginReply* testReplay = new LoginReply(test2);
+    loginReply->setSpieler(*player);
     NetworkMessage msg = LOGINREPLY;
     write(sock, &msg, sizeof(NetworkMessage) );
-    write(sock, testReplay, sizeof(LoginReply) );
+    write(sock, loginReply, sizeof(LoginReply) );
     disconnect();
-    //delete testReplay;
 }
 
-void TcpClient::sendMove()
+void TcpClient::sendMove(unsigned short column)
 {
-
+    openConnection();
+    remoteMove->setColumn(column);
+    NetworkMessage msg = REMOTEMOVE;
+    write(sock, &msg, sizeof(NetworkMessage) );
+    write(sock, remoteMove, sizeof(RemoteMove) );
+    disconnect();
 }

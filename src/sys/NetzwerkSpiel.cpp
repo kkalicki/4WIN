@@ -8,13 +8,11 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
 {
     this->tcpServer = new TcpServer();
     tcpServer->LoginRequestSignal.connect(boost::bind(&NetzwerkSpiel::on_loginRequest, this,_1));
-
     tcpServer->LoginReplySignal.connect(boost::bind(&NetzwerkSpiel::on_loginReply, this,_1));
-    tcpServer->IncomingMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_incomingMove, this,_1));
+    tcpServer->RemoteMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_remoteMove, this,_1));
     tcpServer->start();
 
     this->tcpClient = new TcpClient();
-    tcpClient->sendLoginRequest();
 }
 
 NetzwerkSpiel::~NetzwerkSpiel()
@@ -26,20 +24,22 @@ NetzwerkSpiel::~NetzwerkSpiel()
     delete tcpServer;
     delete tcpClient;
     std::cout << "Netzwerkspiel geschlossen!!!" << endl;
+
 }
 
 void NetzwerkSpiel::starteNetzwerkSpiel(string spielerName)
 {
+    cout << "starte Netzwerkspiel..."<< endl;
     this->sp1 = new Spieler(spielerName);
 }
 
 void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2)
 {
     this->sp2 = new Spieler(nameSpieler2);
+    tcpClient->sendLoginRequest("SEND_REQUEST");
 
-    //anmeldung erfolgreich sende eigene Daten zurueck...
-    std::cout << *sp2 << endl;
-    tcpClient->sendLoginReply();
+     //anmeldung erfolgreich sende eigene Daten zurueck...
+    cout << "Anmelden erfolgreich!"<< endl;
 }
 
 void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
@@ -72,7 +72,10 @@ void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
     std::cout << "System ready!!!" << endl;
     std::cout << *sp1 << endl;
     std::cout << *sp2 << endl;
-    tcpServer->stop();
+
+    cout << "sende Reply..." << endl;
+    tcpClient->sendLoginReply(sp1);
+    cout << "Daten zurueckgesendet"<< endl;
 }
 
 void NetzwerkSpiel::abmeldenNetzwerk()
@@ -82,17 +85,16 @@ void NetzwerkSpiel::abmeldenNetzwerk()
 
 void NetzwerkSpiel::on_loginRequest(string loginPlayerName)
 {
-    //std::cout << "HELLO WORLD " << loginPlayerName << endl;
-    anmeldenNetzwerk(loginPlayerName);
+    cout << "Incoming to on_loginRequest() VALUE: " << loginPlayerName << endl;
 }
 
 void NetzwerkSpiel::on_loginReply(Spieler spieler)
 {
-    //std::cout << "HELLO WORLD " << spieler << endl;
+    cout << "Incoming to on_loginReply() VALUE: " << spieler << endl;
     rueckgabeSpielerInfo(spieler);
 }
 
-void NetzwerkSpiel::on_incomingMove(unsigned short column)
+void NetzwerkSpiel::on_remoteMove(unsigned short column)
 {
-
+    cout << "Incoming to on_remoteMove() VALUE: " << column << endl;
 }

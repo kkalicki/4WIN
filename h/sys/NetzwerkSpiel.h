@@ -7,6 +7,8 @@
 #include "../h/net/tcpserver.h"
 #include "../h/net/tcpclient.h"
 
+using namespace std;
+
 class NetzwerkSpiel : Spiel
 {
 public:
@@ -19,7 +21,7 @@ public:
 
     void on_loginRequest(string loginPlayerName);
     void on_loginReply(Spieler spieler);
-    void on_incomingMove(unsigned short column);
+    void on_remoteMove(unsigned short column);
 
 protected:
     TcpServer* tcpServer;
