@@ -16,7 +16,7 @@ string LoginRequest::getPlayerName() const
     return playerName;
 }
 
-void LoginRequest::setPlayerName(const string &value)
+void LoginRequest::setPlayerName(string value)
 {
     playerName = value;
 }
