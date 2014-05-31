@@ -25,7 +25,7 @@ public:
     virtual void init();
     virtual void preExecute();
     virtual void postExecute();
-
+    void update(unsigned short column, int result);
     ~MainWindow();
 
 private slots:

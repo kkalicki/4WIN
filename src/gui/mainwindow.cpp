@@ -100,14 +100,14 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     case OPEN:
             this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
             dynamic_cast<NetzwerkSpiel*>(game)->starteNetzwerkSpiel(gameSettings->getPlayer1Name());
-            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::on_executeMove, this,_1));
+            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::update, this,_1,_1));
             dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame, this));
             gameInfoWidget->setSysMsg("Warte auf Gegner...");
         break;
     case JOIN:
             this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
             dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name());
-            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::on_executeMove, this,_1));
+            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::update, this,_1,_1));
             dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame,this));
             gameInfoWidget->setSysMsg("Warte auf Antwort...");
         break;
@@ -121,6 +121,7 @@ void MainWindow::startGame()
     gameInfoWidget->initPlayer(game->getSp1(),game->getSp2());
     //fuer Alle preExecute aufrufen
     preExecute();
+    gameInfoWidget->setSysMsg("Start!");
 }
 
 
@@ -131,23 +132,7 @@ void MainWindow::on_executeMove(unsigned short column)
     try
     {
         rslt = game->naechsterZug(currentPlayer,column);
-        if(rslt == -1){
-            //Spiel zu ende...
-            on_endGame(currentPlayer);
-        }
-        else {  //else if Catch Spielfeld voll!! --> on_endGame(0);
-
-           //Bord bedienen...
-           bordWidget->setMove(currentPlayer,rslt,column);
-
-           //GameInfo bedienen...
-           ostringstream o;
-           o<< (rslt) << " - "<< column;
-           gameInfoWidget->changePlayer(game->getAktuellerSpieler(),game->getRunde(),o.str());
-        }
-
-        //history add..
-        historyWidget->addHisItem(game->getHistorie()->getLetztenEintrag());
+        update(column, rslt);
     }
     catch(EingabeException& e){
         QMessageBox msg;
@@ -159,6 +144,27 @@ void MainWindow::on_executeMove(unsigned short column)
         msg.setText(e.what());
         msg.exec();
     }
+}
+
+void MainWindow::update(unsigned short column, int result)
+{
+    if(result == -1){
+        //Spiel zu ende...
+        on_endGame(game->getVerherigerSpieler());
+    }
+    else {  //else if Catch Spielfeld voll!! --> on_endGame(0);
+
+       //Bord bedienen...
+       bordWidget->setMove(game->getVerherigerSpieler(),result,column);
+
+       //GameInfo bedienen...
+       ostringstream o;
+       o<< (result) << " - "<< column;
+       gameInfoWidget->changePlayer(game->getAktuellerSpieler(),game->getRunde(),o.str());
+    }
+
+    //history add..
+    historyWidget->addHisItem(game->getHistorie()->getLetztenEintrag());
 }
 
 void MainWindow::on_endGame(Spieler* winner)

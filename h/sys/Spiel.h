@@ -43,6 +43,9 @@ public:
     Spieler* getAktuellerSpieler() const {
         return aktuellerSpieler;
     }
+    Spieler* getVerherigerSpieler() const {
+        return aktuellerSpieler;
+    }
 
     Spieler* getSp1() const{
         return sp1;
@@ -88,6 +91,7 @@ protected:
     Spieler *sp1;
     Spieler *sp2;
     Spieler *aktuellerSpieler;
+    Spieler *vorherigerSpieler;
     unsigned short runde;
     void wechselSpieler();
 };

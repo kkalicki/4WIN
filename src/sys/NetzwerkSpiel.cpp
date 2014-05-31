@@ -107,5 +107,6 @@ void NetzwerkSpiel::on_loginReply(Spieler spieler)
 void NetzwerkSpiel::on_remoteMove(unsigned short column)
 {
     cout << "Incoming to on_remoteMove() VALUE: " << column << endl;
-    RemoteMoveSignal(column);
+    int rslt = Spiel::naechsterZug(aktuellerSpieler,column);
+    RemoteMoveSignal(column,rslt);
 }

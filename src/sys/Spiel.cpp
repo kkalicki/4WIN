@@ -18,6 +18,7 @@ Spiel::Spiel(unsigned short zeilen, unsigned short spalten)
     this->historie = new Historie();
     this->spielfeld = new Spielfeld(zeilen,spalten);
     this->runde = 1;
+    this->aktuellerSpieler = 0;
     this->sp1 = 0;
     this->sp2 = 0;
 }
@@ -91,6 +92,7 @@ int Spiel::naechsterZug(Spieler* spieler, unsigned short spalte)
 
 void Spiel::wechselSpieler()
 {
+    this->vorherigerSpieler = aktuellerSpieler;
     if(sp1->getIstAmZug()){
         sp1->setIstAmZug(false);
         sp2->setIstAmZug(true);
