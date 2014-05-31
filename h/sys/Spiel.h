@@ -19,62 +19,26 @@ public:
     Spiel(unsigned short zeilen=Y, unsigned short spalten=X);
     virtual ~Spiel();
 
-	/**
-	 * startet ein Spiel mit der ausgewaehlten KI
-	 * @param ki wert zur Auswahl der KI
-	 */
-    //void startKI(int ki);
-
-	/**
-	 * startet ein Spiel gegen einen anderen Spieler, und erstellt die Spieler
-	 * @param name1 Name des ersten Spielers
-	 * @param name2 Name des zweiten Spielers
-	 */
-    void startMP(string nameSpieler1, string nameSpieler2);
-    int naechsterZug(Spieler* spieler, int spalte);
+    void starteSpiel(string nameSpieler1, string nameSpieler2);
+    virtual int naechsterZug(Spieler* spieler, unsigned short spalte);
     void aufgeben();
-    void erstelleNeuenHisEintrag(Spieler* spieler, unsigned short zeile, unsigned short spalte, unsigned short runde);
     HisEintrag* getLetztenHisEintrag();
-	/**
-	 * Methode zur Ausgabe des Spiels
-	 * @return gibt die das Spiel mit Spielfeld aus
-	 */
-	string toString() const;
-
-	/**
-	 * Erstellt ein Spielfeld
-	 * @param x wert der x-Achse
-	 * @param y Wert der y-Achse
-	 * @return gibt ein komplettes Spielfeld zurueck
-	 */
-    //Spielfeld erstelleSpielfeld(int x, int y);
-
-	/**
-	 * Funktion die ein stein fuer einen bestimmten Spieler ins Spielfeld wirft
-	 * @param sp variable fuer den Spieler
-	 * @return pruefzahl ob stein gelegt wurde
-	 */
-    //int werfeStein(Spieler sp, int farbe);
-
-    //int pruefeStein(int farbe, int spalte);
-
-    //int checkHorizontal(int farbe, int spalte);
-    //int checkVertikal(int farbe, int spalte);
-    //int checkDiagonal(int farbe, int spalte);
+    void erstelleNeuenHisEintrag(Spieler* spieler,
+                                 unsigned short zeile,
+                                 unsigned short spalte,
+                                 unsigned short runde);
 
 
 
-    //int spielrunde(Spieler sp1, Spieler sp2);
-    //void erstelleSpielfeld(unsigned short zeilen=Y, unsigned short spalten=X);
+    int getId() const
+    {
+        return id;
+    }
 
-
-	/**
-	 * Ueberladung des << Operators fuer toString-Methode
-	 * @param out Variable des Outstreams
-	 * @param sp Variable der Klasse Spiel
-	 * @return manipulierter outstream
-	 */
-    friend ostream& operator<<(ostream& out, Spiel& sp);
+    void setId(int value)
+    {
+        id = value;
+    }
 
     Spieler* getAktuellerSpieler() const {
         return aktuellerSpieler;
@@ -114,9 +78,11 @@ public:
         historie = value;
     }
 
-
+    friend ostream& operator<<(ostream& out, Spiel& sp);
+    string toString() const;
 
 protected:
+    int id;
     Spielfeld *spielfeld;
     Historie *historie;
     Spieler *sp1;

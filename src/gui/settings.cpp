@@ -62,6 +62,8 @@ void Settings::on_rbopen_toggled(bool checked)
 {
     if(checked){
         ui->lvgames->setEnabled(false);
+        ui->leplayer1->setEnabled(true);
+        ui->leplayer2->setEnabled(false);
     }
 }
 
@@ -70,9 +72,13 @@ void Settings::on_rbenter_toggled(bool checked)
     if(checked){
         ui->lvgames->setEnabled(true);
         ui->cbwatch->setEnabled(true);
+        ui->leplayer1->setEnabled(false);
+        ui->leplayer2->setEnabled(true);
+        ui->gbgamefieldsetting->setEnabled(false);
     }
     else
     {
+        ui->gbgamefieldsetting->setEnabled(true);
         ui->cbwatch->setEnabled(false);
     }
 }

@@ -5,6 +5,7 @@
 #include "../h/gui/gameinfo.h"
 #include "../h/gui/bord.h"
 #include "../h/sys/FourWinExceptions.h"
+#include "../h/sys/NetzwerkSpiel.h"
 
 #include "../h/sys/Spieler.h"
 
@@ -81,15 +82,32 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     bordWidget->hide();
     delete bordWidget;
     this->bordWidget = new Bord(gameSettings->getBordRows(),gameSettings->getBordColumns(),gameSettings->getCellSize());
-    connect( bordWidget, SIGNAL(executeMove(unsigned short)), this, SLOT(on_executeMove(unsigned short)));
+    connect(bordWidget, SIGNAL(executeMove(unsigned short)), this, SLOT(on_executeMove(unsigned short)));
     bordWidget->show();
+
+    switch(gameSettings->getMode())
+    {
+    case LOCAL:
+            this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
+            game->starteSpiel(gameSettings->getPlayer1Name(),gameSettings->getPlayer2Name());
+        break;
+    case OPEN:
+        this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
+        dynamic_cast<NetzwerkSpiel*>(game)->starteNetzwerkSpiel(gameSettings->getPlayer1Name());
+        dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::on_executeMove, this,_1));
+        break;
+    case JOIN:
+        this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
+        dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name());
+        dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::on_executeMove, this,_1));
+        break;
+    default: // Do Nothing...
+    break;
+    }
 
     //game init...
     if(game != 0)
         delete game;
-
-    this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
-    game->startMP(gameSettings->getPlayer1Name(),gameSettings->getPlayer2Name());
 
     //gameinfo init..
     gameInfoWidget->initPlayer(game->getSp1(),game->getSp2());
