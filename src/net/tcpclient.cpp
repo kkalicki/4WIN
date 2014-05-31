@@ -39,7 +39,7 @@ void TcpClient::openConnection()
     /* connect to server */
     address.sin_family = AF_INET;
     address.sin_port = htons(port);
-    host = gethostbyname("127.0.0.1");
+    host = gethostbyname("192.168.28.105");
     if (!host)
     {
         //fprintf(stderr, "%s: error: unknown host %s\n", argv[0], argv[1]);

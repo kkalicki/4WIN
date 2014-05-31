@@ -192,7 +192,6 @@ void GameInfo::on_timeChange()
     else{
         setTimePlayer2();
     }
-
 }
 
 void GameInfo::setTimePlayer1()
