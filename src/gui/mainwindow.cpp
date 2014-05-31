@@ -85,11 +85,16 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     connect(bordWidget, SIGNAL(executeMove(unsigned short)), this, SLOT(on_executeMove(unsigned short)));
     bordWidget->show();
 
-    switch(gameSettings->getMode())
+    //game init...
+    if(game != 0)
+        delete game;
+
+    switch(gameSettings->getNetworkMode())
     {
     case LOCAL:
             this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
             game->starteSpiel(gameSettings->getPlayer1Name(),gameSettings->getPlayer2Name());
+            gameInfoWidget->initPlayer(game->getSp1(),game->getSp2());
         break;
     case OPEN:
         this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
@@ -104,13 +109,6 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     default: // Do Nothing...
     break;
     }
-
-    //game init...
-    if(game != 0)
-        delete game;
-
-    //gameinfo init..
-    gameInfoWidget->initPlayer(game->getSp1(),game->getSp2());
 
     //fuer Alle preExecute aufrufen
     preExecute();
