@@ -13,7 +13,7 @@ public:
     ~LoginRequest();
 
     string getPlayerName() const;
-    void setPlayerName(string value);
+    void setPlayerName(string &value);
 
     friend ostream& operator<< (ostream& out, LoginRequest& object);
     friend istream& operator>>(istream& in, LoginRequest &object );

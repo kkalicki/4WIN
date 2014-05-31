@@ -10,7 +10,7 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     tcpServer->LoginRequestSignal.connect(boost::bind(&NetzwerkSpiel::on_loginRequest, this,_1));
     tcpServer->LoginReplySignal.connect(boost::bind(&NetzwerkSpiel::on_loginReply, this,_1));
     tcpServer->RemoteMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_remoteMove, this,_1));
-
+    tcpServer->start();
     this->tcpClient = new TcpClient();
 }
 
@@ -30,7 +30,6 @@ void NetzwerkSpiel::starteNetzwerkSpiel(string spielerName)
 {
    cout << "starte Netzwerkspiel..."<< endl;
    this->nameSpieler1 = spielerName;
-   tcpServer->start();
 }
 
 void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2)
@@ -72,6 +71,9 @@ void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
     std::cout << "System ready!!!" << endl;
     std::cout << *sp1 << endl;
     std::cout << *sp2 << endl;
+
+    //hier signal start...
+    StartGameSignal();
 }
 
 int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
@@ -91,6 +93,9 @@ void NetzwerkSpiel::on_loginRequest(string loginPlayerName)
     cout << "Incoming to on_loginRequest() VALUE: " << loginPlayerName << endl;
     starteSpiel(nameSpieler1,loginPlayerName);
     this->tcpClient->sendLoginReply(sp1);
+
+    //hier starte spiel...
+    StartGameSignal();
 }
 
 void NetzwerkSpiel::on_loginReply(Spieler spieler)

@@ -30,6 +30,7 @@ public:
     void changePlayer(Spieler* currentPlayer, unsigned short round, string lastMove);
     void initPlayerDisplays(Spieler* player1,Spieler* player2);
     void initfirstPlayer(Spieler* firstPlayer);
+    void setSysMsg(string msg);
     ~GameInfo();
 
 private slots:

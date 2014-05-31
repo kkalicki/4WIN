@@ -129,6 +129,11 @@ void GameInfo::changePlayer(Spieler* currentPlayer, unsigned short round, string
     }
 }
 
+void GameInfo::setSysMsg(string msg)
+{
+    ui->lblsysmsg->setText(QString::fromStdString(msg));
+}
+
 void GameInfo::initPlayerDisplays()
 {
     //init player1...

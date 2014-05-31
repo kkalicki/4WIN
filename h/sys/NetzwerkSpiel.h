@@ -26,6 +26,7 @@ public:
     void on_remoteMove(unsigned short column);
 
     boost::signals2::signal<void(unsigned short)> RemoteMoveSignal;
+    boost::signals2::signal<void()> StartGameSignal;
 
 protected:
     TcpServer* tcpServer;

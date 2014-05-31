@@ -5,6 +5,7 @@
 #include <../h/gui/bord.h>
 #include <../h/gui/settings.h>
 #include <../h/gui/gameinfo.h>
+#include <../h/gui/gamesettings.h>
 #include <../h/gui/history.h>
 #include <../h/sys/spiel.h>
 #include <QMainWindow>
@@ -34,6 +35,8 @@ private slots:
     void on_actionBeenden_triggered();
     void on_actionNeu_triggered();
 
+    void startGame();
+
 protected:
     void closeEvent(QCloseEvent *event);
 
@@ -43,6 +46,7 @@ private:
     Bord *bordWidget;
     GameInfo *gameInfoWidget;
     History * historyWidget;
+    GameSettings * gameSettings;
     static const int START_POSITION_X = 230;
     static const int START_POSITION_Y = 0;
 

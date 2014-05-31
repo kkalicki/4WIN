@@ -76,6 +76,7 @@ void MainWindow::postExecute()
 
 void MainWindow::on_resultSettings(GameSettings* gameSettings)
 {
+    this->gameSettings = gameSettings;
     settingsWidget->hide();
 
     //Bord init...
@@ -94,22 +95,30 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     case LOCAL:
             this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
             game->starteSpiel(gameSettings->getPlayer1Name(),gameSettings->getPlayer2Name());
-            gameInfoWidget->initPlayer(game->getSp1(),game->getSp2());
+            startGame();
         break;
     case OPEN:
-        this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
-        dynamic_cast<NetzwerkSpiel*>(game)->starteNetzwerkSpiel(gameSettings->getPlayer1Name());
-        dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::on_executeMove, this,_1));
+            this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
+            dynamic_cast<NetzwerkSpiel*>(game)->starteNetzwerkSpiel(gameSettings->getPlayer1Name());
+            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::on_executeMove, this,_1));
+            dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame, this));
+            gameInfoWidget->setSysMsg("Warte auf Gegner...");
         break;
     case JOIN:
-        this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
-        dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name());
-        dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::on_executeMove, this,_1));
+            this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
+            dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name());
+            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::on_executeMove, this,_1));
+            dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame,this));
+            gameInfoWidget->setSysMsg("Warte auf Antwort...");
         break;
     default: // Do Nothing...
     break;
     }
+}
 
+void MainWindow::startGame()
+{
+    gameInfoWidget->initPlayer(game->getSp1(),game->getSp2());
     //fuer Alle preExecute aufrufen
     preExecute();
 }

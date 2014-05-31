@@ -489,6 +489,19 @@
     <string>Runde 0</string>
    </property>
   </widget>
+  <widget class="QLabel" name="lblsysmsg">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>90</y>
+     <width>141</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
  </widget>
  <resources>
   <include location="../res.qrc"/>
