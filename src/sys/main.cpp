@@ -29,9 +29,9 @@ int main(int argc, char* argv[]){
 
     //t.stop();
 
-    NetzwerkSpiel test;
-    test.starteNetzwerkSpiel("ICH");
-    test.anmeldenNetzwerk("ICH_Remote");
+    //NetzwerkSpiel test;
+    //test.starteNetzwerkSpiel("ICH");
+    //test.anmeldenNetzwerk("ICH_Remote");
 
     //while(true){};
 
