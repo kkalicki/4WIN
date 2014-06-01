@@ -66,7 +66,11 @@ void TcpClient::sendLoginRequest(string playerName)
     LoginRequest loginRequest = *new LoginRequest(playerName);
     NetworkMessage msg = LOGINREQUEST;
     write(sock, &msg, sizeof(NetworkMessage));
+<<<<<<< HEAD
     write(sock, &loginRequest,sizeof(string));
+=======
+    write(sock, &playerName,sizeof(string));
+>>>>>>> c90d10ca68bfc464e52b3e888a743fd60a75fb95
     disconnect();
 }
 
