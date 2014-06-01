@@ -21,9 +21,9 @@ public:
 private:
   int sock;
   int port;
-  LoginRequest * loginRequest;
-  LoginReply * loginReply;
-  RemoteMove* remoteMove;
+  LoginRequest  loginRequest;
+  LoginReply  *loginReply;
+  RemoteMove *remoteMove;
 };
 
 #endif // TCPCLIENT_H

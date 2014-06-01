@@ -207,8 +207,9 @@ void TcpServer::process(connection_t * conn, void *ptr)
     {
         case LOGINREQUEST:
         {
+            string rec;
             LoginRequest* loginRequest = new LoginRequest();
-            read(conn->sock, loginRequest, sizeof(LoginRequest));
+            read(conn->sock, &rec, sizeof(string));
             string name = loginRequest->getPlayerName();
             ((TcpServer *)ptr)->LoginRequestSignal(name);
             delete loginRequest;

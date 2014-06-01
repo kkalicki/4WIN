@@ -17,13 +17,13 @@ TcpClient::TcpClient(int port)
     this->port = port;
     this->sock = -1;
     this->remoteMove = new RemoteMove();
-    this->loginRequest = new LoginRequest();
+    //this->loginRequest = *new LoginRequest();
     this->loginReply = new LoginReply();
 }
 
 TcpClient::~TcpClient()
 {
-   delete loginRequest;
+   //delete loginRequest;
    delete loginReply;
    delete remoteMove;
 }
@@ -39,7 +39,7 @@ void TcpClient::openConnection()
     /* connect to server */
     address.sin_family = AF_INET;
     address.sin_port = htons(port);
-    host = gethostbyname("192.168.28.105");
+    host = gethostbyname("192.168.28.108");
     if (!host)
     {
         //fprintf(stderr, "%s: error: unknown host %s\n", argv[0], argv[1]);
@@ -61,11 +61,12 @@ void TcpClient::disconnect()
 
 void TcpClient::sendLoginRequest(string playerName)
 {
+
     openConnection();
-    loginRequest->setPlayerName(playerName);
+    LoginRequest loginRequest = *new LoginRequest(playerName);
     NetworkMessage msg = LOGINREQUEST;
     write(sock, &msg, sizeof(NetworkMessage));
-    write(sock, loginRequest,sizeof(LoginRequest));
+    write(sock, &loginRequest,sizeof(string));
     disconnect();
 }
 
