@@ -118,7 +118,7 @@ void *TcpServer::startServerThread(void * ptr)
 //        else
 //        {
             /* start a new thread but do not wait for it */
-            cout << "Verbindungen eingegangen.." << endl;
+            cout << "Verbindungen eingegangen..PORT: " << connection->sock << endl;
             /*pthread_create(&thread, 0, process, (void *)connection);
             pthread_detach(thread);*/
             process(connection,ptr);
@@ -127,6 +127,44 @@ void *TcpServer::startServerThread(void * ptr)
        // }
     }
 }
+
+void TcpServer::process(connection_t * conn, void *ptr)
+{
+    cout << "starte verarbeitung!" << endl;
+    NetworkMessage incomingMessage;
+    read(conn->sock, &incomingMessage, sizeof(NetworkMessage));
+    switch(incomingMessage.getId())
+    {
+        case LOGINREQUEST:
+        {
+            LoginRequest* loginRequest = new LoginRequest();
+            read(conn->sock, loginRequest, sizeof(LoginRequest));
+            string name = loginRequest->getPlayerName();
+            ((TcpServer *)ptr)->LoginRequestSignal(name);
+            delete loginRequest;
+        }
+        break;
+        case LOGINREPLY:
+        {
+            LoginReply* loginReply = new LoginReply();
+            read(conn->sock, loginReply, sizeof(LoginReply));
+            Spieler incomingPlayer = loginReply->getSpieler();
+            ((TcpServer *)ptr)->LoginReplySignal(incomingPlayer);
+            delete loginReply;
+        }
+        break;
+        case REMOTEMOVE:
+        {
+            RemoteMove remoteMove;
+            read(conn->sock, &remoteMove, sizeof(RemoteMove));
+            ((TcpServer *)ptr)->RemoteMoveSignal(remoteMove.getColumn());
+        }
+        break;
+        default:
+        break;
+    }
+}
+
 
 void *TcpServer::processThread(void * ptr)
 {
@@ -197,44 +235,6 @@ void *TcpServer::processThread(void * ptr)
     free(conn);
     pthread_exit(0);
 }
-
-void TcpServer::process(connection_t * conn, void *ptr)
-{
-    cout << "starte verarbeitung!" << endl;
-    NetworkMessage incomingMessage;
-    read(conn->sock, &incomingMessage, sizeof(NetworkMessage));
-    switch(incomingMessage.getId())
-    {
-        case LOGINREQUEST:
-        {
-            LoginRequest* loginRequest = new LoginRequest();
-            read(conn->sock, loginRequest, sizeof(LoginRequest));
-            string name = loginRequest->getPlayerName();
-            ((TcpServer *)ptr)->LoginRequestSignal(name);
-            delete loginRequest;
-        }
-        break;
-        case LOGINREPLY:
-        {
-            LoginReply* loginReply = new LoginReply();
-            read(conn->sock, loginReply, sizeof(LoginReply));
-            Spieler incomingPlayer = loginReply->getSpieler();
-            ((TcpServer *)ptr)->LoginReplySignal(incomingPlayer);
-            delete loginReply;
-        }
-        break;
-        case REMOTEMOVE:
-        {
-            RemoteMove remoteMove;
-            read(conn->sock, &remoteMove, sizeof(RemoteMove));
-            ((TcpServer *)ptr)->RemoteMoveSignal(remoteMove.getColumn());
-        }
-        break;
-        default:
-        break;
-    }
-}
-
 
 
 

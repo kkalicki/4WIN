@@ -65,7 +65,7 @@ void TcpClient::sendLoginRequest(string playerName)
     loginRequest->setPlayerName(playerName);
     NetworkMessage msg = LOGINREQUEST;
     write(sock, &msg, sizeof(NetworkMessage));
-    write(sock, loginRequest,sizeof(LoginRequest));
+    write(sock, &playerName,sizeof(string));
     disconnect();
 }
 

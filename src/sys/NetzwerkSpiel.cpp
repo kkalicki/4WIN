@@ -35,14 +35,16 @@ void NetzwerkSpiel::starteNetzwerkSpiel(string spielerName)
 void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2)
 {
     this->sp2 = new Spieler(nameSpieler2);
+    cout << "melde an..."<< endl;
     tcpClient->sendLoginRequest("SEND_REQUEST");
 
      //anmeldung erfolgreich sende eigene Daten zurueck...
-    cout << "Anmelden erfolgreich!"<< endl;
+
 }
 
 void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
 {
+    cout << "Anmeldung erfolgreich!"<< endl;
     //zuweisungsoperator ueberschreiben
     this->sp1 = new Spieler(spieler.getName());
     sp1->setIstAmZug(spieler.getIstAmZug());
