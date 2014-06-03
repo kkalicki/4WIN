@@ -55,9 +55,30 @@ public:
 
     friend istream &operator>>( istream  &input, Spieler &object )
     {
-        while ((input.peek()!=';') && (istream>>object.name))
-        while ((input.peek()!=';') && (istream>>object.farbe))
-        while ((input.peek()!=';') && (istream>>object.istAmZug))
+        char x;
+        string name;
+        while (input.peek() !=';')
+        {
+            input.get(x);
+            name.append(1,x);
+        }
+        object.name = name;
+
+        string farbe;
+        while (input.peek() !=';')
+        {
+            input.get(x);
+            farbe.append(1,x);
+        }
+        object.farbe = atoi(farbe.c_str());
+
+        string istAmZug;
+        while (input.peek() !=';')
+        {
+            input.get(x);
+            istAmZug.append(1,x);
+        }
+        object.istAmZug = atoi(istAmZug.c_str());
         return input;
     }
 
