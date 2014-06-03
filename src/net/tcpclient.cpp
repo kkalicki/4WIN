@@ -98,9 +98,9 @@ void TcpClient::sendLoginReply(Spieler* player)
 void TcpClient::sendMove(unsigned short column)
 {
     openConnection();
-    remoteMove->setColumn(column);
+    RemoteMove remoteMove(column);
     NetworkMessage msg = REMOTEMOVE;
     write(sock, &msg, sizeof(NetworkMessage) );
-    write(sock, remoteMove, sizeof(RemoteMove) );
+    write(sock, &remoteMove, sizeof(RemoteMove) );
     disconnect();
 }
