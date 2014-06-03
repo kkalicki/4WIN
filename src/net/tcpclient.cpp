@@ -66,23 +66,32 @@ void TcpClient::disconnect()
 
 void TcpClient::sendLoginRequest(string playerName)
 {
-    openConnection();
-    LoginRequest loginRequest(playerName);
     NetworkMessage msgId(LOGINREQUEST);
-    cout <<"LOGINREQUEST (ID=" << msgId.getId() <<")" << endl;
-    write(sock, msgId.toCharArray(), sizeof(NetworkMessage));
-    cout <<"Schicke Nachricht..."<< loginRequest<< endl;
-    write(sock, loginRequest.toCharArray(),sizeof(LoginRequest));
+    LoginRequest loginRequest(playerName);
+    stringstream o;
+    o << loginRequest;
+    int len= strlen(o.str().c_str());
+
+    openConnection();
+    write(sock,&msgId,sizeof(LOGINREQUEST));
+    write(sock,(char*) &len,sizeof(int));
+    write(sock, o.str().c_str(),len);
+    cout<< o.str() << " gesendet!"<< endl;
     disconnect();
 }
 
 void TcpClient::sendLoginReply(Spieler* player)
 {
+    NetworkMessage msgId(LOGINREPLY);
+    LoginReply loginRequest(playerName);
+    stringstream o;
+    o << loginRequest;
+    int len= strlen(o.str().c_str());
+
     openConnection();
-    loginReply->setSpieler(*player);
-    NetworkMessage msg = LOGINREPLY;
-    write(sock, &msg, sizeof(NetworkMessage) );
-    write(sock, loginReply, sizeof(LoginReply) );
+    write(sock,&msgId,sizeof(LOGINREPLY));
+    write(sock,(char*) &len,sizeof(int));
+    write(sock, o.str().c_str(),len);
     disconnect();
 }
 

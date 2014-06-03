@@ -11,7 +11,8 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     tcpServer->LoginReplySignal.connect(boost::bind(&NetzwerkSpiel::on_loginReply, this,_1));
     tcpServer->RemoteMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_remoteMove, this,_1));
     tcpServer->start();
-    this->tcpClient = new TcpClient();
+
+    this->tcpClient = new TcpClient("192.168.28.108");
 }
 
 NetzwerkSpiel::~NetzwerkSpiel()
@@ -36,7 +37,7 @@ void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2)
 {
     this->sp2 = new Spieler(nameSpieler2);
     cout << "melde an..."<< endl;
-    tcpClient->sendLoginRequest("SEND_REQUEST");
+    tcpClient->sendLoginRequest("SEND_REQUEST_Test");
 
      //anmeldung erfolgreich sende eigene Daten zurueck...
 
