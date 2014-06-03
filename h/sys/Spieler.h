@@ -49,8 +49,8 @@ public:
 
     friend ostream& operator<<(ostream& out, Spieler& object)
     {
-        out << object.name;
-        out << object.farbe;
+        out << object.name << ";";
+        out << object.farbe<< ";";
         out << object.istAmZug;
         return out;
     }
