@@ -130,27 +130,41 @@ void *TcpServer::startServerThread(void * ptr)
 
 void TcpServer::process(connection_t * conn, void *ptr)
 {
+    int len= 0;
+    string templr;
     cout << "starte verarbeitung!" << endl;
-    NetworkMessage incomingMessage;
+    NetworkMessage incomingMessage(LOGINREQUEST);
     read(conn->sock, &incomingMessage, sizeof(NetworkMessage));
     switch(incomingMessage.getId())
     {
         case LOGINREQUEST:
         {
-            LoginRequest* loginRequest = new LoginRequest();
-            read(conn->sock, loginRequest, sizeof(LoginRequest));
-            string name = loginRequest->getPlayerName();
-            ((TcpServer *)ptr)->LoginRequestSignal(name);
-            delete loginRequest;
+            read(conn->sock, &len, sizeof(int));
+            char bufferlr[len];
+            read(conn->sock, bufferlr, len);
+
+            templr.assign(bufferlr,len);
+            stringstream rsltlr;
+            rsltlr << templr;
+            LoginRequest loginRequest;
+            rsltlr >> loginRequest;
+            cout << loginRequest << "empfangen!" << endl;
+            ((TcpServer *)ptr)->LoginRequestSignal(loginRequest.getPlayerName());
         }
         break;
         case LOGINREPLY:
         {
-            LoginReply* loginReply = new LoginReply();
-            read(conn->sock, loginReply, sizeof(LoginReply));
-            Spieler incomingPlayer = loginReply->getSpieler();
-            ((TcpServer *)ptr)->LoginReplySignal(incomingPlayer);
-            delete loginReply;
+            read(conn->sock, &len, sizeof(int));
+            char bufferlr[len];
+            read(conn->sock, bufferlr, len);
+
+            templr.assign(bufferlr,len);
+            stringstream rsltlr;
+            rsltlr << templr;
+            LoginReply loginRequest;
+            rsltlr >> loginRequest;
+            cout << loginRequest << "empfangen!" << endl;
+            ((TcpServer *)ptr)->LoginRequestSignal(loginRequest.getPlayerName());
         }
         break;
         case REMOTEMOVE:
@@ -206,6 +220,14 @@ void *TcpServer::processThread(void * ptr)
             rsltlr >> loginRequest;*/
             //emit on_loginRequest();
             cout << loginRequest << endl;
+
+
+
+            /*char* buf = (char *)malloc(sizeof(LoginRequest));
+            read(conn->sock, buf, sizeof(LoginRequest));
+            LoginRequest loginRequest;
+            loginRequest.fromCharArray(buf);
+            string name = loginRequest.getPlayerName();*/
         }
         break;
 
