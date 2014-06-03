@@ -84,7 +84,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     delete bordWidget;
     this->bordWidget = new Bord(gameSettings->getBordRows(),gameSettings->getBordColumns(),gameSettings->getCellSize());
     connect(bordWidget, SIGNAL(executeMove(unsigned short)), this, SLOT(on_executeMove(unsigned short)));
-    bordWidget->updatesEnabled(true);
+    bordWidget->setUpdatesEnabled(true);
     bordWidget->show();
 
     //game init...
@@ -157,7 +157,6 @@ void MainWindow::update(unsigned short column, int result)
 
        //Bord bedienen...
        bordWidget->setMove(game->getVerherigerSpieler(),result,column);
-       bordWidget
 
        //GameInfo bedienen...
        ostringstream o;
