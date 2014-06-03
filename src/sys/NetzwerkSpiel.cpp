@@ -38,9 +38,6 @@ void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2)
     this->sp2 = new Spieler(nameSpieler2);
     cout << "melde an..."<< endl;
     tcpClient->sendLoginRequest(nameSpieler2);
-
-     //anmeldung erfolgreich sende eigene Daten zurueck...
-
 }
 
 void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
