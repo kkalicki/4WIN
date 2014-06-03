@@ -84,6 +84,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     delete bordWidget;
     this->bordWidget = new Bord(gameSettings->getBordRows(),gameSettings->getBordColumns(),gameSettings->getCellSize());
     connect(bordWidget, SIGNAL(executeMove(unsigned short)), this, SLOT(on_executeMove(unsigned short)));
+    bordWidget->updatesEnabled(true);
     bordWidget->show();
 
     //game init...
@@ -100,14 +101,14 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     case OPEN:
             this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
             dynamic_cast<NetzwerkSpiel*>(game)->starteNetzwerkSpiel(gameSettings->getPlayer1Name());
-            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::update, this,_1,_1));
+            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::update, this,_1,_2));
             dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame, this));
             gameInfoWidget->setSysMsg("Warte auf Gegner...");
         break;
     case JOIN:
             this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
             dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name());
-            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::update, this,_1,_1));
+            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::update, this,_1,_2));
             dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame,this));
             gameInfoWidget->setSysMsg("Warte auf Antwort...");
         break;
@@ -156,6 +157,7 @@ void MainWindow::update(unsigned short column, int result)
 
        //Bord bedienen...
        bordWidget->setMove(game->getVerherigerSpieler(),result,column);
+       bordWidget
 
        //GameInfo bedienen...
        ostringstream o;
