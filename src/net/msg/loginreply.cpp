@@ -26,6 +26,11 @@ void LoginReply::setSpieler(Spieler value)
     spieler = value;
 }
 
+void LoginReply::fromCsvString(string csv)
+{
+    this->spieler.fromCsvString(csv);
+}
+
 ostream& operator<<(ostream& out, LoginReply& object) {
 
     out << object.spieler;

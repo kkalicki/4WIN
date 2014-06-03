@@ -18,6 +18,7 @@ public:
     friend ostream& operator<<(ostream& out, LoginReply& object);
     friend istream& operator>>(istream& in, LoginReply& object);
 
+    void fromCsvString(string csv);
     string toString();
 
 private:

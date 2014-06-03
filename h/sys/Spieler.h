@@ -45,6 +45,8 @@ public:
         istAmZug = value;
     }
 
+    void fromCsvString(string csv);
+
     friend ostream& operator<<(ostream& out, Spieler& object)
     {
         out << object.name;

@@ -159,10 +159,8 @@ void TcpServer::process(connection_t * conn, void *ptr)
             read(conn->sock, bufferlr, len);
 
             templr.assign(bufferlr,len);
-            stringstream rsltlr;
-            rsltlr << templr;
             LoginReply loginRequest;
-            rsltlr >> loginRequest;
+            loginRequest.fromCsvString(templr);
             cout << loginRequest << "empfangen!" << endl;
             ((TcpServer *)ptr)->LoginReplySignal(loginRequest.getSpieler());
         }
