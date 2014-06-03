@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <../4WIN/h/gui/I4WinWidget.h>
+#include <../4WIN/h/gui/guiupdater.h>
 #include <../h/gui/bord.h>
 #include <../h/gui/settings.h>
 #include <../h/gui/gameinfo.h>
@@ -25,7 +26,6 @@ public:
     virtual void init();
     virtual void preExecute();
     virtual void postExecute();
-    void update(unsigned short column, int result);
     ~MainWindow();
 
 private slots:
@@ -34,8 +34,10 @@ private slots:
     void on_resultSettings(GameSettings* gameSettings);
     void on_actionBeenden_triggered();
     void on_actionNeu_triggered();
+    void update(unsigned short column, int result);
 
     void startGame();
+    void incommingMove(unsigned short column, int row);
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -47,6 +49,7 @@ private:
     GameInfo *gameInfoWidget;
     History * historyWidget;
     GameSettings * gameSettings;
+    GuiUpdater *guiUpdaterThread;
     static const int START_POSITION_X = 230;
     static const int START_POSITION_Y = 0;
 

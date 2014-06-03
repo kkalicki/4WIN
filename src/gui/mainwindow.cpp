@@ -11,6 +11,7 @@
 
 #include <QMessageBox>
 #include <sstream>
+#include <QThread>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -30,6 +31,9 @@ MainWindow::~MainWindow()
     if(game != 0)
         delete game;
 
+    if(guiUpdaterThread == 0)
+        delete guiUpdaterThread;
+
     delete ui;
 }
 
@@ -41,6 +45,7 @@ void MainWindow::init()
     this->setStyleSheet("MainWindow {border-image: url(:/image/back3.png); };");
     load4WinWidgets();
     this->game = 0;
+    this->guiUpdaterThread = 0;
 
     connect( settingsWidget, SIGNAL(resultSettings(GameSettings*)), this, SLOT(on_resultSettings(GameSettings*)));
     connect( gameInfoWidget, SIGNAL(loose(Spieler*)), this, SLOT(on_endGame(Spieler*)));
@@ -101,20 +106,30 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     case OPEN:
             this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
             dynamic_cast<NetzwerkSpiel*>(game)->starteNetzwerkSpiel(gameSettings->getPlayer1Name());
-            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::update, this,_1,_2));
+            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
             dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame, this));
             gameInfoWidget->setSysMsg("Warte auf Gegner...");
         break;
     case JOIN:
             this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
             dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name());
-            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::update, this,_1,_2));
+            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
             dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame,this));
             gameInfoWidget->setSysMsg("Warte auf Antwort...");
         break;
     default: // Do Nothing...
     break;
     }
+}
+
+void MainWindow::incommingMove(unsigned short column,int row)
+{
+    QThread* guiThread = new QThread;
+    guiUpdaterThread = new GuiUpdater(column,row);
+    guiUpdaterThread->moveToThread(guiThread);
+    connect(guiThread, SIGNAL(started()), guiUpdaterThread, SLOT(process()));
+    connect(guiUpdaterThread, SIGNAL(updateGui(unsigned short,int)), this, SLOT(update(unsigned short, int)));
+    guiThread->start();
 }
 
 void MainWindow::startGame()
@@ -124,7 +139,6 @@ void MainWindow::startGame()
     preExecute();
     gameInfoWidget->setSysMsg("Start!");
 }
-
 
 void MainWindow::on_executeMove(unsigned short column)
 {
