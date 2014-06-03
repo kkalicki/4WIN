@@ -47,38 +47,17 @@ public:
 
     friend ostream& operator<<(ostream& out, Spieler& object)
     {
-        out << object.name << ";";
-        out << object.farbe << ";";
+        out << object.name;
+        out << object.farbe;
         out << object.istAmZug;
         return out;
     }
 
     friend istream &operator>>( istream  &input, Spieler &object )
     {
-        char x;
-        string name;
-        while (input.peek() !=';')
-        {
-            input.get(x);
-            name.append(1,x);
-        }
-        object.name = name;
-
-        string farbe;
-        while (input.peek() !=';')
-        {
-            input.get(x);
-            farbe.append(1,x);
-        }
-        object.farbe = atoi(farbe.c_str());
-
-        string istAmZug;
-        while (input.peek() !=';')
-        {
-            input.get(x);
-            istAmZug.append(1,x);
-        }
-        object.istAmZug = atoi(istAmZug.c_str());
+        input >> object.name;
+        input >> object.farbe;
+        input >> object.istAmZug;
         return input;
     }
 
