@@ -161,7 +161,7 @@ void TcpServer::process(connection_t * conn, void *ptr)
             templr.assign(bufferlr,len);
             LoginReply loginRequest;
             loginRequest.fromCsvString(templr);
-            cout << loginRequest << "empfangen!" << endl;
+            cout << loginRequest << " empfangen!" << endl;
             ((TcpServer *)ptr)->LoginReplySignal(loginRequest.getSpieler());
         }
         break;

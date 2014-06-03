@@ -44,7 +44,7 @@ public:
         return aktuellerSpieler;
     }
     Spieler* getVerherigerSpieler() const {
-        return aktuellerSpieler;
+        return vorherigerSpieler;
     }
 
     Spieler* getSp1() const{
