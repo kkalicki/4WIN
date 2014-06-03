@@ -164,7 +164,7 @@ void TcpServer::process(connection_t * conn, void *ptr)
             LoginReply loginRequest;
             rsltlr >> loginRequest;
             cout << loginRequest << "empfangen!" << endl;
-            ((TcpServer *)ptr)->LoginRequestSignal(loginRequest.getPlayerName());
+            ((TcpServer *)ptr)->LoginReplySignal(loginRequest.getSpieler());
         }
         break;
         case REMOTEMOVE:

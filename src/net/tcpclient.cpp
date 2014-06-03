@@ -83,7 +83,7 @@ void TcpClient::sendLoginRequest(string playerName)
 void TcpClient::sendLoginReply(Spieler* player)
 {
     NetworkMessage msgId(LOGINREPLY);
-    LoginReply loginRequest(playerName);
+    LoginReply loginRequest(*player);
     stringstream o;
     o << loginRequest;
     int len= strlen(o.str().c_str());

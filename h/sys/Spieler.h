@@ -47,17 +47,17 @@ public:
 
     friend ostream& operator<<(ostream& out, Spieler& object)
     {
-        out << object.name;
-        out << object.farbe;
+        out << object.name << ";";
+        out << object.farbe << ";";
         out << object.istAmZug;
         return out;
     }
 
     friend istream &operator>>( istream  &input, Spieler &object )
     {
-        input >> object.name;
-        input >> object.farbe;
-        input >> object.istAmZug;
+        while ((input.peek()!=';') && (istream>>object.name))
+        while ((input.peek()!=';') && (istream>>object.farbe))
+        while ((input.peek()!=';') && (istream>>object.istAmZug))
         return input;
     }
 
