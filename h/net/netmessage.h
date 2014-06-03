@@ -14,6 +14,9 @@ public:
     NetMessageType getId() const;
     void setId(const NetMessageType &value);
 
+    char* toCharArray();
+    void fromCharArray(char* buffer);
+
     friend ostream& operator<< (ostream& out, NetworkMessage& object) {
     out << object.id;  //The space (" ") is necessari for separete elements
     return out;

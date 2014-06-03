@@ -18,6 +18,9 @@ public:
     friend ostream& operator<< (ostream& out, LoginRequest& object);
     friend istream& operator>>(istream& in, LoginRequest &object );
 
+    char *toCharArray();
+    void fromCharArray(char*buffer);
+
     string toString();
 
 private:

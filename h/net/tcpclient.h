@@ -10,7 +10,7 @@
 class TcpClient
 {
 public:
-  TcpClient(int port=DEFAULT_PORT_TCP);
+  TcpClient(string ipAddress=LOCALHOST, int port=DEFAULT_PORT_TCP);
   ~TcpClient();
   void openConnection();
   void disconnect();
@@ -21,6 +21,7 @@ public:
 private:
   int sock;
   int port;
+  string ipAddress;
   LoginRequest  loginRequest;
   LoginReply  *loginReply;
   RemoteMove *remoteMove;
