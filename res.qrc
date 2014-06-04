@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>image/up.png</file>
+        <file>image/border_new.png</file>
+        <file>image/red_new.png</file>
+        <file>image/Logo1.png</file>
+        <file>image/red_point.png</file>
+        <file>image/yellow_new2.png</file>
+        <file>image/yellow_point.png</file>
+        <file>image/back3.png</file>
+        <file>image/backroundhistory1.png</file>
+        <file>image/Arrow1.gif</file>
+        <file>image/recright_red.gif</file>
+        <file>image/recright_yellow.gif</file>
+    </qresource>
+</RCC>
