@@ -2,6 +2,7 @@
 #include "../h/net/msg/loginreply.h"
 #include "../h/net/msg/loginrequest.h"
 #include "../h/net/msg/remotemove.h"
+#include "../h/sys/FourWinExceptions.h"
 
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/archive/binary_oarchive.hpp>
@@ -42,14 +43,14 @@ void TcpClient::openConnection()
 
     if (!host)
     {
-            //Throw
+        throw ClientException("Host konnte nicht identifiziert werden! -> Ip-Adresse pruefen!");
     }
 
     memcpy(&address.sin_addr, host->h_addr_list[0], host->h_length);
 
     if(connect(sock, (struct sockaddr *)&address, sizeof(address)))
     {
-        //Throw
+        throw ClientException("Client konnte keine Verbindung zum Server herstellen (" +ipAddress+")");
     }
 }
 

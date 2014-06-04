@@ -10,7 +10,8 @@ Settings::Settings(QWidget *parent) :
 
 Settings::~Settings()
 {
-    delete gameSettings;
+    if(gameSettings != 0)
+        delete gameSettings;
 }
 
 void Settings::on_rbsvs_toggled(bool checked)

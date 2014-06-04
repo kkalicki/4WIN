@@ -56,4 +56,5 @@ void History::addHisItem(HisEintrag * addItem)
 void History::clear()
 {
     //model->clear();
+    ui->lsthistory->clear();
 }

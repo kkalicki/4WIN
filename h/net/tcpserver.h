@@ -24,6 +24,7 @@ public:
     ~TcpServer();
     void start();
     void stop();
+    void connect();
     static void * startServerThread(void * ptr);
     static void * processThread(void * ptr);
     static void process(connection_t * conn, void * ptr);
@@ -40,7 +41,6 @@ public:
 
 private:
     pthread_t tcpServerThread;
-    string ipAdresse;
     int sock;
     int port;
     int isActive;

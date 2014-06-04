@@ -79,6 +79,7 @@ void MainWindow::postExecute()
     historyWidget->postExecute();
 }
 
+
 void MainWindow::on_resultSettings(GameSettings* gameSettings)
 {
     this->gameSettings = gameSettings;
@@ -101,30 +102,36 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     if(game != 0)
         delete game;
 
-    switch(gameSettings->getNetworkMode())
-    {
-    case LOCAL:
-            this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
-            game->starteSpiel(gameSettings->getPlayer1Name(),gameSettings->getPlayer2Name());
-            startGame();
+    try{
+        switch(gameSettings->getNetworkMode())
+        {
+        case LOCAL:
+                this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
+                game->starteSpiel(gameSettings->getPlayer1Name(),gameSettings->getPlayer2Name());
+                startGame();
+            break;
+        case OPEN:
+                this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
+                dynamic_cast<NetzwerkSpiel*>(game)->starteNetzwerkSpiel(gameSettings->getPlayer1Name());
+                dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
+                dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame, this));
+                gameInfoWidget->setSysMsg("Warte auf Gegner...");
+            break;
+        case JOIN:
+                this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
+                dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name());
+                dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
+                dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame,this));
+                gameInfoWidget->setSysMsg("Warte auf Antwort...");
+            break;
+        default: // Do Nothing...
         break;
-    case OPEN:
-            this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
-            dynamic_cast<NetzwerkSpiel*>(game)->starteNetzwerkSpiel(gameSettings->getPlayer1Name());
-            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
-            dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame, this));
-            gameInfoWidget->setSysMsg("Warte auf Gegner...");
-        break;
-    case JOIN:
-            this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
-            dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name());
-            dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
-            dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame,this));
-            gameInfoWidget->setSysMsg("Warte auf Antwort...");
-        break;
-    default: // Do Nothing...
-    break;
+        }
+    }catch(TcpServerException& e){
+        showException(e);
     }
+
+
 }
 
 void MainWindow::incommingMove(unsigned short column,int row)
@@ -155,14 +162,10 @@ void MainWindow::on_executeMove(unsigned short column)
         update(column, rslt);
     }
     catch(EingabeException& e){
-        QMessageBox msg;
-        msg.setText(e.what());
-        msg.exec();
+        showException(e);
     }
     catch(SpielFeldException& e){
-        QMessageBox msg;
-        msg.setText(e.what());
-        msg.exec();
+        showException(e);
     }
 }
 
@@ -244,3 +247,11 @@ void MainWindow::on_actionNeu_triggered()
 
     settingsWidget->show();
 }
+
+void MainWindow::showException(exception& e)
+{
+    QMessageBox msg;
+    msg.setText(e.what());
+    msg.exec();
+}
+

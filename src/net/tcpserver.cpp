@@ -1,20 +1,19 @@
 #include "../h/net/tcpserver.h"
 
-#include <pthread.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <stdio.h>
+#include "../h/sys/FourWinExceptions.h"
 #include "../h/net/netmessage.h"
 #include "../h/net/msg/loginrequest.h"
 #include "../h/net/msg/loginreply.h"
 #include "../h/net/msg/remotemove.h"
-
+#include <pthread.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <stdio.h>
 #include <sstream>
 
 
 TcpServer::TcpServer(int port)
 {
-    this->ipAdresse = ipAdresse;
     this->port = port;
     this->sock = -1;
 }
@@ -41,15 +40,12 @@ void TcpServer::setIsActive(int value)
 
 TcpServer::~TcpServer()
 {
-
+    // kein new...
 }
 
 void TcpServer::start()
 {
-    isActive = true;
-    cout << "starte Server!" << endl;
-    pthread_create(&tcpServerThread, 0, startServerThread, this);
-    pthread_detach(tcpServerThread);
+    connect();
 }
 
 void TcpServer::stop()
@@ -66,25 +62,17 @@ void TcpServer::stop()
     cout << "Serverthread geschlossen!" << endl;
 }
 
-
-void *TcpServer::startServerThread(void * ptr)
+void TcpServer::connect()
 {
-    int port =  ((TcpServer *)ptr)->port;
-    int sock = -1;
-
     struct sockaddr_in address;
-    connection_t * connection;
     //pthread_t thread;
 
     cout << "erstelle Socket!" << endl;
     sock = (socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
     if (sock <= 0)
     {
-        //Throw Exception
-        //fprintf(stderr, "%s: error: cannot create socket\n", argv[0]);
-        //return -3;
+      throw TcpServerException("Socket konnte nicht erstellt werden!");
     }
-    ((TcpServer *)ptr)->setSock(sock);
 
     /* bind socket to port */
     address.sin_family = AF_INET;
@@ -94,37 +82,46 @@ void *TcpServer::startServerThread(void * ptr)
     cout << "Binde Socket!" << endl;
     if (bind(sock, (struct sockaddr *)&address, sizeof(struct sockaddr_in)) < 0)
     {
-        //fprintf(stderr, "%s: error: cannot bind socket to port %d\n", argv[0], port);
-        //return -4;
+        ostringstream o;
+        o << "Socket konnte nicht an Port gebunden werden ! (" << port << ")" << endl;
+        throw TcpServerException(o.str());
     }
 
     if (listen(sock, 5) < 0)
     {
-        //fprintf(stderr, "%s: error: cannot listen on port\n", argv[0]);
-        //return -5;
+        ostringstream o;
+        o << "Server kann horchen an Port! (" << port << ")" << endl;
+        throw TcpServerException(o.str());
     }
 
+    isActive = true;
+    cout << "starte Server!" << endl;
+    pthread_create(&tcpServerThread, 0, startServerThread, this);
+    pthread_detach(tcpServerThread);
+}
+
+
+void *TcpServer::startServerThread(void * ptr)
+{
+    connection_t * connection;
+    int sock = ((TcpServer *)ptr)->sock;
     cout << "server gestartet!" << endl;
     while (true)
     {
         cout << "warte auf eingehende Verbindungen.." << endl;
-        /* accept incoming connections */
         connection = (connection_t *)malloc(sizeof(connection_t));
         connection->sock = accept(sock, &connection->address, &connection->addr_len); //TODO Hier Select() nachlesen
-//        if (connection->sock <= 0)
-//        {
-//            free(connection);
-//        }
-//        else
-//        {
-            /* start a new thread but do not wait for it */
+        if (connection->sock <= 0)
+        {
+             free(connection);
+        }
+        else
+        {
             cout << "Verbindungen eingegangen..PORT: " << connection->sock << endl;
-            /*pthread_create(&thread, 0, process, (void *)connection);
-            pthread_detach(thread);*/
             process(connection,ptr);
             close(connection->sock);
             free(connection);
-       // }
+        }
     }
 }
 
@@ -148,7 +145,7 @@ void TcpServer::process(connection_t * conn, void *ptr)
             rsltlr << templr;
             LoginRequest loginRequest;
             rsltlr >> loginRequest;
-            cout << loginRequest << "empfangen!" << endl;
+            cout << loginRequest << " empfangen!" << endl;
             ((TcpServer *)ptr)->LoginRequestSignal(loginRequest.getPlayerName());
         }
         break;
@@ -172,7 +169,7 @@ void TcpServer::process(connection_t * conn, void *ptr)
             ((TcpServer *)ptr)->RemoteMoveSignal(remoteMove.getColumn());
         }
         break;
-        default:
+        default: // Do Nothing...
         break;
     }
 }
@@ -188,6 +185,10 @@ void *TcpServer::processThread(void * ptr)
 
     if (!ptr) pthread_exit(0);
         conn = (connection_t *)ptr;
+
+
+        /*pthread_create(&thread, 0, process, (void *)connection);
+        pthread_detach(thread);*/
 
     // empfange Nachricht, nimm nur den ersten Teil der Klasse
     /*len =sizeof(int);

@@ -85,6 +85,7 @@ int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
 
 void NetzwerkSpiel::abmeldenNetzwerk()
 {
+    //sende beenden nachricht via tcp
     //Blaa Blaa Blubb....
 }
 

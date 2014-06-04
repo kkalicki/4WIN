@@ -26,6 +26,7 @@ public:
     virtual void init();
     virtual void preExecute();
     virtual void postExecute();
+    void showException(exception &e);
     ~MainWindow();
 
 private slots:

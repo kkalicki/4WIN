@@ -18,6 +18,21 @@ struct SpielFeldException:public exception{
     const char* what() const throw() { return s.c_str(); }
 };
 
+struct ClientException:public exception{
+    std::string s;
+    ClientException(std::string ss) : s(ss) {}
+    ~ClientException() throw () {} // Updated
+    const char* what() const throw() { return s.c_str(); }
+};
+
+struct TcpServerException:public exception{
+    std::string s;
+    TcpServerException(std::string ss) : s(ss) {}
+    ~TcpServerException() throw () {} // Updated
+    const char* what() const throw() { return s.c_str(); }
+};
+
+
 struct MyException : public std::exception
 {
    std::string s;
