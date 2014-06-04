@@ -4,6 +4,8 @@
 // Konstanten fuer Spieler, Spielfeld, und Steine
 const static unsigned short int ROT = 1;
 const static unsigned short int GELB = 0;
+const static short int WIN = -1;
+const static short int VOLL = -2;
 
 // Konstanten fuer Spielfeld
 const static unsigned short int X               = 7;

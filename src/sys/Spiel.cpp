@@ -79,14 +79,14 @@ void Spiel::erstelleNeuenHisEintrag(Spieler* spieler, unsigned short zeile, unsi
 int Spiel::naechsterZug(Spieler* spieler, unsigned short spalte)
 {
     int rslt = spielfeld->werfeStein(spieler,spalte);
-    if(rslt > -1){
+    if(rslt > WIN){
         erstelleNeuenHisEintrag(getAktuellerSpieler(),rslt,spalte,runde);
-        wechselSpieler();
         runde++;
-    }else if(rslt == -1){
+    }else if(rslt == WIN){
         //letzter Zug soll noch Eingetragen werden...
         erstelleNeuenHisEintrag(getAktuellerSpieler(),rslt,spalte,runde);
     }
+    wechselSpieler();
     return rslt;
 }
 
@@ -119,6 +119,11 @@ string Spiel::toString() const{
     out << *spielfeld << endl;
     out << historie->toString() << endl;
     return out.str();
+}
+
+int Spiel::getAktuelleZeile(int spalte)
+{
+    return spielfeld->getSpalteSteine(spalte -1);
 }
 
 

@@ -57,7 +57,7 @@ public:
 
 
 	friend bool operator==(Stein const& lhs, short int const& rhs){
-		return &lhs.farbe == &rhs;
+        return (&lhs.farbe == &rhs);
 	}
 	/**
 	 * Uebergibt den Wert des Steines

@@ -52,10 +52,10 @@ int Spielfeld::werfeStein(Spieler* spieler, int spalte)
             setFeldPos(spalte-1,aktuell,spieler->getFarbe());
 
             if(pruefeStein(spieler->getFarbe(), spalte)){
-              return -1;
+              return WIN;
             }
 
-            return getSpalteSteine(spalte -1);
+            return 0;
         }
         else{
             throw SpielFeldException("Spalte ist Voll!");
@@ -75,13 +75,13 @@ int Spielfeld::pruefeStein(int farbe, int spalte) {
 }
 
 int Spielfeld::checkHorizontal(int farbe, int spalte) {
-    int wert = (farbe==ROT) ? ROT : GELB;
+    short int wert = (farbe==ROT) ? ROT : GELB;
         for(int i = Y-1; i >= 0;i--){
             for(int j = 0; j < X-3;j++){
-                if (getFeldPos(j,i) == wert){
-                    if (getFeldPos(j+1,i) == wert){
-                        if (getFeldPos(j+2,i) == wert){
-                            if (getFeldPos(j+3,i) == wert){
+                if (getFeldPos(j,i).getFarbe() == wert){
+                    if (getFeldPos(j+1,i).getFarbe() == wert){
+                        if (getFeldPos(j+2,i).getFarbe() == wert){
+                            if (getFeldPos(j+3,i).getFarbe() == wert){
                                 return true;
                             }
 
@@ -97,13 +97,13 @@ int Spielfeld::checkHorizontal(int farbe, int spalte) {
 
 
 int Spielfeld::checkVertikal(int farbe, int spalte) {
-    int wert = (farbe==ROT) ? ROT : GELB;
+    short int wert = (farbe==ROT) ? ROT : GELB;
         for(int j = 0; j < X;j++){
             for(int i = Y-1; i >= 3;i--){
-                if (getFeldPos(j,i) == wert){
-                    if (getFeldPos(j,i-1) == wert){
-                        if (getFeldPos(j,i-2) == wert){
-                            if (getFeldPos(j,i-3) == wert){
+                if (getFeldPos(j,i).getFarbe() == wert){
+                    if (getFeldPos(j,i-1).getFarbe() == wert){
+                        if (getFeldPos(j,i-2).getFarbe() == wert){
+                            if (getFeldPos(j,i-3).getFarbe() == wert){
                                 return true;
                             }
 
@@ -118,13 +118,13 @@ int Spielfeld::checkVertikal(int farbe, int spalte) {
     }
 
 int Spielfeld::checkDiagonal(int farbe, int spalte) {
-    int wert = (farbe==ROT) ? ROT : GELB;
+    short int wert = (farbe==ROT) ? ROT : GELB;
     for(int i = zeilen-1; i >= 3;i--){
         for(int j = 0; j < spalten-3;j++){
-            if (getFeldPos(j,i) == wert){
-                if (getFeldPos(j+1,i-1) == wert){
-                    if (getFeldPos(j+2,i-2) == wert){
-                        if (getFeldPos(j+3,i-3) == wert){
+            if (getFeldPos(j,i).getFarbe() == wert){
+                if (getFeldPos(j+1,i-1).getFarbe() == wert){
+                    if (getFeldPos(j+2,i-2).getFarbe() == wert){
+                        if (getFeldPos(j+3,i-3).getFarbe() == wert){
                             return true;
                         }
 
@@ -137,10 +137,10 @@ int Spielfeld::checkDiagonal(int farbe, int spalte) {
     }
     for(int i = zeilen-1; i >= 3;i--){
         for(int j = 3; j < spalten;j++){
-            if (getFeldPos(j,i) == wert){
-                if (getFeldPos(j-1,i-1) == wert){
-                    if (getFeldPos(j-2,i-2) == wert){
-                        if (getFeldPos(j-3,i-3) == wert){
+            if (getFeldPos(j,i).getFarbe() == wert){
+                if (getFeldPos(j-1,i-1).getFarbe() == wert){
+                    if (getFeldPos(j-2,i-2).getFarbe() == wert){
+                        if (getFeldPos(j-3,i-3).getFarbe() == wert){
                             return true;
                         }
 
