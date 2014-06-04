@@ -178,7 +178,11 @@ void MainWindow::update(unsigned short column, int result)
         //Spiel zu ende...
         on_endGame(game->getVerherigerSpieler());
     }
-    else {  //else if Catch Spielfeld voll!! --> on_endGame(0);
+    else if (result == VOLL){
+        //Spiel unentschieden...
+        on_endGame(0);
+    }
+    else{  //else if Catch Spielfeld voll!! --> on_endGame(0);
 
        //GameInfo bedienen...
        ostringstream o;
