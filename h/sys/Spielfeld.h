@@ -57,7 +57,14 @@ public:
 
     int werfeStein(Spieler* spieler, int spalte);
 
-
+    /**
+     * Gibt Anzahl der schon gelegten Steine in einer Spalte zurueck
+     * @param x gibt an welche Spalte gemeint ist
+     * @return gibt die Anzahl der Steine in der Spalte zurueck
+     */
+    int getSpalteSteine(int x) const{
+        return aktuell[x];
+    }
 
 private:
 
@@ -73,14 +80,7 @@ private:
         aktuell[x]++;
     }
 
-    /**
-     * Gibt Anzahl der schon gelegten Steine in einer Spalte zurueck
-     * @param x gibt an welche Spalte gemeint ist
-     * @return gibt die Anzahl der Steine in der Spalte zurueck
-     */
-    int getSpalteSteine(int x) const{
-        return aktuell[x];
-    }
+
 
     int pruefeStein(int farbe, int spalte);
 

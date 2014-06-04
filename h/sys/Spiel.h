@@ -29,7 +29,7 @@ public:
                                  unsigned short runde);
 
 
-
+    int getAktuelleZeile(int spalte);
     int getId() const
     {
         return id;
@@ -83,6 +83,8 @@ public:
 
     friend ostream& operator<<(ostream& out, Spiel& sp);
     string toString() const;
+
+
 
 protected:
     int id;

@@ -158,8 +158,8 @@ void MainWindow::on_executeMove(unsigned short column)
     int rslt;
     try
     {
-        rslt = game->naechsterZug(currentPlayer,column);
-        update(column, rslt);
+       rslt = game->naechsterZug(currentPlayer,column);
+       update(column, rslt);
     }
     catch(EingabeException& e){
         showException(e);
@@ -171,14 +171,14 @@ void MainWindow::on_executeMove(unsigned short column)
 
 void MainWindow::update(unsigned short column, int result)
 {
-    if(result == -1){
+    //Bord bedienen...
+    bordWidget->setMove(game->getVerherigerSpieler(),game->getAktuelleZeile(column),column);
+
+    if(result == WIN){
         //Spiel zu ende...
         on_endGame(game->getVerherigerSpieler());
     }
     else {  //else if Catch Spielfeld voll!! --> on_endGame(0);
-
-       //Bord bedienen...
-       bordWidget->setMove(game->getVerherigerSpieler(),result,column);
 
        //GameInfo bedienen...
        ostringstream o;
