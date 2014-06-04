@@ -17,8 +17,6 @@ class Spieler {
 public:
     Spieler(string name="Spieler", short farbe=0);
 
-	virtual ~Spieler();
-
 	const string& getName() const {
 		return name;
 	}

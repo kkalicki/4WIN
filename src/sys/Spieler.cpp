@@ -15,9 +15,6 @@ Spieler::Spieler(string name, short farbe) {
     this->istAmZug = false;
 }
 
-Spieler::~Spieler() {
-}
-
 void Spieler::fromCsvString(string csv)
 {
     char * buffer = new char[csv.length()];

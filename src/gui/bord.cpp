@@ -20,10 +20,11 @@ Bord::Bord(unsigned short rowCount, unsigned short colCount, unsigned short cell
 
 Bord::~Bord()
 {
-    delete ui;
+    clear();
     delete defaultImage;
     delete redImage;
     delete yellowImage;
+    delete ui;
 }
 
 void Bord::init()
