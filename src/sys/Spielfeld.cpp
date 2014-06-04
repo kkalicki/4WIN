@@ -54,6 +54,9 @@ int Spielfeld::werfeStein(Spieler* spieler, int spalte)
             if(pruefeStein(spieler->getFarbe(), spalte)){
               return WIN;
             }
+            if(pruefeSpielfeld()){
+                return VOLL;
+            }
 
             return 0;
         }
@@ -72,6 +75,15 @@ int Spielfeld::pruefeStein(int farbe, int spalte) {
         return true;
     else
         return false;
+}
+
+bool Spielfeld::pruefeSpielfeld()
+{
+    for (int i=0; i<this->spalten; i++){
+        if (this->aktuell[i] < this->zeilen)
+            return false;
+    }
+    return true;
 }
 
 int Spielfeld::checkHorizontal(int farbe, int spalte) {

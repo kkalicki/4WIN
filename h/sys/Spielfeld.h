@@ -83,6 +83,7 @@ private:
 
 
     int pruefeStein(int farbe, int spalte);
+    bool pruefeSpielfeld();
 
     int checkHorizontal(int farbe, int spalte);
     int checkVertikal(int farbe, int spalte);
