@@ -22,9 +22,6 @@ private:
   int sock;
   int port;
   string ipAddress;
-  LoginRequest  loginRequest;
-  LoginReply  *loginReply;
-  RemoteMove *remoteMove;
 };
 
 #endif // TCPCLIENT_H

@@ -6,10 +6,12 @@ const static unsigned short int ROT = 1;
 const static unsigned short int GELB = 0;
 
 // Konstanten fuer Spielfeld
-const static unsigned short int X               = 7; //umbenennen in ROWS
-const static unsigned short int Y               = 6; //COLUMNS
+const static unsigned short int X               = 7;
+const static unsigned short int Y               = 6;
 const static unsigned short CELL_SIZE           = 80;
 const static unsigned short SEC_IN_MS           = 1000;
+
+// Konstanten fuer Netzwerkspiel
 const static unsigned short DEFAULT_PORT_TCP    = 8001;
 const static unsigned short DEFAULT_PORT_UDP    = 8002;
 const static std::string    LOCALHOST           = "127.0.0.1";
