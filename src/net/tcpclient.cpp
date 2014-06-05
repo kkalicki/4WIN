@@ -13,6 +13,8 @@
 #include <netinet/in.h>
 #include <iostream>
 
+
+#include <arpa/inet.h>
 using namespace std;
 
 TcpClient::TcpClient(string ipAddress,int port)
@@ -98,4 +100,38 @@ void TcpClient::sendMove(unsigned short column)
     write(sock, &msg, sizeof(NetworkMessage) );
     write(sock, &remoteMove, sizeof(RemoteMove) );
     disconnect();
+}
+
+void TcpClient::openConnectionBroadcast()
+{
+    struct sockaddr_in address;
+    //struct hostent * host;
+
+    sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+
+    int broadcastPermission = 1;
+        if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0)
+            printf("setsockopt() failed");
+
+     memset(&address, 0, sizeof(address));            /* Zero out structure */
+     address.sin_family = AF_INET;                       /* Internet address family */
+     address.sin_addr.s_addr = inet_addr("192.168.28.105");      /* client IP address */
+     address.sin_port = htons(DEFAULT_PORT_UDP);
+
+     char buff[1024];
+    int len =strlen(buff);
+     /* bind local port for sending */
+         if (bind(sock, (struct sockaddr *) &address, sizeof(address)) < 0)
+             printf("bind() failed");
+
+         /* Broadcast sendString in datagram */
+         if (sendto(sock, buff, len, 0, (struct sockaddr *) &address, sizeof(address)) != len)
+             printf("sendto() failed");
+
+    disconnect();
+}
+
+void TcpClient::sendHelloBroadcast()
+{
+    openConnectionBroadcast();
 }

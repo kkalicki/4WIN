@@ -12,7 +12,9 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     tcpServer->RemoteMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_remoteMove, this,_1));
     tcpServer->start();
 
-    this->tcpClient = new TcpClient("192.168.28.105");
+    this->tcpClient = new TcpClient("192.168.28.108");
+
+    //tcpClient->sendHelloBroadcast();
 }
 
 NetzwerkSpiel::~NetzwerkSpiel()

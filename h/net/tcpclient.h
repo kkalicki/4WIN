@@ -18,6 +18,9 @@ public:
   void sendLoginReply(Spieler* player);
   void sendMove(unsigned short column);
 
+  void openConnectionBroadcast();
+  void sendHelloBroadcast();
+
 private:
   int sock;
   int port;
