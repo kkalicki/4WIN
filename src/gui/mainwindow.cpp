@@ -7,6 +7,7 @@
 #include "../h/sys/FourWinExceptions.h"
 #include "../h/sys/NetzwerkSpiel.h"
 
+#include "../h/sys/SpielerKI.h"
 #include "../h/sys/Spieler.h"
 
 #include <QMessageBox>
@@ -107,7 +108,22 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
         {
         case LOCAL:
                 this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
-                game->starteSpiel(gameSettings->getPlayer1Name(),gameSettings->getPlayer2Name());
+
+                switch (gameSettings->getMode()) {
+                case SVS:
+                    game->starteSpiel(gameSettings->getPlayer1Name(),gameSettings->getPlayer2Name(),false,false);
+                    break;
+                case SVC:
+                    game->starteSpiel(gameSettings->getPlayer1Name(),gameSettings->getPlayer2Name(),false,true);
+                    game->RemoteZugSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
+                    break;
+                case CVC:
+                    game->starteSpiel(gameSettings->getPlayer1Name(),gameSettings->getPlayer2Name(),true,true);
+                    game->RemoteZugSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
+                    break;
+                default:
+                    break;
+                }
                 startGame();
             break;
         case OPEN:
@@ -160,6 +176,7 @@ void MainWindow::on_executeMove(unsigned short column)
     {
        rslt = game->naechsterZug(currentPlayer,column);
        update(column, rslt);
+
     }
     catch(EingabeException& e){
         showException(e);
@@ -171,27 +188,28 @@ void MainWindow::on_executeMove(unsigned short column)
 
 void MainWindow::update(unsigned short column, int result)
 {
-    //Bord bedienen...
-    bordWidget->setMove(game->getVerherigerSpieler(),game->getAktuelleZeile(column),column);
+
+    bordWidget->setMove(game->getAktuellerSpieler(),game->getAktuelleZeile(column),column);
 
     if(result == WIN){
         //Spiel zu ende...
-        on_endGame(game->getVerherigerSpieler());
+        on_endGame(game->getAktuellerSpieler());
     }
     else if (result == VOLL){
         //Spiel unentschieden...
         on_endGame(0);
     }
     else{  //else if Catch Spielfeld voll!! --> on_endGame(0);
-
+       game->wechselSpieler();
        //GameInfo bedienen...
        ostringstream o;
-       o<< (result) << " - "<< column;
+       o<< (game->getAktuelleZeile(column)) << " - "<< column;
        gameInfoWidget->changePlayer(game->getAktuellerSpieler(),game->getRunde(),o.str());
     }
 
     //history add..
     historyWidget->addHisItem(game->getHistorie()->getLetztenEintrag());
+
 }
 
 void MainWindow::on_endGame(Spieler* winner)

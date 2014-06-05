@@ -88,8 +88,8 @@ bool Spielfeld::pruefeSpielfeld()
 
 int Spielfeld::checkHorizontal(int farbe, int spalte) {
     short int wert = (farbe==ROT) ? ROT : GELB;
-        for(int i = Y-1; i >= 0;i--){
-            for(int j = 0; j < X-3;j++){
+        for(int i = zeilen-1; i >= 0;i--){
+            for(int j = 0; j < spalten-3;j++){
                 if (getFeldPos(j,i).getFarbe() == wert){
                     if (getFeldPos(j+1,i).getFarbe() == wert){
                         if (getFeldPos(j+2,i).getFarbe() == wert){
@@ -110,8 +110,8 @@ int Spielfeld::checkHorizontal(int farbe, int spalte) {
 
 int Spielfeld::checkVertikal(int farbe, int spalte) {
     short int wert = (farbe==ROT) ? ROT : GELB;
-        for(int j = 0; j < X;j++){
-            for(int i = Y-1; i >= 3;i--){
+        for(int j = 0; j < spalten;j++){
+            for(int i = zeilen-1; i >= 3;i--){
                 if (getFeldPos(j,i).getFarbe() == wert){
                     if (getFeldPos(j,i-1).getFarbe() == wert){
                         if (getFeldPos(j,i-2).getFarbe() == wert){
@@ -165,6 +165,7 @@ int Spielfeld::checkDiagonal(int farbe, int spalte) {
     }
     return false;
 }
+
 
 ostream& operator<<(ostream& out, Spielfeld& spf){
     out << spf.toString();
