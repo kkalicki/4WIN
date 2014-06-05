@@ -16,7 +16,7 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     //this->udpServer = new UdpServer();
     //udpServer->start();
 
-    this->tcpClient = new TcpClient("192.168.28.105");
+    this->tcpClient = new TcpClient("192.168.28.108");
 }
 
 NetzwerkSpiel::~NetzwerkSpiel()

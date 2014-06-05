@@ -97,7 +97,7 @@ void TcpClient::sendMove(unsigned short column)
 {
     openConnection();
     RemoteMove remoteMove(column);
-    NetworkMessage msg = REMOTEMOVE;
+    NetworkMessage msg(REMOTEMOVE);
     write(sock, &msg, sizeof(NetworkMessage) );
     write(sock, &remoteMove, sizeof(RemoteMove) );
     cout<< "REMOTEMOVE "<< column <<" gesendet!"<< endl;
@@ -107,7 +107,7 @@ void TcpClient::sendMove(unsigned short column)
 void TcpClient::sendGiveUp()
 {
     openConnection();
-    NetworkMessage msg = GIVEUP;
+    NetworkMessage msg(GIVEUP);
     write(sock, &msg, sizeof(NetworkMessage) );
     cout<< "GIVEUP gesendet!"<< endl;
     disconnect();
