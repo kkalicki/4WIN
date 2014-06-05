@@ -1,5 +1,5 @@
 
-#include "../h/gui/timer4Win.h"
+#include "../h/gui/threads/timer4Win.h"
 
 Timer4Win::Timer4Win()
 {
