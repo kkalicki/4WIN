@@ -47,3 +47,8 @@ bool Spieler::getIsKI() const
     return isKI;
 }
 
+Spieler::~Spieler()
+{
+
+}
+

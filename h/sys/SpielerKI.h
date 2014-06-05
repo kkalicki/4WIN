@@ -17,6 +17,8 @@ public:
     void denken();
     static void * starteDenkprozess(void * ptr);
     void werfeSteinSignal();
+    int pruefeZuege(SpielerKI *sp);
+    bool pruefeWinZug(unsigned short farbe, int spalte, Spielfeld *feld);
 	virtual ~SpielerKI();
 
     boost::signals2::signal<void(unsigned short)> WerfeSteinSignal;
