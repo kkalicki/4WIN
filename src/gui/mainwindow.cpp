@@ -35,6 +35,9 @@ MainWindow::~MainWindow()
     if(guiUpdaterThread == 0)
         delete guiUpdaterThread;
 
+    if(giveUpThread == 0)
+        delete giveUpThread;
+
     delete ui;
 }
 
@@ -47,6 +50,7 @@ void MainWindow::init()
     load4WinWidgets();
     this->game = 0;
     this->guiUpdaterThread = 0;
+    this->giveUpThread = 0;
 
     connect( settingsWidget, SIGNAL(resultSettings(GameSettings*)), this, SLOT(on_resultSettings(GameSettings*)));
     connect( gameInfoWidget, SIGNAL(loose(Spieler*,bool)), this, SLOT(on_endGame(Spieler*,bool)));
@@ -131,7 +135,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
                 dynamic_cast<NetzwerkSpiel*>(game)->starteNetzwerkSpiel(gameSettings->getPlayer1Name());
                 dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
                 dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame, this));
-                dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.connect(boost::bind(&MainWindow::on_endGame, this,_1,_2));
+                dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.connect(boost::bind(&MainWindow::incommingGiveUp, this,_1,_2));
                 gameInfoWidget->setSysMsg("Warte auf Gegner...");
             break;
         case JOIN:
@@ -139,7 +143,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
                 dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name());
                 dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
                 dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame,this));
-                dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.connect(boost::bind(&MainWindow::on_endGame, this,_1,_2));
+                dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.connect(boost::bind(&MainWindow::incommingGiveUp, this,_1,_2));
                 gameInfoWidget->setSysMsg("Warte auf Antwort...");
             break;
         default: // Do Nothing...
@@ -148,16 +152,6 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     }catch(TcpServerException& e){
         showException(e);
     }
-}
-
-void MainWindow::incommingMove(unsigned short column,int row)
-{
-    QThread* guiThread = new QThread;
-    guiUpdaterThread = new GuiUpdater(column,row);
-    guiUpdaterThread->moveToThread(guiThread);
-    connect(guiThread, SIGNAL(started()), guiUpdaterThread, SLOT(process()));
-    connect(guiUpdaterThread, SIGNAL(updateGui(unsigned short,int)), this, SLOT(update(unsigned short, int)));
-    guiThread->start();
 }
 
 void MainWindow::startGame()
@@ -236,6 +230,26 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
         msg.setText(QString::fromStdString(strmsg));
         msg.exec();
     }
+}
+
+void MainWindow::incommingMove(unsigned short column,int row)
+{
+    QThread* guiThread = new QThread;
+    guiUpdaterThread = new MoveThread(column,row);
+    guiUpdaterThread->moveToThread(guiThread);
+    connect(guiThread, SIGNAL(started()), guiUpdaterThread, SLOT(process()));
+    connect(guiUpdaterThread, SIGNAL(updateGui(unsigned short,int)), this, SLOT(update(unsigned short, int)));
+    guiThread->start();
+}
+
+void MainWindow::incommingGiveUp(Spieler *remoteSpieler, bool giveUp)
+{
+    QThread* guiThread = new QThread;
+    giveUpThread = new GiveUpThread(remoteSpieler,giveUp);
+    giveUpThread->moveToThread(guiThread);
+    connect(guiThread, SIGNAL(started()), giveUpThread, SLOT(process()));
+    connect(giveUpThread, SIGNAL(updateGui(Spieler*,bool)), this, SLOT(on_endGame(Spieler*, bool)));
+    guiThread->start();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

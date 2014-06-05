@@ -2,12 +2,12 @@
 #define GUIUPDATER_H
 
 #include   <QObject>
-class GuiUpdater : public QObject
+class MoveThread : public QObject
 {
    Q_OBJECT
 
 public:
-    GuiUpdater(unsigned short column, int row);
+    MoveThread(unsigned short column, int row);
 public slots:
     void process();
 signals:

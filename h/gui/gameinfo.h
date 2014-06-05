@@ -3,7 +3,7 @@
 
 #include "../h/gui/I4WinWidget.h"
 #include "../h/sys/Spieler.h"
-#include "../h/gui/timer4Win.h"
+#include "../h/gui/threads//timer4Win.h"
 #include <QWidget>
 #include <QPixmap>
 #include <string>
