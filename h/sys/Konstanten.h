@@ -2,8 +2,8 @@
 #define KONSTANTEN_H_
 #include <string>
 // Konstanten fuer Spieler, Spielfeld, und Steine
-const static unsigned short int ROT = 1;
-const static unsigned short int GELB = 0;
+const static unsigned short ROT = 1;
+const static unsigned short GELB = 0;
 const static short int WIN = -1;
 const static short int VOLL = -2;
 

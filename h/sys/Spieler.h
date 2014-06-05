@@ -15,7 +15,7 @@ using namespace std;
 
 class Spieler {
 public:
-    Spieler(string name="Spieler", short farbe=0);
+    Spieler(string name="Spieler",unsigned short farbe=ROT);
 
 	const string& getName() const {
 		return name;
@@ -62,10 +62,15 @@ public:
     }
 
     string toString() const;
+    bool getIsKI() const;
+
+protected:
+    bool isKI;
 private:
     string name;
     short farbe;
     int istAmZug;
+
 };
 
 #endif /* SPIELER_H_ */

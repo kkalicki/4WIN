@@ -92,7 +92,7 @@ void NetzwerkSpiel::abmeldenNetzwerk()
 void NetzwerkSpiel::on_loginRequest(string loginPlayerName)
 {
     cout << "Incoming to on_loginRequest() VALUE: " << loginPlayerName << endl;
-    starteSpiel(nameSpieler1,loginPlayerName);
+    starteSpiel(nameSpieler1,loginPlayerName,false,false);
     this->tcpClient->sendLoginReply(sp1);
 
     //hier starte spiel...

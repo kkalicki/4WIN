@@ -6,6 +6,7 @@
  */
 
 #include "../h/sys/Spiel.h"
+#include "../h/sys/SpielerKI.h"
 #include "../h/sys/FourWinExceptions.h"
 #include "../h/sys/HisEintrag.h"
 #include <stdlib.h>
@@ -36,10 +37,20 @@ Spiel::~Spiel() {
 }
 
 
-void Spiel::starteSpiel(string nameSpieler1, string nameSpieler2)
+void Spiel::starteSpiel(string nameSpieler1, string nameSpieler2, bool sp1KI, bool sp2KI )
 {
-    this->sp1 = new Spieler(nameSpieler1);
-    this->sp2 = new Spieler(nameSpieler2);
+    if (sp1KI) {
+        this->sp1 = new SpielerKI(nameSpieler1, spielfeld);
+        static_cast<SpielerKI*>(sp1)->WerfeSteinSignal.connect(boost::bind(&Spiel::naechsterZugRemote, this,_1));
+    }else{
+        this->sp1 = new Spieler(nameSpieler1);
+    }
+    if (sp2KI) {
+        this->sp2 = new SpielerKI(nameSpieler2, spielfeld);
+        static_cast<SpielerKI*>(sp2)->WerfeSteinSignal.connect(boost::bind(&Spiel::naechsterZugRemote, this,_1));
+    }else{
+        this->sp2 = new Spieler(nameSpieler2);
+    }
 
     time_t t;
     time(&t);
@@ -86,8 +97,14 @@ int Spiel::naechsterZug(Spieler* spieler, unsigned short spalte)
         //letzter Zug soll noch Eingetragen werden...
         erstelleNeuenHisEintrag(getAktuellerSpieler(),rslt,spalte,runde);
     }
-    wechselSpieler();
+   // wechselSpieler();
     return rslt;
+}
+
+void Spiel::naechsterZugRemote(int spalte)
+{
+    int result = this->naechsterZug(this->aktuellerSpieler, spalte);
+    RemoteZugSignal(spalte,result);
 }
 
 void Spiel::wechselSpieler()
@@ -102,6 +119,9 @@ void Spiel::wechselSpieler()
         sp2->setIstAmZug(false);
         sp1->setIstAmZug(true);
         aktuellerSpieler = sp1;
+    }
+    if (aktuellerSpieler->getIsKI() == true){
+        static_cast<SpielerKI*>(aktuellerSpieler)->denken();
     }
 }
 

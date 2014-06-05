@@ -11,6 +11,7 @@
 #include "../h/sys/Konstanten.h"
 #include "../h/sys/Spielfeld.h"
 #include "../h/sys/Historie.h"
+#include "boost/signals2.hpp"
 #include <iostream>
 
 class Spiel {
@@ -19,8 +20,9 @@ public:
     Spiel(unsigned short zeilen=Y, unsigned short spalten=X);
     virtual ~Spiel();
 
-    void starteSpiel(string nameSpieler1, string nameSpieler2);
+    void starteSpiel(string nameSpieler1, string nameSpieler2, bool sp1KI, bool sp2KI);
     virtual int naechsterZug(Spieler* spieler, unsigned short spalte);
+    virtual void naechsterZugRemote(int spalte);
     void aufgeben();
     HisEintrag* getLetztenHisEintrag();
     void erstelleNeuenHisEintrag(Spieler* spieler,
@@ -85,6 +87,8 @@ public:
     string toString() const;
 
 
+    void wechselSpieler();
+    boost::signals2::signal<void(unsigned short,int)> RemoteZugSignal;
 
 protected:
     int id;
@@ -95,7 +99,7 @@ protected:
     Spieler *aktuellerSpieler;
     Spieler *vorherigerSpieler;
     unsigned short runde;
-    void wechselSpieler();
+
 };
 
 #endif /* SPIEL_H_ */

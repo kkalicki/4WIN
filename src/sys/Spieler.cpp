@@ -9,10 +9,11 @@
 #include <sstream>
 #include <cstring>
 
-Spieler::Spieler(string name, short farbe) {
+Spieler::Spieler(string name, unsigned short farbe) {
 	this->name=name;
     this->farbe = farbe;
     this->istAmZug = false;
+    this->isKI = false;
 }
 
 void Spieler::fromCsvString(string csv)
@@ -41,5 +42,8 @@ string Spieler::toString() const{
     o << "Zug    : " << (istAmZug == true ? "Ist am Zug" : "Ist nicht Zug") << endl;
     return o.str();
 }
-
+bool Spieler::getIsKI() const
+{
+    return isKI;
+}
 

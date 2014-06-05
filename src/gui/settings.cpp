@@ -130,7 +130,7 @@ GameMode Settings::getGameMode()
     if(ui->rbsvc->isChecked())
         return SVC;
 
-    if(ui->rbsvc->isChecked())
+    if(ui->rbcvc->isChecked())
         return CVC;
 }
 

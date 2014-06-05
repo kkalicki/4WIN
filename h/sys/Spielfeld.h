@@ -66,6 +66,12 @@ public:
         return aktuell[x];
     }
 
+    unsigned short getSpalten() const{
+        return this->spalten;
+    }
+    unsigned short getZeilen() const{
+        return this->zeilen;
+    }
 private:
 
     void init();
