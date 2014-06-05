@@ -12,7 +12,11 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     tcpServer->RemoteMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_remoteMove, this,_1));
     tcpServer->start();
 
+    //this->udpServer = new UdpServer();
+    //udpServer->start();
+
     this->tcpClient = new TcpClient("192.168.28.105");
+
 }
 
 NetzwerkSpiel::~NetzwerkSpiel()
@@ -21,7 +25,11 @@ NetzwerkSpiel::~NetzwerkSpiel()
     if(tcpServer->getIsActive())
         tcpServer->stop();
 
+    //if(udpServer->getIsActive())
+      //  udpServer->stop();
+
     delete tcpServer;
+    //delete udpServer;
     delete tcpClient;
     std::cout << "Netzwerkspiel geschlossen!!!" << endl;
 

@@ -19,7 +19,7 @@ typedef struct
 
 class UdpServer{
 public:
-    UdpServer(int port=DEFAULT_PORT_TCP);
+    UdpServer(int port=DEFAULT_PORT_UDP);
     ~UdpServer();
     void start();
     void stop();
