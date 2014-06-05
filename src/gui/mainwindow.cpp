@@ -49,7 +49,7 @@ void MainWindow::init()
     this->guiUpdaterThread = 0;
 
     connect( settingsWidget, SIGNAL(resultSettings(GameSettings*)), this, SLOT(on_resultSettings(GameSettings*)));
-    connect( gameInfoWidget, SIGNAL(loose(Spieler*)), this, SLOT(on_endGame(Spieler*)));
+    connect( gameInfoWidget, SIGNAL(loose(Spieler*,bool)), this, SLOT(on_endGame(Spieler*,bool)));
 }
 
 void MainWindow::load4WinWidgets()
@@ -131,6 +131,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
                 dynamic_cast<NetzwerkSpiel*>(game)->starteNetzwerkSpiel(gameSettings->getPlayer1Name());
                 dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
                 dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame, this));
+                dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.connect(boost::bind(&MainWindow::on_endGame, this,_1,_2));
                 gameInfoWidget->setSysMsg("Warte auf Gegner...");
             break;
         case JOIN:
@@ -138,6 +139,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
                 dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name());
                 dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
                 dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame,this));
+                dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.connect(boost::bind(&MainWindow::on_endGame, this,_1,_2));
                 gameInfoWidget->setSysMsg("Warte auf Antwort...");
             break;
         default: // Do Nothing...
@@ -146,8 +148,6 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     }catch(TcpServerException& e){
         showException(e);
     }
-
-
 }
 
 void MainWindow::incommingMove(unsigned short column,int row)
@@ -193,11 +193,11 @@ void MainWindow::update(unsigned short column, int result)
 
     if(result == WIN){
         //Spiel zu ende...
-        on_endGame(game->getAktuellerSpieler());
+        on_endGame(game->getAktuellerSpieler(),false);
     }
     else if (result == VOLL){
         //Spiel unentschieden...
-        on_endGame(0);
+        on_endGame(0,false);
     }
     else{  //else if Catch Spielfeld voll!! --> on_endGame(0);
        game->wechselSpieler();
@@ -212,8 +212,12 @@ void MainWindow::update(unsigned short column, int result)
 
 }
 
-void MainWindow::on_endGame(Spieler* winner)
+void MainWindow::on_endGame(Spieler* winner,bool giveUp)
 {
+    if(giveUp)
+        game->aufgeben();
+
+
     postExecute();
 
     if(winner == 0)

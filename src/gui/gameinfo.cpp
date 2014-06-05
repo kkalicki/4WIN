@@ -181,12 +181,12 @@ void GameInfo::setRound(unsigned short round)
 
 void GameInfo::on_btnlooseleft_clicked()
 {
-    emit loose(player2);
+    emit loose(player2,true);
 }
 
 void GameInfo::on_btnlooseright_clicked()
 {
-    emit loose(player1);
+    emit loose(player1,true);
 }
 
 void GameInfo::on_timeChange()

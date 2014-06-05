@@ -23,7 +23,7 @@ public:
     void starteSpiel(string nameSpieler1, string nameSpieler2, bool sp1KI, bool sp2KI);
     virtual int naechsterZug(Spieler* spieler, unsigned short spalte);
     virtual void naechsterZugRemote(int spalte);
-    void aufgeben();
+    virtual void aufgeben();
     HisEintrag* getLetztenHisEintrag();
     void erstelleNeuenHisEintrag(Spieler* spieler,
                                  unsigned short zeile,

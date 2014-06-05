@@ -21,19 +21,24 @@ public:
     void abmeldenNetzwerk();
     void rueckgabeSpielerInfo(Spieler spieler);
     virtual int naechsterZug(Spieler* spieler, unsigned short spalte);
+    virtual void aufgeben();
 
     void on_loginRequest(string loginPlayerName);
     void on_loginReply(Spieler spieler);
     void on_remoteMove(unsigned short column);
+    void on_giveUp();
 
     boost::signals2::signal<void(unsigned short, int)> RemoteMoveSignal;
     boost::signals2::signal<void()> StartGameSignal;
+    boost::signals2::signal<void(Spieler*,bool)> GiveUpRemotePlayerSignal;
 
 protected:
     TcpServer* tcpServer;
     //UdpServer* udpServer;
     TcpClient* tcpClient;
     string nameSpieler1;
+    Spieler * remoteSpieler;
+
 };
 
 #endif // NETZWERKSPIEL_H

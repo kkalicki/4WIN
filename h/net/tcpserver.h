@@ -32,6 +32,7 @@ public:
     boost::signals2::signal<void(string)> LoginRequestSignal;
     boost::signals2::signal<void(Spieler)> LoginReplySignal;
     boost::signals2::signal<void(unsigned short)> RemoteMoveSignal;
+    boost::signals2::signal<void()> GiveUpSignal;
 
     int getSock() const;
     void setSock(int value);

@@ -17,6 +17,7 @@ public:
   void sendLoginRequest(string playerName);
   void sendLoginReply(Spieler* player);
   void sendMove(unsigned short column);
+  void sendGiveUp();
 
   void openConnectionBroadcast();
   void sendHelloBroadcast();

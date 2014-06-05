@@ -32,7 +32,6 @@ NetzwerkSpiel::~NetzwerkSpiel()
     //delete udpServer;
     delete tcpClient;
     std::cout << "Netzwerkspiel geschlossen!!!" << endl;
-
 }
 
 void NetzwerkSpiel::starteNetzwerkSpiel(string spielerName)
@@ -44,6 +43,7 @@ void NetzwerkSpiel::starteNetzwerkSpiel(string spielerName)
 void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2)
 {
     this->sp2 = new Spieler(nameSpieler2);
+    this->remoteSpieler = sp2;
     cout << "melde an..."<< endl;
     tcpClient->sendLoginRequest(nameSpieler2);
 }
@@ -91,6 +91,11 @@ int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
     return rslt;
 }
 
+void NetzwerkSpiel::aufgeben()
+{
+    tcpClient->sendGiveUp();
+}
+
 void NetzwerkSpiel::abmeldenNetzwerk()
 {
     //sende beenden nachricht via tcp
@@ -101,6 +106,7 @@ void NetzwerkSpiel::on_loginRequest(string loginPlayerName)
 {
     cout << "Incoming to on_loginRequest() VALUE: " << loginPlayerName << endl;
     starteSpiel(nameSpieler1,loginPlayerName,false,false);
+    this->remoteSpieler = sp1;
     this->tcpClient->sendLoginReply(sp1);
 
     //hier starte spiel...
@@ -118,4 +124,10 @@ void NetzwerkSpiel::on_remoteMove(unsigned short column)
     cout << "Incoming to on_remoteMove() VALUE: " << column << endl;
     int rslt = Spiel::naechsterZug(aktuellerSpieler,column);
     RemoteMoveSignal(column,rslt);
+}
+
+void NetzwerkSpiel::on_giveUp()
+{
+    cout << "Incoming to on_giveUp()" << endl;
+    GiveUpRemotePlayerSignal(remoteSpieler,false);
 }

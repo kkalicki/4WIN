@@ -39,7 +39,7 @@ private slots:
     void on_timeChange();
 
 signals:
-    void loose(Spieler* winner);
+    void loose(Spieler* winner,bool);
 
 private:
      //QPixmap imgRed;

@@ -73,7 +73,7 @@ void TcpClient::sendLoginRequest(string playerName)
     write(sock,&msgId,sizeof(LOGINREQUEST));
     write(sock,(char*) &len,sizeof(int));
     write(sock, o.str().c_str(),len);
-    cout<< o.str() << " gesendet!"<< endl;
+    cout<<"LOGINREQUEST "<< o.str() << " gesendet!"<< endl;
     disconnect();
 }
 
@@ -89,6 +89,7 @@ void TcpClient::sendLoginReply(Spieler* player)
     write(sock,&msgId,sizeof(LOGINREPLY));
     write(sock,(char*) &len,sizeof(int));
     write(sock, o.str().c_str(),len);
+    cout<<"LOGINREPLY "<< o.str() << " gesendet!"<< endl;
     disconnect();
 }
 
@@ -99,6 +100,16 @@ void TcpClient::sendMove(unsigned short column)
     NetworkMessage msg = REMOTEMOVE;
     write(sock, &msg, sizeof(NetworkMessage) );
     write(sock, &remoteMove, sizeof(RemoteMove) );
+    cout<< "REMOTEMOVE "<< column <<" gesendet!"<< endl;
+    disconnect();
+}
+
+void TcpClient::sendGiveUp()
+{
+    openConnection();
+    NetworkMessage msg = GIVEUP;
+    write(sock, &msg, sizeof(NetworkMessage) );
+    cout<< "GIVEUP gesendet!"<< endl;
     disconnect();
 }
 

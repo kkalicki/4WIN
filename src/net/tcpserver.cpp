@@ -169,6 +169,11 @@ void TcpServer::process(connection_t * conn, void *ptr)
             ((TcpServer *)ptr)->RemoteMoveSignal(remoteMove.getColumn());
         }
         break;
+        case GIVEUP:
+        {
+            ((TcpServer *)ptr)->GiveUpSignal();
+        }
+        break;
         default: // Do Nothing...
         break;
     }
