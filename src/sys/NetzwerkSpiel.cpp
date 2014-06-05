@@ -10,6 +10,7 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     tcpServer->LoginRequestSignal.connect(boost::bind(&NetzwerkSpiel::on_loginRequest, this,_1));
     tcpServer->LoginReplySignal.connect(boost::bind(&NetzwerkSpiel::on_loginReply, this,_1));
     tcpServer->RemoteMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_remoteMove, this,_1));
+    tcpServer->GiveUpSignal.connect(boost::bind(&NetzwerkSpiel::on_giveUp, this));
     tcpServer->start();
 
     //tcpClient->sendHelloBroadcast();
@@ -129,5 +130,6 @@ void NetzwerkSpiel::on_remoteMove(unsigned short column)
 void NetzwerkSpiel::on_giveUp()
 {
     cout << "Incoming to on_giveUp()" << endl;
+
     GiveUpRemotePlayerSignal(remoteSpieler,false);
 }

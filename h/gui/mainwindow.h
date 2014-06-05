@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <../4WIN/h/gui/I4WinWidget.h>
-#include <../4WIN/h/gui/guiupdater.h>
+#include <../4WIN/h/gui/threads/movethread.h>
+#include <../4WIN/h/gui/threads/giveupthread.h>
 #include <../h/gui/bord.h>
 #include <../h/gui/settings.h>
 #include <../h/gui/gameinfo.h>
@@ -39,6 +40,7 @@ private slots:
 
     void startGame();
     void incommingMove(unsigned short column, int row);
+    void incommingGiveUp(Spieler* remoteSpieler, bool giveUp);
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -50,7 +52,8 @@ private:
     GameInfo *gameInfoWidget;
     History * historyWidget;
     GameSettings * gameSettings;
-    GuiUpdater *guiUpdaterThread;
+    MoveThread *guiUpdaterThread;
+    GiveUpThread *giveUpThread;
     static const int START_POSITION_X = 230;
     static const int START_POSITION_Y = 0;
 
