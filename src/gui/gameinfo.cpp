@@ -86,15 +86,29 @@ void GameInfo::postExecute()
 
 void GameInfo::lock()
 {
-    ui->btnlooseleft->setEnabled(false);
-    ui->btnlooseright->setEnabled(false);
+    //ui->btnlooseleft->setEnabled(false);
+    //ui->btnlooseright->setEnabled(false);
+    ui->gbdisplaysp2->setEnabled(false);
+    ui->gbdisplaysp2->setEnabled(false);
 }
 
 void GameInfo::unlock()
 {
-    ui->btnlooseleft->setEnabled(true);
-    ui->btnlooseright->setEnabled(true);
+    //ui->btnlooseleft->setEnabled(true);
+    //ui->btnlooseright->setEnabled(true);
+    ui->gbdisplaysp2->setEnabled(true);
+    ui->gbdisplaysp2->setEnabled(true);
 
+}
+
+void GameInfo::lockDisplaySp1()
+{
+    ui->gbdisplaysp1->setEnabled(false);
+}
+
+void GameInfo::lockDisplaySp2()
+{
+     ui->gbdisplaysp2->setEnabled(false);
 }
 
 void GameInfo::initPlayer(Spieler *player1,Spieler* player2)

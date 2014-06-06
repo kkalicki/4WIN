@@ -24,6 +24,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     void load4WinWidgets();
     void closeAllWidgets();
+    void initNetworkSignalSlot();
+    void lockBoad();
     virtual void init();
     virtual void preExecute();
     virtual void postExecute();

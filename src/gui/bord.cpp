@@ -97,6 +97,16 @@ void Bord::postExecute()
 {
     isLocked = true;
 }
+int Bord::getIsLocked() const
+{
+    return isLocked;
+}
+
+void Bord::setIsLocked(int value)
+{
+    isLocked = value;
+}
+
 
 void Bord::on_tblbord_doubleClicked(const QModelIndex &index)
 {

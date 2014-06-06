@@ -41,7 +41,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QGroupBox" name="groupBox_3">
+  <widget class="QGroupBox" name="gbdisplaysp1">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -255,7 +255,7 @@
     </property>
    </widget>
   </widget>
-  <widget class="QGroupBox" name="groupBox_4">
+  <widget class="QGroupBox" name="gbdisplaysp2">
    <property name="geometry">
     <rect>
      <x>590</x>

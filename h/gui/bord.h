@@ -37,6 +37,9 @@ public:
         colCount = value;
     }
 
+    int getIsLocked() const;
+    void setIsLocked(int value);
+
 private:
     int isLocked;
     unsigned short rowCount;

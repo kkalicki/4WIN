@@ -92,8 +92,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
 
     //Bord init...
     bordWidget->hide();
-    if(bordWidget !=0)
-    {
+    if(bordWidget !=0){
         delete bordWidget;
         bordWidget = 0;
     }
@@ -108,8 +107,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
         delete game;
 
     try{
-        switch(gameSettings->getNetworkMode())
-        {
+        switch(gameSettings->getNetworkMode()){
         case LOCAL:
                 this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
 
@@ -128,23 +126,22 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
                 default:
                     break;
                 }
+                lockBoad();
                 startGame();
             break;
         case OPEN:
                 this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
                 dynamic_cast<NetzwerkSpiel*>(game)->starteNetzwerkSpiel(gameSettings->getPlayer1Name());
-                dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
-                dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame, this));
-                dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.connect(boost::bind(&MainWindow::incommingGiveUp, this,_1,_2));
                 gameInfoWidget->setSysMsg("Warte auf Gegner...");
+                gameInfoWidget->lockDisplaySp2();
+                initNetworkSignalSlot();
             break;
         case JOIN:
                 this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
                 dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name());
-                dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
-                dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame,this));
-                dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.connect(boost::bind(&MainWindow::incommingGiveUp, this,_1,_2));
                 gameInfoWidget->setSysMsg("Warte auf Antwort...");
+                gameInfoWidget->lockDisplaySp1();
+                initNetworkSignalSlot();
             break;
         default: // Do Nothing...
         break;
@@ -154,8 +151,60 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     }
 }
 
+void MainWindow::initNetworkSignalSlot()
+{
+    dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
+    dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame, this));
+    dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.connect(boost::bind(&MainWindow::incommingGiveUp, this,_1,_2));
+}
+
+void MainWindow::lockBoad()
+{
+    switch(gameSettings->getNetworkMode()){
+    case LOCAL:
+            this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
+
+            switch (gameSettings->getMode()) {
+            case SVC:
+                if(game->getSp1()->getIstAmZug()){
+                    bordWidget->setIsLocked(false);
+                }
+                else{
+                    bordWidget->setIsLocked(true);
+                }
+                break;
+            case CVC:
+                 bordWidget->setIsLocked(false);
+                break;
+            default:
+                break;
+            }
+            startGame();
+        break;
+    case OPEN:
+            if(game->getSp1()->getIstAmZug()){
+                bordWidget->setIsLocked(false);
+            }
+            else{
+                bordWidget->setIsLocked(true);
+            }
+        break;
+    case JOIN:
+            if(game->getSp2()->getIstAmZug()){
+                bordWidget->setIsLocked(false);
+            }
+            else{
+                bordWidget->setIsLocked(true);
+            }
+        break;
+    default: // Do Nothing...
+    break;
+    }
+}
+
 void MainWindow::startGame()
 {
+    lockBoad();
     gameInfoWidget->initPlayer(game->getSp1(),game->getSp2());
     //fuer Alle preExecute aufrufen
     preExecute();
@@ -193,7 +242,7 @@ void MainWindow::update(unsigned short column, int result)
         //Spiel unentschieden...
         on_endGame(0,false);
     }
-    else{  //else if Catch Spielfeld voll!! --> on_endGame(0);
+    else{
        game->wechselSpieler();
        //GameInfo bedienen...
        ostringstream o;
@@ -203,7 +252,6 @@ void MainWindow::update(unsigned short column, int result)
 
     //history add..
     historyWidget->addHisItem(game->getHistorie()->getLetztenEintrag());
-
 }
 
 void MainWindow::on_endGame(Spieler* winner,bool giveUp)
@@ -211,9 +259,7 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
     if(giveUp)
         game->aufgeben();
 
-
     postExecute();
-
     if(winner == 0)
     {
         //UNENTSCHIEDEN...
@@ -240,6 +286,8 @@ void MainWindow::incommingMove(unsigned short column,int row)
     connect(guiThread, SIGNAL(started()), guiUpdaterThread, SLOT(process()));
     connect(guiUpdaterThread, SIGNAL(updateGui(unsigned short,int)), this, SLOT(update(unsigned short, int)));
     guiThread->start();
+    guiThread->wait();
+    lockBoad();
 }
 
 void MainWindow::incommingGiveUp(Spieler *remoteSpieler, bool giveUp)
