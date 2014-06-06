@@ -6,6 +6,17 @@ public:
     virtual void init()=0;
     virtual void preExecute()=0;
     virtual void postExecute()=0;
+
+    bool getIsActiveGame() const{
+        return isActiveGame;
+    }
+    void setIsActiveGame(bool value){
+        isActiveGame = value;
+    }
+
+private:
+    bool isActiveGame;
 };
 
 #endif // I4WINWIDGET_H
+

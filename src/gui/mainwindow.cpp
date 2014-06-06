@@ -72,6 +72,7 @@ void MainWindow::load4WinWidgets()
 
 void MainWindow::preExecute()
 {
+    setIsActiveGame(true);
     bordWidget->preExecute();
     gameInfoWidget->preExecute();
     historyWidget->preExecute();
@@ -79,6 +80,7 @@ void MainWindow::preExecute()
 
 void MainWindow::postExecute()
 {
+    setIsActiveGame(false);
     bordWidget->postExecute();
     gameInfoWidget->postExecute();
     historyWidget->postExecute();
@@ -126,14 +128,14 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
                 default:
                     break;
                 }
-                lockBoad();
                 startGame();
+                lockBoad();
             break;
         case OPEN:
                 this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
                 dynamic_cast<NetzwerkSpiel*>(game)->starteNetzwerkSpiel(gameSettings->getPlayer1Name());
                 gameInfoWidget->setSysMsg("Warte auf Gegner...");
-                gameInfoWidget->lockDisplaySp2();
+
                 initNetworkSignalSlot();
             break;
         case JOIN:
@@ -162,8 +164,6 @@ void MainWindow::lockBoad()
 {
     switch(gameSettings->getNetworkMode()){
     case LOCAL:
-            this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
-
             switch (gameSettings->getMode()) {
             case SVC:
                 if(game->getSp1()->getIstAmZug()){
@@ -204,11 +204,17 @@ void MainWindow::lockBoad()
 
 void MainWindow::startGame()
 {
-    lockBoad();
     gameInfoWidget->initPlayer(game->getSp1(),game->getSp2());
-    //fuer Alle preExecute aufrufen
-    preExecute();
     gameInfoWidget->setSysMsg("Start!");
+    preExecute();
+    lockBoad();
+
+    switch(gameSettings->getNetworkMode()){
+    case OPEN:gameInfoWidget->lockDisplaySp2();
+        break;
+    case JOIN:gameInfoWidget->lockDisplaySp1();
+        break;
+    }
 }
 
 void MainWindow::on_executeMove(unsigned short column)
@@ -244,7 +250,7 @@ void MainWindow::update(unsigned short column, int result)
     }
     else{
        game->wechselSpieler();
-       //GameInfo bedienen...
+       lockBoad();
        ostringstream o;
        o<< (game->getAktuelleZeile(column)) << " - "<< column;
        gameInfoWidget->changePlayer(game->getAktuellerSpieler(),game->getRunde(),o.str());
@@ -286,8 +292,6 @@ void MainWindow::incommingMove(unsigned short column,int row)
     connect(guiThread, SIGNAL(started()), guiUpdaterThread, SLOT(process()));
     connect(guiUpdaterThread, SIGNAL(updateGui(unsigned short,int)), this, SLOT(update(unsigned short, int)));
     guiThread->start();
-    guiThread->wait();
-    lockBoad();
 }
 
 void MainWindow::incommingGiveUp(Spieler *remoteSpieler, bool giveUp)

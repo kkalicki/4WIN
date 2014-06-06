@@ -28,12 +28,14 @@ void History::init()
 
 void History::preExecute()
 {
+   setIsActiveGame(true);
    clear();
 }
 
 
 void History::postExecute()
 {
+    setIsActiveGame(false);
     //keine implementierung notwendig...
 }
 
