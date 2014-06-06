@@ -21,8 +21,6 @@ void SpielerKI::denken()
     pthread_create(&spielerKIThread, 0, starteDenkprozess, this);
     pthread_detach(spielerKIThread);
 
-
-
 }
 void *SpielerKI::starteDenkprozess(void *ptr)
 {
@@ -36,9 +34,17 @@ void *SpielerKI::starteDenkprozess(void *ptr)
     int ergebnis = sp->pruefeZuege(sp);
 
     if (ergebnis >=0)
-        spalte = ergebnis;
+        sp->WerfeSteinSignal(ergebnis+1);
+    else{
+        sp->denkeWeiter(sp->feld,sp->feld->getSchwierigkeitsstufe(),sp->farbe);
+//        ergebnis = sp->denkeWeiter(sp->feld,sp->feld->getSchwierigkeitsstufe(),sp->farbe);
+//        if (sp->feld->spalteVoll(ergebnis))
+//            sp->WerfeSteinSignal(ergebnis+1);
+//        else{
+            sp->WerfeSteinSignal(spalte+1);
+       // }
+    }
 
-    sp->WerfeSteinSignal(spalte+1);
 }
 
 int SpielerKI::pruefeZuege(SpielerKI* sp)
@@ -65,14 +71,51 @@ int SpielerKI::pruefeZuege(SpielerKI* sp)
     return block;
 }
 
-bool SpielerKI::pruefeWinZug(unsigned short farbe, int spalte, Spielfeld* feld)
+int SpielerKI::pruefeWinZug(unsigned short farbe, int spalte, Spielfeld* feld)
 {
-    bool ergebnis = false;
+    int ergebnis = false;
     if (feld->werfeTestStein(farbe,spalte) == WIN){
         ergebnis =  true;
     }
     feld->loescheStein(spalte,feld->getSpalteSteine(spalte)-1);
     return ergebnis;
+}
+
+int SpielerKI::denkeWeiter(Spielfeld* feld, int tiefe, unsigned short farbe)
+{
+    unsigned short gegnerFarbe;
+    int besteSpalte=0;
+    (farbe == ROT) ? gegnerFarbe = GELB: gegnerFarbe = ROT;
+
+
+    if (feld->pruefeSpielfeld() || tiefe == 0 ){
+        cout << feld << endl;
+        return besteSpalte;//Gleich Spielfeld bewerten!!
+    }
+    int zeile=0;
+    int maxWert = -10000000;
+    int wert = 0;
+    if (!feld->pruefeSpielfeld()){
+        for (int i = 0;i<feld->getSpalten();i++){
+            if(feld->getSpalteSteine(i) < feld->getZeilen()){
+
+                feld->werfeTestStein(farbe,i);
+                zeile = feld->getSpalteSteine(i);
+
+                wert = denkeWeiter(feld, tiefe-1, gegnerFarbe);
+
+                feld->loescheStein(i,zeile-1);
+
+            }
+            if (wert > maxWert) {
+                maxWert = wert;
+                if (tiefe == feld->getSchwierigkeitsstufe()){
+                    besteSpalte = i;
+                }
+           }
+        }
+    }
+    return maxWert;
 }
 
 SpielerKI::~SpielerKI() {
