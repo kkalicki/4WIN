@@ -72,6 +72,7 @@ void MainWindow::load4WinWidgets()
 
 void MainWindow::preExecute()
 {
+    //TODO ans Spiel...
     setIsActiveGame(true);
     bordWidget->preExecute();
     gameInfoWidget->preExecute();
@@ -105,8 +106,11 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     bordWidget->show();
 
     //game init...
-    if(game != 0)
+    if(game != 0){
         delete game;
+        game = 0;
+    }
+
 
     try{
         switch(gameSettings->getNetworkMode()){
@@ -306,6 +310,9 @@ void MainWindow::incommingGiveUp(Spieler *remoteSpieler, bool giveUp)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    if(getIsActiveGame())
+        game->aufgeben();
+
     postExecute();
     closeAllWidgets();
 }

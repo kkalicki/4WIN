@@ -130,8 +130,3 @@ void Bord::on_tblbord_doubleClicked(const QModelIndex &index)
     }
 
 }
-
-void Bord::on_tblbord_clicked(const QModelIndex &index)
-{
-
-}
