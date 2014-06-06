@@ -14,6 +14,7 @@ Spielfeld::Spielfeld(unsigned short zeilen, unsigned short spalten)
     this->zeilen = zeilen;
     this->spalten = spalten;
     this->aktuell = new int[spalten];
+    this->schwierigkeitsstufe = 4;
     init();
 }
 
@@ -72,7 +73,7 @@ int Spielfeld::werfeStein(Spieler* spieler, int spalte)
 
 int Spielfeld::werfeTestStein(unsigned short farbe, int spalte)
 {
-    int ergebnis = 5;
+    int ergebnis = -5;
     int aktuell=0;
     if (spalte+1 > 0 && spalte+1 <= spalten){
        aktuell = getSpalteSteine(spalte);
@@ -82,9 +83,9 @@ int Spielfeld::werfeTestStein(unsigned short farbe, int spalte)
            if(pruefeStein(farbe, spalte)){
              ergebnis = WIN;
            }
-//           if(pruefeSpielfeld()){
-//               ergebnis = VOLL;
-//           }
+           if(pruefeSpielfeld()){
+               ergebnis = VOLL;
+           }
        }
     }
     //loescheStein(spalte,aktuell);
@@ -175,6 +176,16 @@ int Spielfeld::checkDiagonal(int farbe, int spalte) {
     }
     return false;
 }
+unsigned short Spielfeld::getSchwierigkeitsstufe() const
+{
+    return schwierigkeitsstufe;
+}
+
+void Spielfeld::setSchwierigkeitsstufe(unsigned short value)
+{
+    schwierigkeitsstufe = value;
+}
+
 
 
 ostream& operator<<(ostream& out, Spielfeld& spf){

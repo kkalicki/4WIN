@@ -67,6 +67,11 @@ public:
     int getSpalteSteine(int x) const{
         return aktuell[x];
     }
+    bool spalteVoll(int spalte){
+        if (getSpalteSteine(spalte) < this->zeilen )
+            return true;
+        return false;
+    }
 
     unsigned short getSpalten() const{
         return this->spalten;
@@ -78,8 +83,16 @@ public:
         feld[y][x].setFarbe(2);
         aktuell[x]--;
     }
+    void loescheSteinSpalte(int spalte){
+        int zeile = this->getSpalteSteine(spalte);
+        if (zeile > 0)
+            loescheStein(spalte,(this->getSpalteSteine(spalte)));
+    }
 
     unsigned short pruefeWurf(unsigned short farbe, unsigned short spalte);
+    unsigned short getSchwierigkeitsstufe() const;
+    void setSchwierigkeitsstufe(unsigned short value);
+    bool pruefeSpielfeld();
 private:
 
     void init();
@@ -96,7 +109,7 @@ private:
 
 
     int pruefeStein(int farbe, int spalte);
-    bool pruefeSpielfeld();
+
 
     int checkHorizontal(int farbe, int spalte);
     int checkVertikal(int farbe, int spalte);
@@ -107,6 +120,7 @@ private:
 	 */
     Stein **feld;
     int *aktuell;
+    unsigned short schwierigkeitsstufe;
     unsigned short zeilen;
     unsigned short spalten;
 };
