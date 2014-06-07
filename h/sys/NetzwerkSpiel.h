@@ -22,17 +22,20 @@ public:
     virtual int naechsterZug(Spieler* spieler, unsigned short spalte);
     virtual void aufgeben();
 
+    void sendHello();
+
     void on_loginRequest(string loginPlayerName);
     void on_loginReply(Spieler spieler);
     void on_remoteMove(unsigned short column);
     void on_giveUp();
     void on_helloReply(HelloReply reply);
 
-     void on_udpHello(string remoteIp);
+    void on_udpHello(string remoteIp);
 
     boost::signals2::signal<void(unsigned short, int)> RemoteMoveSignal;
     boost::signals2::signal<void()> StartGameSignal;
     boost::signals2::signal<void(Spieler*,bool)> GiveUpRemotePlayerSignal;
+    boost::signals2::signal<void(HelloReply)> HelloReplySignal;
 
 protected:
     Server4Win* tcpServer;

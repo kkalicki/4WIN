@@ -3,6 +3,7 @@
 
 #include <string>
 #include "../h/sys/Konstanten.h"
+#include "../h/net/msg/helloreply.h"
 
 using namespace std;
 

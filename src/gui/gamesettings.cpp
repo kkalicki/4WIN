@@ -101,5 +101,3 @@ void GameSettings::setNetworkMode(const NetworkMode &value)
 {
     networkMode = value;
 }
-
-

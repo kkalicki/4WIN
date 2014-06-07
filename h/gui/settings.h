@@ -4,6 +4,8 @@
 #include <QWidget>
 #include "ui_settings.h"
 #include "../h/gui/gamesettings.h"
+#include "../h/sys/NetzwerkSpiel.h"
+#include "../h/gui/threads/opengamesthread.h"
 
 namespace Ui {
 class settingsUi;
@@ -17,10 +19,13 @@ public:
     ~Settings();
     GameMode getGameMode();
     NetworkMode getNetworkMode();
+    void incomingGames(HelloReply incomingVal);
 
 private:
     Ui::settingsUi * ui;
     GameSettings * gameSettings;
+    OpenGameThread* openGameThread;
+    NetzwerkSpiel* sp;
 signals:
     void resultSettings(GameSettings* gameSettings);
 
@@ -35,6 +40,8 @@ private slots:
     void on_rbenter_toggled(bool checked);
     void on_btnstart_clicked();
     void on_cbwatch_toggled(bool checked);
+    void on_pbrefreshs_clicked();
+    void openGamesUpdate(HelloReply *incomingVal);
 };
 
 #endif // SETTINGS_H

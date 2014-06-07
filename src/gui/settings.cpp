@@ -1,17 +1,28 @@
 #include "../h/gui/settings.h"
 #include <QMessageBox>
+#include <QThread>
+#include <boost/signals2.hpp>
+#include "boost/bind.hpp"
 
 Settings::Settings(QWidget *parent) :
     QWidget(parent), ui(new Ui::settingsUi)
 {
     ui->setupUi(this);
     this->gameSettings = new GameSettings();
+    this->openGameThread=0;
+    this->sp = new NetzwerkSpiel();
+    sp->HelloReplySignal.connect(boost::bind(&Settings::incomingGames, this,_1));
 }
 
 Settings::~Settings()
 {
     if(gameSettings != 0)
         delete gameSettings;
+
+    if(openGameThread != 0)
+        delete openGameThread;
+
+    delete sp;
 }
 
 void Settings::on_rbsvs_toggled(bool checked)
@@ -144,4 +155,28 @@ NetworkMode Settings::getNetworkMode()
 
     if(ui->rbenter->isChecked())
         return JOIN;
+}
+
+void Settings::incomingGames(HelloReply incomingVal)
+{
+    QThread* guiThread = new QThread;
+    openGameThread = new OpenGameThread(incomingVal);
+    openGameThread->moveToThread(guiThread);
+    connect(guiThread, SIGNAL(started()), openGameThread, SLOT(process()));
+    connect(openGameThread, SIGNAL(updateGui(HelloReply*)), this, SLOT(openGamesUpdate(HelloReply*)));
+    guiThread->start();
+}
+
+void Settings::openGamesUpdate(HelloReply* incomingVal)
+{
+    QListWidgetItem *item = new QListWidgetItem();
+    item->setText(QString::fromStdString(incomingVal->toString()));
+    ui->lvgames->addItem(item);
+    ui->lvgames->scrollToBottom();
+}
+
+void Settings::on_pbrefreshs_clicked()
+{
+    ui->lvgames->clear();
+    sp->sendHello();
 }

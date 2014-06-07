@@ -84,7 +84,7 @@ void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
     std::cout << *sp1 << endl;
     std::cout << *sp2 << endl;
 
-    tcpClient->sendHelloBroadcast();
+
     //hier signal start...
     StartGameSignal();
 }
@@ -99,12 +99,6 @@ int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
 void NetzwerkSpiel::aufgeben()
 {
     tcpClient->sendGiveUp();
-}
-
-void NetzwerkSpiel::abmeldenNetzwerk()
-{
-    //sende beenden nachricht via tcp
-    //Blaa Blaa Blubb....
 }
 
 void NetzwerkSpiel::on_loginRequest(string loginPlayerName)
@@ -141,6 +135,7 @@ void NetzwerkSpiel::on_giveUp()
 void NetzwerkSpiel::on_helloReply(HelloReply reply)
 {
     cout << "Incoming to on_helloReply() VALUE: " << reply << endl;
+    HelloReplySignal(reply);
 }
 
 void NetzwerkSpiel::on_udpHello(string remoteIp)
@@ -149,3 +144,10 @@ void NetzwerkSpiel::on_udpHello(string remoteIp)
     HelloReply helloReply("",sp1->getName(),this->spielfeld->getZeilen(),this->spielfeld->getSpalten());
     tcpClient->sendHelloReply(remoteIp,&helloReply);
 }
+
+void NetzwerkSpiel::sendHello()
+{
+    tcpClient->sendHelloBroadcast();
+}
+
+
