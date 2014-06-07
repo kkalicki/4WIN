@@ -1,6 +1,7 @@
 
 #include "../h/sys/NetzwerkSpiel.h"
 #include "../h/net/tcpclient.h"
+#include "../h/net/udpserver.h"
 #include "boost/bind.hpp"
 #include "iostream"
 

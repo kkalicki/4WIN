@@ -2,7 +2,8 @@
 #define FOURWINEXCEPTIONS_H
 
 #endif // FOURWINEXCEPTIONS_H
-
+#include <string>
+using namespace std;
 struct EingabeException:public exception{
     std::string s;
     EingabeException(std::string ss) : s(ss) {}
@@ -29,6 +30,13 @@ struct TcpServerException:public exception{
     std::string s;
     TcpServerException(std::string ss) : s(ss) {}
     ~TcpServerException() throw () {} // Updated
+    const char* what() const throw() { return s.c_str(); }
+};
+
+struct Server4WinException:public exception{
+    std::string s;
+    Server4WinException(std::string ss) : s(ss) {}
+    ~Server4WinException() throw () {} // Updated
     const char* what() const throw() { return s.c_str(); }
 };
 

@@ -2,20 +2,37 @@
 #define CONNECTION4WIN_H
 
 #include <pthread.h>
+#include <netinet/in.h>
+
+enum ServerType{TCP=1,UDP=2};
 
 class Server4Win{
 
 public:
+    Server4Win(ServerType serverType,int port);
+    ~Server4Win();
+
     void start();
     void stop();
-    void connect()=0;
-    static void * startServerThread(void * ptr);
+
+    int getSock() const;
+    void setSock(int value);
+
+    int getPort() const;
+    void setPort(int value);
+
+    int getIsActive() const;
+    void setIsActive(int value);
+
+protected:
+    virtual void connect()=0;
+     pthread_t serverThread;
+     int sock;
+     int port;
+     int isActive;
 
 private:
-    pthread_t tcpServerThread;
-    int sock;
-    int port;
-    int isActive;
+    ServerType serverType;
 };
 
 #endif // CONNECTION4WIN_H
