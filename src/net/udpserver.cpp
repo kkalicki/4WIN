@@ -66,6 +66,10 @@ void *UdpServer::processThread(connection_t *conn, NetworkMessage mid, string ob
     switch(mid.getId()){
     case UDPHELLO:
                     cout << "HELLO FROM BROADCAST" << endl;
+
+                    NetworkMessage msg(UDPHELLO);
+                    if (sendto(sock, &msg, sizeof(NetworkMessage), 0, &conn->address, &conn->addr_len) != len)
+                       printf("sendto() failed");
         break;
     }
 }
