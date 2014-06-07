@@ -4,6 +4,9 @@
 //#include <stdio.h>
 //#include <sstream>
 
+
+#include <pthread.h>
+#include <netinet/in.h>
 #include <arpa/inet.h>
 
 UdpServer::UdpServer(int port) : Server4Win(UDP,port)
@@ -26,8 +29,14 @@ void UdpServer::connect()
 
 void *UdpServer::startUdpServerThread(void *ptr)
 {
+    int sock = ((UdpServer*)ptr)->getSock();
+
+    struct sockaddr_in sender;
+    sender.sin_family = AF_INET;
+    socklen_t sendsize = sizeof(sender);
+    bzero(&sender, sizeof(sender));
+
     connection_t * connection;
-    int sock = ((UdpServer *)ptr)->sock;
     cout << "server gestartet!" << endl;
     while (true)
     {
@@ -35,7 +44,7 @@ void *UdpServer::startUdpServerThread(void *ptr)
         connection = (connection_t *)malloc(sizeof(connection_t));
 
         NetworkMessage incomingMessage(LOGINREQUEST);
-        connection->sock = recvfrom(sock,&incomingMessage,sizeof(NetworkMessage),0,&connection->address, &connection->addr_len);
+        connection->sock = recvfrom(sock,&incomingMessage,sizeof(NetworkMessage),MSG_WAITSTREAM,(struct sockaddr*)&sender, &sendsize);
 
         /*int len;
         recvfrom(sock,&len,sizeof(int),0,NULL, 0);
@@ -51,9 +60,12 @@ void *UdpServer::startUdpServerThread(void *ptr)
         else
         {
             cout << "Verbindungen eingegangen(UDP)..SOCK: " << connection->sock << endl;
+            char* ip = inet_ntoa(sender.sin_addr);
+            string ipstr(ip);
+            cout << "Adresse : " << ipstr << endl;
             cout << "ID " << incomingMessage.getId() << endl;
 
-            processThread(connection,ptr,incomingMessage,object);
+            processThread((struct sockaddr*)&sender,ptr,incomingMessage,object);
             close(connection->sock);
             free(connection);
         }
@@ -61,14 +73,14 @@ void *UdpServer::startUdpServerThread(void *ptr)
     }
 }
 
-void *UdpServer::processThread(connection_t *conn,void *ptr, NetworkMessage mid, string object)
+void *UdpServer::processThread(struct sockaddr* sender,void *ptr, NetworkMessage mid, string object)
 {
     switch(mid.getId()){
     case UDPHELLO:
                     cout << "HELLO FROM BROADCAST" << endl;
                     int sock = ((UdpServer*)ptr)->sock;
                     NetworkMessage msg(UDPHELLO);
-                    sendto(sock, &msg, sizeof(NetworkMessage), 0, &conn->address, sizeof(conn->address));
+                    sendto(sock, &msg, sizeof(NetworkMessage), 0, (struct sockaddr *) &sender, sizeof(sender));
         break;
     }
 }
