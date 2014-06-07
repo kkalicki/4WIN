@@ -1,0 +1,4 @@
+#ifndef HELLOSERVER_H
+#define HELLOSERVER_H
+
+#endif // HELLOSERVER_H
