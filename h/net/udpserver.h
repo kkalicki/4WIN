@@ -14,7 +14,10 @@ public:
     ~UdpServer();
 
     static void *startUdpServerThread(void * ptr);
-    static void *processThread(struct sockaddr *sender, void *ptr, NetworkMessage mid, string object);
+    static void *processThread(struct sockaddr_in sender, void *ptr, NetworkMessage mid, string object);
+
+    bool isOwnAdress(struct sockaddr_in address);
+
 protected:
     virtual void connect();
 
