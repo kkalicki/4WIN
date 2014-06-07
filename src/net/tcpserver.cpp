@@ -115,7 +115,7 @@ void TcpServer::process(connection_t * conn, void *ptr)
             char* ip = inet_ntoa(conn->address.sin_addr);
             string ipstr(ip);
             HelloReply helloReply;
-            helloReply.setIpAdress(ipstr);
+            templr.insert(0,ipstr);
             helloReply.fromCsvString(templr);
             cout << helloReply << " empfangen!" << endl;
             ((TcpServer *)ptr)->HelloReplySignal(helloReply);

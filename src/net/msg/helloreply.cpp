@@ -63,6 +63,9 @@ void HelloReply::fromCsvString(string csv)
     char delimiter[] = ";";
     char *ptr;
 
+    ptr = strtok(buffer, delimiter);
+    this->ipAdress = ptr;
+
     ptr = strtok(NULL, delimiter);
     this->name = ptr;
 

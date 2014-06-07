@@ -20,7 +20,7 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.connect(boost::bind(&NetzwerkSpiel::on_udpHello, this,_1));
     udpServer->start();
 
-    this->tcpClient = new TcpClient("192.168.28.105");
+    this->tcpClient = new TcpClient("192.168.28.108");
 }
 
 NetzwerkSpiel::~NetzwerkSpiel()
@@ -84,6 +84,7 @@ void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
     std::cout << *sp1 << endl;
     std::cout << *sp2 << endl;
 
+    tcpClient->sendHelloBroadcast();
     //hier signal start...
     StartGameSignal();
 }
