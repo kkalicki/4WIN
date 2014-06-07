@@ -33,6 +33,7 @@ public:
 
 protected:
      virtual void connect()=0;
+     bool isOwnAddress(sockaddr_in address);
      pthread_t serverThread;
      int sock;
      int port;

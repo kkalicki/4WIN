@@ -30,7 +30,7 @@ TcpClient::~TcpClient()
          disconnect();
 }
 
-void TcpClient::openConnection(string ipAddress)
+void TcpClient::openConnection(string ipAddress,int port)
 {
     struct sockaddr_in address;
     struct hostent * host;
@@ -69,7 +69,7 @@ void TcpClient::sendLoginRequest(string playerName)
     o << loginRequest;
     int len= strlen(o.str().c_str());
 
-    openConnection(this->ipAddress);
+    openConnection(this->ipAddress,DEFAULT_PORT_TCP);
     write(sock,&msgId,sizeof(LOGINREQUEST));
     write(sock,(char*) &len,sizeof(int));
     write(sock, o.str().c_str(),len);
@@ -85,7 +85,7 @@ void TcpClient::sendLoginReply(Spieler* player)
     o << loginRequest;
     int len= strlen(o.str().c_str());
 
-    openConnection(this->ipAddress);
+    openConnection(this->ipAddress,DEFAULT_PORT_TCP);
     write(sock,&msgId,sizeof(LOGINREPLY));
     write(sock,(char*) &len,sizeof(int));
     write(sock, o.str().c_str(),len);
@@ -95,7 +95,7 @@ void TcpClient::sendLoginReply(Spieler* player)
 
 void TcpClient::sendMove(unsigned short column)
 {
-    openConnection(this->ipAddress);
+    openConnection(this->ipAddress,DEFAULT_PORT_TCP);
     RemoteMove remoteMove(column);
     NetworkMessage msg(REMOTEMOVE);
     write(sock, &msg, sizeof(NetworkMessage) );
@@ -106,7 +106,7 @@ void TcpClient::sendMove(unsigned short column)
 
 void TcpClient::sendGiveUp()
 {
-    openConnection(this->ipAddress);
+    openConnection(this->ipAddress,DEFAULT_PORT_TCP);
     NetworkMessage msg(GIVEUP);
     write(sock, &msg, sizeof(NetworkMessage) );
     cout<< "GIVEUP gesendet!"<< endl;
@@ -122,7 +122,6 @@ void TcpClient::openConnectionBroadcast()
     int broadcastPermission = 1;
         if (setsockopt(udpsock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0)
             printf("setsockopt() failed");
-    disconnect();
 }
 
 void TcpClient::sendHelloBroadcast()
@@ -147,8 +146,8 @@ void TcpClient::sendHelloReply(string ip, HelloReply *reply)
     o << *reply;
     int len= strlen(o.str().c_str());
 
-    openConnection(this->ipAddress);
-    write(sock,&msgId,sizeof(LOGINREPLY));
+    openConnection(ip,DEFAULT_PORT_HELLO);
+    write(sock,&msgId,sizeof(HELLOREPLY));
     write(sock,(char*) &len,sizeof(int));
     write(sock, o.str().c_str(),len);
     cout<<"HELLOREPLY "<< o.str() << " gesendet!"<< endl;

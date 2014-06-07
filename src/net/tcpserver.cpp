@@ -60,7 +60,7 @@ void TcpServer::process(connection_t * conn, void *ptr)
     int len= 0;
     string templr;
     cout << "starte verarbeitung!" << endl;
-    NetworkMessage incomingMessage(LOGINREQUEST);
+    NetworkMessage incomingMessage;
     read(conn->sock, &incomingMessage, sizeof(NetworkMessage));
     switch(incomingMessage.getId())
     {

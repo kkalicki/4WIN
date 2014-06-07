@@ -10,8 +10,8 @@ Settings::Settings(QWidget *parent) :
     ui->setupUi(this);
     this->gameSettings = new GameSettings();
     this->openGameThread=0;
-    this->sp = new NetzwerkSpiel();
-    sp->HelloReplySignal.connect(boost::bind(&Settings::incomingGames, this,_1));
+    this->helloServer = new HelloServer();
+    helloServer->HelloReplySignal.connect(boost::bind(&Settings::incomingGames, this,_1));
 }
 
 Settings::~Settings()
@@ -22,7 +22,7 @@ Settings::~Settings()
     if(openGameThread != 0)
         delete openGameThread;
 
-    delete sp;
+    delete helloServer;
 }
 
 void Settings::on_rbsvs_toggled(bool checked)
@@ -178,5 +178,5 @@ void Settings::openGamesUpdate(HelloReply* incomingVal)
 void Settings::on_pbrefreshs_clicked()
 {
     ui->lvgames->clear();
-    sp->sendHello();
+    helloServer->sendHelloBroadcast();
 }

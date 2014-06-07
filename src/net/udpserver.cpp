@@ -49,7 +49,7 @@ void *UdpServer::startUdpServerThread(void *ptr)
         }
         else{
 
-            if(!isOwnAddress(sender)){
+            if(!((UdpServer*)ptr)->isOwnAddress(sender)){
                 cout << "Verbindungen eingegangen(UDP)..SOCK: " << connection->sock << endl;
                 processThread((struct sockaddr_in)sender,ptr,incomingMessage);
                 close(connection->sock);
@@ -74,24 +74,4 @@ void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessa
     default: // Do Nothing...
     break;
     }
-}
-
-bool UdpServer::isOwnAddress(sockaddr_in address)
-{
-    char hostname[1024];
-    hostname[1023] = '\0';
-    gethostname(hostname, 1023);
-
-    struct sockaddr_in SocketAddress;
-    struct hostent* pHost = gethostbyname(hostname);
-    if(pHost)
-    {
-        for(int iCnt = 0; ((pHost->h_addr_list[iCnt]) && (iCnt < 10)); ++iCnt)
-        {
-          memcpy(&SocketAddress.sin_addr, pHost->h_addr_list[iCnt], pHost->h_length);
-          if(SocketAddress.sin_addr.s_addr == address.sin_addr.s_addr)
-              return true;
-        }
-    }
-    return false;
 }

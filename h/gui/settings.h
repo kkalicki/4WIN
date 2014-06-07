@@ -4,7 +4,7 @@
 #include <QWidget>
 #include "ui_settings.h"
 #include "../h/gui/gamesettings.h"
-#include "../h/sys/NetzwerkSpiel.h"
+#include "../h/net/helloserver.h"
 #include "../h/gui/threads/opengamesthread.h"
 
 namespace Ui {
@@ -25,7 +25,7 @@ private:
     Ui::settingsUi * ui;
     GameSettings * gameSettings;
     OpenGameThread* openGameThread;
-    NetzwerkSpiel* sp;
+    HelloServer* helloServer;
 signals:
     void resultSettings(GameSettings* gameSettings);
 

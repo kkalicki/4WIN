@@ -16,6 +16,7 @@ const static unsigned short SEC_IN_MS           = 1000;
 // Konstanten fuer Netzwerkspiel
 const static unsigned short DEFAULT_PORT_TCP    = 8001;
 const static unsigned short DEFAULT_PORT_UDP    = 8002;
+const static unsigned short DEFAULT_PORT_HELLO  = 8003;
 const static std::string    LOCALHOST           = "127.0.0.1";
 
 #endif /* SPIELFELD_H_ */

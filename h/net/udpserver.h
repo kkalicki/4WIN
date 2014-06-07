@@ -16,10 +16,8 @@ public:
 
     static void *startUdpServerThread(void * ptr);
     static void *processThread(struct sockaddr_in sender, void *ptr, NetworkMessage mid);
-    static bool isOwnAddress(struct sockaddr_in address);
 
     boost::signals2::signal<void(string)> UdpHelloSignal;
-    boost::signals2::signal<void()> UdpHelloReplySignal;
 
 protected:
     virtual void connect();

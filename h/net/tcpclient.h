@@ -13,7 +13,7 @@ class TcpClient
 public:
   TcpClient(string ipAddress=LOCALHOST, int port=DEFAULT_PORT_TCP);
   ~TcpClient();
-  void openConnection(string ipAddress);
+  void openConnection(string ipAddress, int port);
   void disconnect();
   void sendLoginRequest(string playerName);
   void sendLoginReply(Spieler* player);
