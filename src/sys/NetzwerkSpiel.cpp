@@ -1,6 +1,7 @@
 
 #include "../h/sys/NetzwerkSpiel.h"
 #include "../h/net/tcpclient.h"
+#include "../h/net/tcpserver.h"
 #include "../h/net/udpserver.h"
 #include "boost/bind.hpp"
 #include "iostream"
@@ -8,10 +9,10 @@
 NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Spiel(zeilen,spalten)
 {
     this->tcpServer = new TcpServer();
-    tcpServer->LoginRequestSignal.connect(boost::bind(&NetzwerkSpiel::on_loginRequest, this,_1));
-    tcpServer->LoginReplySignal.connect(boost::bind(&NetzwerkSpiel::on_loginReply, this,_1));
-    tcpServer->RemoteMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_remoteMove, this,_1));
-    tcpServer->GiveUpSignal.connect(boost::bind(&NetzwerkSpiel::on_giveUp, this));
+    dynamic_cast<TcpServer*>(tcpServer)->LoginRequestSignal.connect(boost::bind(&NetzwerkSpiel::on_loginRequest, this,_1));
+    dynamic_cast<TcpServer*>(tcpServer)->LoginReplySignal.connect(boost::bind(&NetzwerkSpiel::on_loginReply, this,_1));
+    dynamic_cast<TcpServer*>(tcpServer)->RemoteMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_remoteMove, this,_1));
+    dynamic_cast<TcpServer*>(tcpServer)->GiveUpSignal.connect(boost::bind(&NetzwerkSpiel::on_giveUp, this));
     tcpServer->start();
 
     //tcpClient->sendHelloBroadcast();

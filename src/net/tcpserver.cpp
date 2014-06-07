@@ -12,96 +12,24 @@
 #include <sstream>
 
 
-TcpServer::TcpServer(int port)
+TcpServer::TcpServer(int port): Server4Win(TCP,port)
 {
-    this->port = port;
-    this->sock = -1;
+    //Do Nothing...
 }
-
-int TcpServer::getSock() const
-{
-    return sock;
-}
-
-void TcpServer::setSock(int value)
-{
-    sock = value;
-}
-int TcpServer::getIsActive() const
-{
-    return isActive;
-}
-
-void TcpServer::setIsActive(int value)
-{
-    isActive = value;
-}
-
 
 TcpServer::~TcpServer()
 {
     // kein new...
 }
 
-void TcpServer::start()
-{
-    connect();
-}
-
-void TcpServer::stop()
-{
-    isActive = false;
-    cout << "stoppe Server!" << endl;
-    if(sock > -1)
-    {
-        close(sock);
-        cout << "Socket geschlossen!" << endl;
-    }
-
-    pthread_cancel(tcpServerThread);
-    cout << "Serverthread geschlossen!" << endl;
-}
-
 void TcpServer::connect()
 {
-    struct sockaddr_in address;
-    //pthread_t thread;
-
-    cout << "erstelle Socket!" << endl;
-    sock = (socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
-    if (sock <= 0)
-    {
-      throw TcpServerException("Socket konnte nicht erstellt werden!");
-    }
-
-    /* bind socket to port */
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(port);
-
-    cout << "Binde Socket!" << endl;
-    if (bind(sock, (struct sockaddr *)&address, sizeof(struct sockaddr_in)) < 0)
-    {
-        ostringstream o;
-        o << "Socket konnte nicht an Port gebunden werden ! (" << port << ")" << endl;
-        throw TcpServerException(o.str());
-    }
-
-    if (listen(sock, 5) < 0)
-    {
-        ostringstream o;
-        o << "Server kann horchen an Port! (" << port << ")" << endl;
-        throw TcpServerException(o.str());
-    }
-
-    isActive = true;
-    cout << "starte Server!" << endl;
-    pthread_create(&tcpServerThread, 0, startServerThread, this);
-    pthread_detach(tcpServerThread);
+    Server4Win::connect();
+    pthread_create(&serverThread, 0, startTcpServerThread, this);
+    pthread_detach(serverThread);
 }
 
-
-void *TcpServer::startServerThread(void * ptr)
+void *TcpServer::startTcpServerThread(void *ptr)
 {
     connection_t * connection;
     int sock = ((TcpServer *)ptr)->sock;
@@ -117,7 +45,7 @@ void *TcpServer::startServerThread(void * ptr)
         }
         else
         {
-            cout << "Verbindungen eingegangen..PORT: " << connection->sock << endl;
+            cout << "Verbindungen eingegangen(TCP)..PORT: " << connection->sock << endl;
             process(connection,ptr);
             close(connection->sock);
             free(connection);

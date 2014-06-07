@@ -6,6 +6,13 @@
 
 enum ServerType{TCP=1,UDP=2};
 
+typedef struct
+{
+    int sock;
+    struct sockaddr address;
+    unsigned int addr_len;
+} connection_t;
+
 class Server4Win{
 
 public:
@@ -25,7 +32,7 @@ public:
     void setIsActive(int value);
 
 protected:
-    virtual void connect()=0;
+     virtual void connect()=0;
      pthread_t serverThread;
      int sock;
      int port;
