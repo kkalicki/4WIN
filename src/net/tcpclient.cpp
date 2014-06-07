@@ -115,7 +115,7 @@ void TcpClient::sendGiveUp()
 
 void TcpClient::openConnectionBroadcast()
 {
-    struct sockaddr_in address;
+
     //struct hostent * host;
 
     sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -123,26 +123,43 @@ void TcpClient::openConnectionBroadcast()
     int broadcastPermission = 1;
         if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0)
             printf("setsockopt() failed");
-
-     memset(&address, 0, sizeof(address));            /* Zero out structure */
-     address.sin_family = AF_INET;                       /* Internet address family */
-     address.sin_addr.s_addr = inet_addr("192.168.28.105");      /* client IP address */
-     address.sin_port = htons(DEFAULT_PORT_UDP);
-
-     char buff[1024];
-    int len =strlen(buff);
-     /* bind local port for sending */
-         if (bind(sock, (struct sockaddr *) &address, sizeof(address)) < 0)
-             printf("bind() failed");
-
-         /* Broadcast sendString in datagram */
-         if (sendto(sock, buff, len, 0, (struct sockaddr *) &address, sizeof(address)) != len)
-             printf("sendto() failed");
-
     disconnect();
 }
 
 void TcpClient::sendHelloBroadcast()
 {
     openConnectionBroadcast();
+    struct sockaddr_in address;
+    memset(&address, 0, sizeof(address));
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = inet_addr("192.168.28.255");
+    address.sin_port = htons(DEFAULT_PORT_UDP);
+
+    NetworkMessage networkMessage(UDPHELLO);
+    sendto(sock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+
+    disconnect();
+}
+
+void TcpClient::sendHelloReply(string ip, HelloReply *reply)
+{
+
+    struct sockaddr_in address;
+    memset(&address, 0, sizeof(address));
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = inet_addr(ip);
+    address.sin_port = htons(DEFAULT_PORT_UDP);
+
+    stringstream o;
+    o << loginRequest;
+    int len= strlen(o.str().c_str());
+
+    openConnectionBroadcast();
+    NetworkMessage networkMessage(UDPHELLO);
+    sendto(sock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+    sendto(sock,(char*) &len,sizeof(int),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+    sendto(sock, o.str().c_str(),len,MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+
+
+    disconnect();
 }

@@ -5,6 +5,7 @@
 #include "../h/net/msg/loginrequest.h"
 #include "../h/net/msg/loginreply.h"
 #include "../h/net/msg/remotemove.h"
+#include "../h/net/msg/helloreply.h"
 #include <string>
 
 class TcpClient
@@ -21,6 +22,7 @@ public:
 
   void openConnectionBroadcast();
   void sendHelloBroadcast();
+   void sendHelloReply(string ip,HelloReply* reply);
 
 private:
   int sock;

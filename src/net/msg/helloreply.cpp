@@ -95,7 +95,7 @@ istream &operator>>(istream& in, HelloReply& object){
     in >> object.rows;
     in >> object.columns;
     in >> object.cellsize;
-    return out;
+    return in;
 }
 
 string HelloReply::toString()
