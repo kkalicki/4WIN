@@ -7,15 +7,10 @@
 #include <netinet/in.h>
 #include <iostream>
 #include <string>
+#include "../h/net/tcpserver.h"
 
 using namespace std;
 
-typedef struct
-{
-    int sock;
-    struct sockaddr address;
-    unsigned int addr_len;
-} connection_t;
 
 class UdpServer{
 public:

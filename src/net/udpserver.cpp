@@ -58,10 +58,9 @@ void UdpServer::connect()
       if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0)
           printf("setsockopt() failed");
 
-    /* bind socket to port */
-    memset(&address, 0, sizeof(address));      /* Zero out structure */
-    address.sin_family = AF_INET;                    /* Internet address family */
-    address.sin_addr.s_addr = inet_addr("192.168.28.255");/* Broadcast IP address */
+    memset(&address, 0, sizeof(address));
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(DEFAULT_PORT_UDP);
 
     cout << "Binde Socket!" << endl;
@@ -90,25 +89,15 @@ void *UdpServer::startServerThread(void *ptr)
 
         const int MAXDATARECV = 1024;
         char buf[MAXDATARECV];
-            string  str="";
-            memset(buf,0,MAXDATARECV+1);
-            unsigned int len;
-            len=sizeof(&connection->address);
+        memset(buf,0,MAXDATARECV+1);
+        unsigned int len;
+        len=sizeof(&connection->address);
 
-            recvfrom(sock,buf,MAXDATARECV+1,0,&connection->address,&len);
-         cout << "Boradcast eigegangen!" << endl;
-        /*connection->sock = accept(sock, &connection->address, &connection->addr_len); //TODO Hier Select() nachlesen
-        if (connection->sock <= 0)
-        {
-             free(connection);
+        if((recvfrom(sock,buf,MAXDATARECV,0,NULL,0)) < 0){
+            printf("recvfrom() failed");
         }
-        else
-        {
-            cout << "Verbindungen eingegangen..PORT: " << connection->sock << endl;
-            process(connection,ptr);
-            close(connection->sock);
-            free(connection);
-        }*/
+
+        cout << "Boradcast eigegangen!" << endl;
     }
 }
 

@@ -14,8 +14,8 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     tcpServer->start();
 
     //tcpClient->sendHelloBroadcast();
-    //this->udpServer = new UdpServer();
-    //udpServer->start();
+    this->udpServer = new UdpServer();
+    udpServer->start();
 
     this->tcpClient = new TcpClient("192.168.28.105");
 }
@@ -26,11 +26,11 @@ NetzwerkSpiel::~NetzwerkSpiel()
     if(tcpServer->getIsActive())
         tcpServer->stop();
 
-    //if(udpServer->getIsActive())
-      //  udpServer->stop();
+    if(udpServer->getIsActive())
+        udpServer->stop();
 
     delete tcpServer;
-    //delete udpServer;
+    delete udpServer;
     delete tcpClient;
     std::cout << "Netzwerkspiel geschlossen!!!" << endl;
 }
