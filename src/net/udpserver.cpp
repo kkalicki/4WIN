@@ -56,7 +56,7 @@ void *UdpServer::startUdpServerThread(void *ptr)
                 cout << "Adresse : " << ipstr << endl;
                 cout << "ID " << incomingMessage.getId() << endl;
 
-                processThread((struct sockaddr_in)sender,ptr,incomingMessage,object);
+                processThread((struct sockaddr_in)sender,ptr,incomingMessage);
                 close(connection->sock);
                 free(connection);
             }
@@ -66,7 +66,7 @@ void *UdpServer::startUdpServerThread(void *ptr)
     }
 }
 
-void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessage mid, string object)
+void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessage mid)
 {
     switch(mid.getId()){
     case UDPHELLO:
