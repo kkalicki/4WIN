@@ -24,11 +24,14 @@ public:
   void sendHelloBroadcast();
    void sendHelloReply(string ip,HelloReply* reply);
 
+   string getIpAddress() const;
+   void setIpAddress(const string &value);
+
 private:
-  int sock;
-  int udpsock;
-  int port;
-  string ipAddress;
+   int sock;
+   int udpsock;
+   int port;
+   string ipAddress;
 };
 
 #endif // TCPCLIENT_H

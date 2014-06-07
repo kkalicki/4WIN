@@ -153,3 +153,13 @@ void TcpClient::sendHelloReply(string ip, HelloReply *reply)
     cout<<"HELLOREPLY "<< o.str() << " gesendet!"<< endl;
     disconnect();
 }
+string TcpClient::getIpAddress() const
+{
+    return ipAddress;
+}
+
+void TcpClient::setIpAddress(const string &value)
+{
+    ipAddress = value;
+}
+

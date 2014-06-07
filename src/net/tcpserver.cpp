@@ -40,13 +40,16 @@ void *TcpServer::startTcpServerThread(void *ptr)
     {
         cout << "warte auf eingehende Verbindungen.." << endl;
         connection = (connection_t *)malloc(sizeof(connection_t));
-        connection->sock = accept(sock, (struct sockaddr*)&connection->address, &connection->addr_len); //TODO Hier Select() nachlesen
+        socklen_t sendsize = sizeof(connection->address);
+        connection->sock = accept(sock, (struct sockaddr*)&connection->address,&sendsize); //TODO Hier Select() nachlesen
         if (connection->sock <= 0)
         {
              free(connection);
         }
         else
         {
+            char* ip = inet_ntoa(connection->address.sin_addr);
+            string ipstr(ip);
             cout << "Verbindungen eingegangen(TCP)..SOCK: " << connection->sock << endl;
             process(connection,ptr);
             close(connection->sock);
@@ -76,7 +79,9 @@ void TcpServer::process(connection_t * conn, void *ptr)
             LoginRequest loginRequest;
             rsltlr >> loginRequest;
             cout << loginRequest << " empfangen!" << endl;
-            ((TcpServer *)ptr)->LoginRequestSignal(loginRequest.getPlayerName());
+            char* ip = inet_ntoa(conn->address.sin_addr);
+            string ipstr(ip);
+            ((TcpServer *)ptr)->LoginRequestSignal(loginRequest.getPlayerName(),ipstr);
         }
         break;
         case LOGINREPLY:

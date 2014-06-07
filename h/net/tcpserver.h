@@ -20,7 +20,7 @@ public:
     static void * startTcpServerThread(void * ptr);
     static void process(connection_t * conn, void * ptr);
 
-    boost::signals2::signal<void(string)> LoginRequestSignal;
+    boost::signals2::signal<void(string,string)> LoginRequestSignal;
     boost::signals2::signal<void(Spieler)> LoginReplySignal;
     boost::signals2::signal<void(unsigned short)> RemoteMoveSignal;
     boost::signals2::signal<void()> GiveUpSignal;

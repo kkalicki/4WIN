@@ -9,7 +9,7 @@
 NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Spiel(zeilen,spalten)
 {
     this->tcpServer = new TcpServer();
-    dynamic_cast<TcpServer*>(tcpServer)->LoginRequestSignal.connect(boost::bind(&NetzwerkSpiel::on_loginRequest, this,_1));
+    dynamic_cast<TcpServer*>(tcpServer)->LoginRequestSignal.connect(boost::bind(&NetzwerkSpiel::on_loginRequest, this,_1,_2));
     dynamic_cast<TcpServer*>(tcpServer)->LoginReplySignal.connect(boost::bind(&NetzwerkSpiel::on_loginReply, this,_1));
     dynamic_cast<TcpServer*>(tcpServer)->RemoteMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_remoteMove, this,_1));
     dynamic_cast<TcpServer*>(tcpServer)->GiveUpSignal.connect(boost::bind(&NetzwerkSpiel::on_giveUp, this));
@@ -19,6 +19,9 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     this->udpServer = new UdpServer();
     dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.connect(boost::bind(&NetzwerkSpiel::on_udpHello, this,_1));
     udpServer->start();
+
+    this->tcpClient = new TcpClient();
+
 }
 
 NetzwerkSpiel::~NetzwerkSpiel()
@@ -52,7 +55,7 @@ void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2)
 
 void NetzwerkSpiel::startClient(string ip)
 {
-    this->tcpClient = new TcpClient(ip);
+    tcpClient->setIpAddress(ip);
 }
 
 void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
@@ -104,11 +107,12 @@ void NetzwerkSpiel::aufgeben()
     tcpClient->sendGiveUp();
 }
 
-void NetzwerkSpiel::on_loginRequest(string loginPlayerName)
+void NetzwerkSpiel::on_loginRequest(string loginPlayerName, string ip)
 {
     cout << "Incoming to on_loginRequest() VALUE: " << loginPlayerName << endl;
     starteSpiel(nameSpieler1,loginPlayerName,false,false);
     this->remoteSpieler = sp1;
+    tcpClient->setIpAddress(ip);
     this->tcpClient->sendLoginReply(sp1);
 
     //hier starte spiel...
@@ -145,6 +149,7 @@ void NetzwerkSpiel::on_udpHello(string remoteIp)
 {
     cout << "Incoming to on_udpHello() VALUE: " << remoteIp << endl;
     HelloReply helloReply("",this->nameSpieler1,this->spielfeld->getZeilen(),this->spielfeld->getSpalten());
+    tcpClient->setIpAddress(remoteIp);
     tcpClient->sendHelloReply(remoteIp,&helloReply);
 }
 

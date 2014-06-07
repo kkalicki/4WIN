@@ -25,7 +25,7 @@ public:
 
     void sendHello();
 
-    void on_loginRequest(string loginPlayerName);
+    void on_loginRequest(string loginPlayerName,string ip);
     void on_loginReply(Spieler spieler);
     void on_remoteMove(unsigned short column);
     void on_giveUp();
