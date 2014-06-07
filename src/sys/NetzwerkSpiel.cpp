@@ -15,8 +15,8 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     dynamic_cast<TcpServer*>(tcpServer)->GiveUpSignal.connect(boost::bind(&NetzwerkSpiel::on_giveUp, this));
     tcpServer->start();
 
-    //tcpClient->sendHelloBroadcast();
     this->udpServer = new UdpServer();
+    dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.connect(boost::bind(&NetzwerkSpiel::on_udpHello, this,_1));
     udpServer->start();
 
     this->tcpClient = new TcpClient("192.168.28.105");
@@ -134,4 +134,9 @@ void NetzwerkSpiel::on_giveUp()
     cout << "Incoming to on_giveUp()" << endl;
 
     GiveUpRemotePlayerSignal(remoteSpieler,false);
+}
+
+void NetzwerkSpiel::on_udpHello(string remoteIp)
+{
+    cout << "Incoming to on_udpHello() VALUE: " << remoteIp << endl;
 }

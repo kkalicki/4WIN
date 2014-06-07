@@ -49,13 +49,8 @@ void *UdpServer::startUdpServerThread(void *ptr)
         }
         else{
 
-            if(!isOwnAdress(sender)){
+            if(!isOwnAddress(sender)){
                 cout << "Verbindungen eingegangen(UDP)..SOCK: " << connection->sock << endl;
-                char* ip = inet_ntoa(sender.sin_addr);
-                string ipstr(ip);
-                cout << "Adresse : " << ipstr << endl;
-                cout << "ID " << incomingMessage.getId() << endl;
-
                 processThread((struct sockaddr_in)sender,ptr,incomingMessage);
                 close(connection->sock);
                 free(connection);
@@ -70,23 +65,23 @@ void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessa
 {
     switch(mid.getId()){
     case UDPHELLO:
-                   cout << "HELLO FROM BROADCAST" << endl;
-                   int sock = ((UdpServer*)ptr)->sock;
-                   NetworkMessage msg(UDPHELLO);
-                   if(sendto(sock, &msg, sizeof(NetworkMessage), 0, (struct sockaddr *) &sender, sizeof(sender)) != sizeof(NetworkMessage))
-                   {
-                        perror("socket");
-                        printf("sendto() failed");
-                   }
-
-        break;
+    {
+        char* ip = inet_ntoa(sender.sin_addr);
+        string ipstr(ip);
+        ((UdpServer*)ptr)->UdpHelloSignal(ipstr);
+    }
+    break;
+    case UDPHELLOREPLY:
+    {
+         ((UdpServer*)ptr)->UdpHelloReplySignal();
+    }
+    break;
+    default: // Do Nothing...
+    break;
     }
 }
 
-
-
-
-bool UdpServer::isOwnAdress(sockaddr_in address)
+bool UdpServer::isOwnAddress(sockaddr_in address)
 {
     char hostname[1024];
     hostname[1023] = '\0';

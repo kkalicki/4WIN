@@ -27,6 +27,8 @@ public:
     void on_remoteMove(unsigned short column);
     void on_giveUp();
 
+     void on_udpHello(string remoteIp);
+
     boost::signals2::signal<void(unsigned short, int)> RemoteMoveSignal;
     boost::signals2::signal<void()> StartGameSignal;
     boost::signals2::signal<void(Spieler*,bool)> GiveUpRemotePlayerSignal;
