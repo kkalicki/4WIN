@@ -10,9 +10,8 @@ Settings::Settings(QWidget *parent) :
     ui->setupUi(this);
     this->gameSettings = new GameSettings();
     this->openGameThread=0;
-    this->helloServer = new HelloServer();
-    helloServer->HelloReplySignal.connect(boost::bind(&Settings::incomingGames, this,_1));
-    helloServer->start();
+    this->helloServer = 0;
+
 }
 
 Settings::~Settings()
@@ -23,10 +22,14 @@ Settings::~Settings()
     if(openGameThread != 0)
         delete openGameThread;
 
-    if(helloServer->getIsActive())
-        helloServer->stop();
+    if(helloServer != 0)
+    {
+        if(helloServer->getIsActive())
+            helloServer->stop();
 
-    delete helloServer;
+        delete helloServer;
+    }
+
 }
 
 void Settings::on_rbsvs_toggled(bool checked)
@@ -91,11 +94,24 @@ void Settings::on_rbenter_toggled(bool checked)
         ui->leplayer1->setEnabled(false);
         ui->leplayer2->setEnabled(true);
         ui->gbgamefieldsetting->setEnabled(false);
+        this->helloServer = new HelloServer();
+        helloServer->HelloReplySignal.connect(boost::bind(&Settings::incomingGames, this,_1));
+        helloServer->start();
     }
     else
     {
         ui->gbgamefieldsetting->setEnabled(true);
         ui->cbwatch->setEnabled(false);
+
+        if(helloServer != 0)
+        {
+            if(helloServer->getIsActive())
+                helloServer->stop();
+
+            delete helloServer;
+            helloServer=0;
+        }
+
     }
 }
 
@@ -113,6 +129,16 @@ void Settings::on_btnstart_clicked()
             gameSettings->setCellSize(ui->sbcellsize->text().toShort());
             gameSettings->setNetworkMode(getNetworkMode());
             gameSettings->setIsFollow(ui->cbwatch->isChecked());
+
+
+            if(helloServer != 0)
+            {
+                if(helloServer->getIsActive())
+                    helloServer->stop();
+
+                delete helloServer;
+                helloServer=0;
+            }
 
             emit resultSettings(gameSettings);
        }
