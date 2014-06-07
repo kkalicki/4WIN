@@ -1,14 +1,8 @@
 #include "../h/net/udpserver.h"
 #include "../h/sys/FourWinExceptions.h"
-#include "../h/net/netmessage.h"
-#include "../h/net/msg/loginrequest.h"
-#include "../h/net/msg/loginreply.h"
-#include "../h/net/msg/remotemove.h"
-#include <pthread.h>
-#include <sys/socket.h>
-#include <netdb.h>
-#include <stdio.h>
-#include <sstream>
+//#include <netdb.h>
+//#include <stdio.h>
+//#include <sstream>
 
 #include <arpa/inet.h>
 
@@ -32,19 +26,46 @@ void UdpServer::connect()
 
 void *UdpServer::startUdpServerThread(void *ptr)
 {
+    connection_t * connection;
     int sock = ((UdpServer *)ptr)->sock;
     cout << "server gestartet!" << endl;
     while (true)
     {
-        cout << "warte auf eingehende Verbindungen.." << endl;
+        cout << "warte auf Broadcast..." << endl;
+        connection = (connection_t *)malloc(sizeof(connection_t));
 
-        const int MAXDATARECV = 1024;
-        char buf[MAXDATARECV];
-        memset(buf,0,MAXDATARECV+1);
-        if((recvfrom(sock,buf,MAXDATARECV,0,NULL,0)) < 0){
-            printf("recvfrom() failed");
+        NetworkMessage incomingMessage(LOGINREQUEST);
+        connection->sock = recvfrom(sock,&incomingMessage,sizeof(NetworkMessage),0,&connection->address, &connection->addr_len);
+
+        /*int len;
+        recvfrom(sock,&len,sizeof(int),0,NULL, 0);
+
+        char buffer[len];
+        recvfrom(sock, buffer, len,0,NULL, 0);
+        string object(buffer);*/
+        string object = "test";
+        if (connection->sock <= 0)
+        {
+             free(connection);
         }
+        else
+        {
+            cout << "Verbindungen eingegangen(UDP)..SOCK: " << connection->sock << endl;
+            cout << "ID " << incomingMessage.getId() << endl;
 
+            processThread(connection,incomingMessage,object);
+            close(connection->sock);
+            free(connection);
+        }
         cout << "Boradcast eigegangen!" << endl;
+    }
+}
+
+void *UdpServer::processThread(connection_t *conn, NetworkMessage mid, string object)
+{
+    switch(mid.getId()){
+    case UDPHELLO:
+                    cout << "HELLO FROM BROADCAST" << endl;
+        break;
     }
 }

@@ -45,7 +45,7 @@ void *TcpServer::startTcpServerThread(void *ptr)
         }
         else
         {
-            cout << "Verbindungen eingegangen(TCP)..PORT: " << connection->sock << endl;
+            cout << "Verbindungen eingegangen(TCP)..SOCK: " << connection->sock << endl;
             process(connection,ptr);
             close(connection->sock);
             free(connection);
@@ -108,6 +108,8 @@ void TcpServer::process(connection_t * conn, void *ptr)
 }
 
 
+//--------------------NUR ALS VORLAGE FUER MULTITHREADING SERVER (LISTENER--WORKER)-----------------------------------
+/*
 void *TcpServer::processThread(void * ptr)
 {
     int len;
@@ -120,18 +122,18 @@ void *TcpServer::processThread(void * ptr)
         conn = (connection_t *)ptr;
 
 
-        /*pthread_create(&thread, 0, process, (void *)connection);
-        pthread_detach(thread);*/
+        pthread_create(&thread, 0, process, (void *)connection);
+        pthread_detach(thread);
 
     // empfange Nachricht, nimm nur den ersten Teil der Klasse
-    /*len =sizeof(int);
+    len =sizeof(int);
     char buffer[1];
     read(conn->sock, buffer, 1);
     string temp;
     temp.assign(buffer);
     stringstream rslt;
     rslt << temp;
-    rslt >> incomingMessage;*/
+    rslt >> incomingMessage;
 
     read(conn->sock, &incomingMessage, sizeof(NetworkMessage));
 
@@ -142,24 +144,24 @@ void *TcpServer::processThread(void * ptr)
         {
             LoginRequest loginRequest;
             read(conn->sock, &loginRequest, sizeof(LoginRequest));
-            /*len= sizeof(LoginRequest);
+            len= sizeof(LoginRequest);
             char bufferlr[len];
             read(conn->sock, bufferlr, len);
             string templr;
             templr.assign(bufferlr);
             stringstream rsltlr;
             rsltlr << templr;
-            rsltlr >> loginRequest;*/
+            rsltlr >> loginRequest;
             //emit on_loginRequest();
             cout << loginRequest << endl;
 
 
 
-            /*char* buf = (char *)malloc(sizeof(LoginRequest));
+           char* buf = (char *)malloc(sizeof(LoginRequest));
             read(conn->sock, buf, sizeof(LoginRequest));
             LoginRequest loginRequest;
             loginRequest.fromCharArray(buf);
-            string name = loginRequest.getPlayerName();*/
+            string name = loginRequest.getPlayerName();
         }
         break;
 
@@ -167,7 +169,7 @@ void *TcpServer::processThread(void * ptr)
         {
             LoginReply loginReply;
             read(conn->sock, &loginReply, sizeof(LoginReply));
-            /*char bufferlrep[sizeof(LoginReply)];
+            char bufferlrep[sizeof(LoginReply)];
             read(conn->sock, bufferlrep, sizeof(LoginReply));
             string temp;
             temp.assign(bufferlrep);
@@ -177,18 +179,18 @@ void *TcpServer::processThread(void * ptr)
             cout << rsltlrep.str() << endl;
             rsltlrep >> loginReply;
             temp.clear();
-            //emit on_loginRequest();*/
+            //emit on_loginRequest();
             cout << loginReply << endl;
          }
          break;
     }
     cout << " beendet!" << endl;
 
-    /* close socket and clean up */
     close(conn->sock);
     free(conn);
     pthread_exit(0);
 }
+    */
 
 
 

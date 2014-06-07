@@ -17,7 +17,6 @@ public:
     TcpServer(int port=DEFAULT_PORT_TCP);
     ~TcpServer();
     static void * startTcpServerThread(void * ptr);
-    static void * processThread(void * ptr);
     static void process(connection_t * conn, void * ptr);
 
     boost::signals2::signal<void(string)> LoginRequestSignal;
