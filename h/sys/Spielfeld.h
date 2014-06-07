@@ -93,6 +93,7 @@ public:
     unsigned short getSchwierigkeitsstufe() const;
     void setSchwierigkeitsstufe(unsigned short value);
     bool pruefeSpielfeld();
+    int pruefeStein(int farbe, int spalte);
 private:
 
     void init();
@@ -108,7 +109,7 @@ private:
     }
 
 
-    int pruefeStein(int farbe, int spalte);
+
 
 
     int checkHorizontal(int farbe, int spalte);
