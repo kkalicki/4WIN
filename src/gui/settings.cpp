@@ -12,6 +12,7 @@ Settings::Settings(QWidget *parent) :
     this->openGameThread=0;
     this->helloServer = new HelloServer();
     helloServer->HelloReplySignal.connect(boost::bind(&Settings::incomingGames, this,_1));
+    helloServer->start();
 }
 
 Settings::~Settings()
@@ -21,6 +22,9 @@ Settings::~Settings()
 
     if(openGameThread != 0)
         delete openGameThread;
+
+    if(helloServer->getIsActive())
+        helloServer->stop();
 
     delete helloServer;
 }
