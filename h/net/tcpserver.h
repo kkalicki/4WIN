@@ -5,6 +5,7 @@
 #include "../h/sys/Konstanten.h"
 #include "../h/sys/Spieler.h"
 #include "../h/net/msg/remotemove.h"
+#include "../h/net/msg/helloreply.h"
 #include "boost/signals2.hpp"
 #include <netinet/in.h>
 #include <iostream>
@@ -23,6 +24,7 @@ public:
     boost::signals2::signal<void(Spieler)> LoginReplySignal;
     boost::signals2::signal<void(unsigned short)> RemoteMoveSignal;
     boost::signals2::signal<void()> GiveUpSignal;
+    boost::signals2::signal<void(HelloReply)> HelloReplySignal;
 
 protected:
     virtual void connect();

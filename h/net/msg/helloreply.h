@@ -8,7 +8,8 @@ using namespace std;
 
 class HelloReply{
 public:
-    HelloReply(string ipAdress, string name, unsigned int rows, unsigned int columns, unsigned int cellsize );
+    HelloReply();
+    HelloReply(string ipAdress, string name, unsigned int rows, unsigned int columns);
     ~HelloReply();
     string getIpAdress() const;
     void setIpAdress(const string &value);
@@ -22,10 +23,6 @@ public:
     unsigned int getColumns() const;
     void setColumns(unsigned int value);
 
-    unsigned int getCellsize() const;
-    void setCellsize(unsigned int value);
-
-
     friend ostream& operator<<(ostream& out, HelloReply& object);
     friend istream& operator>>(istream& in, HelloReply& object);
 
@@ -36,7 +33,5 @@ private:
     string name;
     unsigned int rows;
     unsigned int columns;
-    unsigned int cellsize;
-
 };
 #endif // HELLOREPLY_H

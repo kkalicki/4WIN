@@ -71,11 +71,6 @@ void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessa
         ((UdpServer*)ptr)->UdpHelloSignal(ipstr);
     }
     break;
-    case UDPHELLOREPLY:
-    {
-         ((UdpServer*)ptr)->UdpHelloReplySignal();
-    }
-    break;
     default: // Do Nothing...
     break;
     }

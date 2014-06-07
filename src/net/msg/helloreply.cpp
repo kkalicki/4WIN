@@ -1,12 +1,21 @@
 #include "../h/net/msg/helloreply.h"
 
-HelloReply::HelloReply(string ipAdress, string name, unsigned int rows, unsigned int columns, unsigned int cellsize)
+HelloReply::HelloReply()
+{
+    //Do Nothing...
+}
+
+HelloReply::HelloReply(string ipAdress, string name, unsigned int rows, unsigned int columns)
 {
     this->ipAdress = ipAdress;
     this->name = name;
     this->rows = rows;
     this->columns = columns;
-    this->cellsize = cellsize;
+}
+
+HelloReply::~HelloReply()
+{
+    //kein new...
 }
 
 string HelloReply::getIpAdress() const
@@ -45,15 +54,6 @@ void HelloReply::setColumns(unsigned int value)
 {
     columns = value;
 }
-unsigned int HelloReply::getCellsize() const
-{
-    return cellsize;
-}
-
-void HelloReply::setCellsize(unsigned int value)
-{
-    cellsize = value;
-}
 
 void HelloReply::fromCsvString(string csv)
 {
@@ -75,16 +75,13 @@ void HelloReply::fromCsvString(string csv)
     ptr = strtok(NULL, delimiter);
     this->columns = atoi(ptr);
 
-    ptr = strtok(NULL, delimiter);
-    this->cellsize = atoi(ptr);
 }
 
 ostream &operator<<(ostream& out, HelloReply& object){
     out << object.ipAdress << ";";
     out << object.name     << ";";
     out << object.rows     << ";";
-    out << object.columns  << ";";
-    out << object.cellsize;
+    out << object.columns;
     return out;
 }
 
@@ -94,7 +91,6 @@ istream &operator>>(istream& in, HelloReply& object){
     in >> object.name;
     in >> object.rows;
     in >> object.columns;
-    in >> object.cellsize;
     return in;
 }
 
@@ -105,7 +101,7 @@ string HelloReply::toString()
     o << "Name     : " << name << endl;
     o << "Rows     : " << rows << endl;
     o << "Columns  : " << columns << endl;
-    o << "CellSize : "  << cellsize << endl;
+    return o.str();
 }
 
 

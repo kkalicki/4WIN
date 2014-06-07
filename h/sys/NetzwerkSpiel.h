@@ -26,6 +26,7 @@ public:
     void on_loginReply(Spieler spieler);
     void on_remoteMove(unsigned short column);
     void on_giveUp();
+    void on_helloReply(HelloReply reply);
 
      void on_udpHello(string remoteIp);
 

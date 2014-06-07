@@ -30,7 +30,7 @@ TcpClient::~TcpClient()
          disconnect();
 }
 
-void TcpClient::openConnection()
+void TcpClient::openConnection(string ipAddress)
 {
     struct sockaddr_in address;
     struct hostent * host;
@@ -69,7 +69,7 @@ void TcpClient::sendLoginRequest(string playerName)
     o << loginRequest;
     int len= strlen(o.str().c_str());
 
-    openConnection();
+    openConnection(this->ipAddress);
     write(sock,&msgId,sizeof(LOGINREQUEST));
     write(sock,(char*) &len,sizeof(int));
     write(sock, o.str().c_str(),len);
@@ -85,7 +85,7 @@ void TcpClient::sendLoginReply(Spieler* player)
     o << loginRequest;
     int len= strlen(o.str().c_str());
 
-    openConnection();
+    openConnection(this->ipAddress);
     write(sock,&msgId,sizeof(LOGINREPLY));
     write(sock,(char*) &len,sizeof(int));
     write(sock, o.str().c_str(),len);
@@ -95,7 +95,7 @@ void TcpClient::sendLoginReply(Spieler* player)
 
 void TcpClient::sendMove(unsigned short column)
 {
-    openConnection();
+    openConnection(this->ipAddress);
     RemoteMove remoteMove(column);
     NetworkMessage msg(REMOTEMOVE);
     write(sock, &msg, sizeof(NetworkMessage) );
@@ -106,7 +106,7 @@ void TcpClient::sendMove(unsigned short column)
 
 void TcpClient::sendGiveUp()
 {
-    openConnection();
+    openConnection(this->ipAddress);
     NetworkMessage msg(GIVEUP);
     write(sock, &msg, sizeof(NetworkMessage) );
     cout<< "GIVEUP gesendet!"<< endl;
@@ -115,7 +115,6 @@ void TcpClient::sendGiveUp()
 
 void TcpClient::openConnectionBroadcast()
 {
-
     //struct hostent * host;
 
     sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -143,23 +142,15 @@ void TcpClient::sendHelloBroadcast()
 
 void TcpClient::sendHelloReply(string ip, HelloReply *reply)
 {
-
-    struct sockaddr_in address;
-    memset(&address, 0, sizeof(address));
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = inet_addr(ip);
-    address.sin_port = htons(DEFAULT_PORT_UDP);
-
+    NetworkMessage msgId(HELLOREPLY);
     stringstream o;
-    o << loginRequest;
+    o << *reply;
     int len= strlen(o.str().c_str());
 
-    openConnectionBroadcast();
-    NetworkMessage networkMessage(UDPHELLO);
-    sendto(sock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
-    sendto(sock,(char*) &len,sizeof(int),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
-    sendto(sock, o.str().c_str(),len,MSG_SEND,(struct sockaddr*)&address, sizeof(address));
-
-
+    openConnection(this->ipAddress);
+    write(sock,&msgId,sizeof(LOGINREPLY));
+    write(sock,(char*) &len,sizeof(int));
+    write(sock, o.str().c_str(),len);
+    cout<<"HELLOREPLY "<< o.str() << " gesendet!"<< endl;
     disconnect();
 }

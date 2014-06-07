@@ -5,6 +5,7 @@
 #include "../h/net/msg/loginrequest.h"
 #include "../h/net/msg/loginreply.h"
 #include "../h/net/msg/remotemove.h"
+#include "../h/net/msg/helloreply.h"
 #include <pthread.h>
 #include <sys/socket.h>
 #include <netdb.h>
@@ -102,6 +103,18 @@ void TcpServer::process(connection_t * conn, void *ptr)
             ((TcpServer *)ptr)->GiveUpSignal();
         }
         break;
+        case HELLOREPLY:
+        {
+            read(conn->sock, &len, sizeof(int));
+            char bufferhr[len];
+            read(conn->sock, bufferhr, len);
+
+            templr.assign(bufferhr,len);
+            HelloReply helloReply;
+            helloReply.fromCsvString(templr);
+            cout << helloReply << " empfangen!" << endl;
+            ((TcpServer *)ptr)->HelloReplySignal(helloReply);
+        }
         default: // Do Nothing...
         break;
     }

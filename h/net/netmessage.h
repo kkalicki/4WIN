@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-enum NetMessageType{NOTYPE=0, LOGINREQUEST=1, LOGINREPLY=2, REMOTEMOVE=3, GIVEUP=4, UDPHELLO=5, UDPHELLOREPLY=6};
+enum NetMessageType{NOTYPE=0, LOGINREQUEST=1, LOGINREPLY=2, REMOTEMOVE=3, GIVEUP=4, UDPHELLO=5, HELLOREPLY=6};
 
 class NetworkMessage{
 public:

@@ -13,6 +13,7 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     dynamic_cast<TcpServer*>(tcpServer)->LoginReplySignal.connect(boost::bind(&NetzwerkSpiel::on_loginReply, this,_1));
     dynamic_cast<TcpServer*>(tcpServer)->RemoteMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_remoteMove, this,_1));
     dynamic_cast<TcpServer*>(tcpServer)->GiveUpSignal.connect(boost::bind(&NetzwerkSpiel::on_giveUp, this));
+    dynamic_cast<TcpServer*>(tcpServer)->HelloReplySignal.connect(boost::bind(&NetzwerkSpiel::on_helloReply, this,_1));
     tcpServer->start();
 
     this->udpServer = new UdpServer();
@@ -136,7 +137,14 @@ void NetzwerkSpiel::on_giveUp()
     GiveUpRemotePlayerSignal(remoteSpieler,false);
 }
 
+void NetzwerkSpiel::on_helloReply(HelloReply reply)
+{
+    cout << "Incoming to on_helloReply() VALUE: " << reply << endl;
+}
+
 void NetzwerkSpiel::on_udpHello(string remoteIp)
 {
     cout << "Incoming to on_udpHello() VALUE: " << remoteIp << endl;
+    HelloReply helloReply("",sp1->getName(),this->spielfeld->getZeilen(),this->spielfeld->getSpalten());
+    tcpClient->sendHelloReply(remoteIp,&helloReply);
 }
