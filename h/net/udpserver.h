@@ -14,7 +14,7 @@ public:
     ~UdpServer();
 
     static void *startUdpServerThread(void * ptr);
-    static void *processThread(connection_t * conn, NetworkMessage mid, string object);
+    static void *processThread(connection_t * conn,void *ptr, NetworkMessage mid, string object);
 protected:
     virtual void connect();
 

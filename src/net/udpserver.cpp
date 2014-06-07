@@ -53,7 +53,7 @@ void *UdpServer::startUdpServerThread(void *ptr)
             cout << "Verbindungen eingegangen(UDP)..SOCK: " << connection->sock << endl;
             cout << "ID " << incomingMessage.getId() << endl;
 
-            processThread(connection,incomingMessage,object);
+            processThread(connection,ptr,incomingMessage,object);
             close(connection->sock);
             free(connection);
         }
@@ -61,15 +61,14 @@ void *UdpServer::startUdpServerThread(void *ptr)
     }
 }
 
-void *UdpServer::processThread(connection_t *conn, NetworkMessage mid, string object)
+void *UdpServer::processThread(connection_t *conn,void *ptr, NetworkMessage mid, string object)
 {
     switch(mid.getId()){
     case UDPHELLO:
                     cout << "HELLO FROM BROADCAST" << endl;
-
+                    int sock = ((UdpServer*)ptr)->sock;
                     NetworkMessage msg(UDPHELLO);
-                    if (sendto(sock, &msg, sizeof(NetworkMessage), 0, &conn->address, &conn->addr_len) != len)
-                       printf("sendto() failed");
+                    sendto(sock, &msg, sizeof(NetworkMessage), 0, &conn->address, sizeof(conn->address));
         break;
     }
 }
