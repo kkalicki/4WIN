@@ -19,8 +19,6 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     this->udpServer = new UdpServer();
     dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.connect(boost::bind(&NetzwerkSpiel::on_udpHello, this,_1));
     udpServer->start();
-
-    this->tcpClient = new TcpClient("192.168.28.108");
 }
 
 NetzwerkSpiel::~NetzwerkSpiel()
@@ -50,6 +48,11 @@ void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2)
     this->remoteSpieler = sp2;
     cout << "melde an..."<< endl;
     tcpClient->sendLoginRequest(nameSpieler2);
+}
+
+void NetzwerkSpiel::startClient(string ip)
+{
+    this->tcpClient = new TcpClient(ip);
 }
 
 void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)

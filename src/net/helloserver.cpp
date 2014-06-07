@@ -20,6 +20,8 @@ HelloServer::~HelloServer()
 void HelloServer::connect()
 {
     Server4Win::connect();
+    pthread_create(&serverThread, 0, startTcpServerThread, this);
+    pthread_detach(serverThread);
 }
 
 void *HelloServer::startTcpServerThread(void *ptr)

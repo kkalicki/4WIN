@@ -13,6 +13,7 @@ GameSettings::GameSettings(GameMode mode, string player1Name, string player2Name
     this->cellSize = cellSize;
     this->networkMode = networkMode;
     this->isFollow = isFollow;
+    this->remoteIp = "";
 }
 
 GameSettings::~GameSettings()
@@ -101,3 +102,13 @@ void GameSettings::setNetworkMode(const NetworkMode &value)
 {
     networkMode = value;
 }
+string GameSettings::getRemoteIp() const
+{
+    return remoteIp;
+}
+
+void GameSettings::setRemoteIp(const string &value)
+{
+    remoteIp = value;
+}
+

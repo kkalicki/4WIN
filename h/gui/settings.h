@@ -20,6 +20,7 @@ public:
     GameMode getGameMode();
     NetworkMode getNetworkMode();
     void incomingGames(HelloReply incomingVal);
+    void start();
 
 private:
     Ui::settingsUi * ui;
@@ -42,6 +43,7 @@ private slots:
     void on_cbwatch_toggled(bool checked);
     void on_pbrefreshs_clicked();
     void openGamesUpdate(HelloReply *incomingVal);
+    void on_lvgames_itemActivated(QListWidgetItem *item);
 };
 
 #endif // SETTINGS_H

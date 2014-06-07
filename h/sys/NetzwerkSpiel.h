@@ -18,6 +18,7 @@ public:
     void starteNetzwerkSpiel(string spielerName);
     void anmeldenNetzwerk(string nameSpieler2);
     void abmeldenNetzwerk();
+    void startClient(string ip);
     void rueckgabeSpielerInfo(Spieler spieler);
     virtual int naechsterZug(Spieler* spieler, unsigned short spalte);
     virtual void aufgeben();
@@ -43,7 +44,6 @@ protected:
     TcpClient* tcpClient;
     string nameSpieler1;
     Spieler * remoteSpieler;
-
 };
 
 #endif // NETZWERKSPIEL_H

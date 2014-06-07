@@ -130,17 +130,25 @@ void Settings::on_btnstart_clicked()
             gameSettings->setNetworkMode(getNetworkMode());
             gameSettings->setIsFollow(ui->cbwatch->isChecked());
 
-
-            if(helloServer != 0)
+            if(gameSettings->getNetworkMode() == JOIN)
             {
-                if(helloServer->getIsActive())
-                    helloServer->stop();
-
-                delete helloServer;
-                helloServer=0;
+               if(gameSettings->getRemoteIp().empty())
+               {
+                   QMessageBox info;
+                   info.setText("Spiel muss ausgewaehlt sein für beitritt!");
+                   info.exec();
+               }
+               else
+               {
+                   start();
+               }
+            }
+            else
+            {
+                start();
             }
 
-            emit resultSettings(gameSettings);
+
        }
        else{
            QMessageBox info;
@@ -153,6 +161,20 @@ void Settings::on_btnstart_clicked()
         info.setText("Namen für Player1 eingeben!");
         info.exec();
     }
+}
+
+void Settings::start()
+{
+    if(helloServer != 0)
+    {
+        if(helloServer->getIsActive())
+            helloServer->stop();
+
+        delete helloServer;
+        helloServer=0;
+    }
+
+    emit resultSettings(gameSettings);
 }
 
 void Settings::on_cbwatch_toggled(bool checked)
@@ -200,7 +222,7 @@ void Settings::incomingGames(HelloReply incomingVal)
 void Settings::openGamesUpdate(HelloReply* incomingVal)
 {
     QListWidgetItem *item = new QListWidgetItem();
-    item->setText(QString::fromStdString(incomingVal->toString()));
+    item->setText(QString::fromStdString(incomingVal->getIpAdress()));
     ui->lvgames->addItem(item);
     ui->lvgames->scrollToBottom();
 }
@@ -209,4 +231,9 @@ void Settings::on_pbrefreshs_clicked()
 {
     ui->lvgames->clear();
     helloServer->sendHelloBroadcast();
+}
+
+void Settings::on_lvgames_itemActivated(QListWidgetItem *item)
+{
+    gameSettings->setRemoteIp(item->text().toStdString());
 }

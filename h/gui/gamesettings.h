@@ -43,6 +43,9 @@ public:
     NetworkMode getNetworkMode() const;
     void setNetworkMode(const NetworkMode &value);
 
+    string getRemoteIp() const;
+    void setRemoteIp(const string &value);
+
 private:
     GameMode mode;
     string player1Name;
@@ -53,6 +56,7 @@ private:
     unsigned short cellSize;
     NetworkMode networkMode;
     int isFollow;
+    string remoteIp;
 };
 
 #endif // GAMESETTINGS_H
