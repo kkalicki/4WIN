@@ -26,6 +26,7 @@ public:
 
 private:
   int sock;
+  int udpsock;
   int port;
   string ipAddress;
 };

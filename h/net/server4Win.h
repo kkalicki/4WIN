@@ -9,7 +9,7 @@ enum ServerType{TCP=1,UDP=2};
 typedef struct
 {
     int sock;
-    struct sockaddr address;
+    struct sockaddr_in address;
     unsigned int addr_len;
 } connection_t;
 

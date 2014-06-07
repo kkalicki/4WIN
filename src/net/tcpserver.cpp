@@ -11,6 +11,7 @@
 #include <netdb.h>
 #include <stdio.h>
 #include <sstream>
+#include <arpa/inet.h>
 
 
 TcpServer::TcpServer(int port): Server4Win(TCP,port)
@@ -39,7 +40,7 @@ void *TcpServer::startTcpServerThread(void *ptr)
     {
         cout << "warte auf eingehende Verbindungen.." << endl;
         connection = (connection_t *)malloc(sizeof(connection_t));
-        connection->sock = accept(sock, &connection->address, &connection->addr_len); //TODO Hier Select() nachlesen
+        connection->sock = accept(sock, (struct sockaddr*)&connection->address, &connection->addr_len); //TODO Hier Select() nachlesen
         if (connection->sock <= 0)
         {
              free(connection);
@@ -110,7 +111,11 @@ void TcpServer::process(connection_t * conn, void *ptr)
             read(conn->sock, bufferhr, len);
 
             templr.assign(bufferhr,len);
+
+            char* ip = inet_ntoa(conn->address.sin_addr);
+            string ipstr(ip);
             HelloReply helloReply;
+            helloReply.setIpAdress(ipstr);
             helloReply.fromCsvString(templr);
             cout << helloReply << " empfangen!" << endl;
             ((TcpServer *)ptr)->HelloReplySignal(helloReply);

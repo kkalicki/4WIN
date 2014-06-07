@@ -117,10 +117,10 @@ void TcpClient::openConnectionBroadcast()
 {
     //struct hostent * host;
 
-    sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    udpsock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
     int broadcastPermission = 1;
-        if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0)
+        if (setsockopt(udpsock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0)
             printf("setsockopt() failed");
     disconnect();
 }
@@ -135,7 +135,7 @@ void TcpClient::sendHelloBroadcast()
     address.sin_port = htons(DEFAULT_PORT_UDP);
 
     NetworkMessage networkMessage(UDPHELLO);
-    sendto(sock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+    sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
 
     disconnect();
 }
