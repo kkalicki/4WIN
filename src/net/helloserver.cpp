@@ -9,12 +9,20 @@
 
 HelloServer::HelloServer(int port): Server4Win(TCP,port)
 {
-    //Do Nothing...
+    udpsock= socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    int broadcastPermission = 1;
+    if (setsockopt(udpsock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0)
+        printf("setsockopt() failed");
+
+    memset(&address, 0, sizeof(address));
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = inet_addr("255.255.255.255");
+    address.sin_port = htons(DEFAULT_PORT_UDP);
 }
 
 HelloServer::~HelloServer()
 {
-    //kein new...
+    close(udpsock);
 }
 
 void HelloServer::connect()
@@ -73,20 +81,6 @@ void *HelloServer::startTcpServerThread(void *ptr)
 
 void HelloServer::sendHelloBroadcast()
 {
-    int udpsock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-
-    int broadcastPermission = 1;
-        if (setsockopt(udpsock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0)
-            printf("setsockopt() failed");
-
-    struct sockaddr_in address;
-    memset(&address, 0, sizeof(address));
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = inet_addr("255.255.255.255");
-    address.sin_port = htons(DEFAULT_PORT_UDP);
-
     NetworkMessage networkMessage(UDPHELLO);
     sendto(udpsock,&networkMessage,sizeof(NetworkMessage),0,(struct sockaddr*)&address, sizeof(address));
-
-    close(udpsock);
 }

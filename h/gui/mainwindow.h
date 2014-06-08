@@ -56,6 +56,7 @@ private:
     GameSettings * gameSettings;
     MoveThread *guiUpdaterThread;
     GiveUpThread *giveUpThread;
+    QThread * guiThread;
     static const int START_POSITION_X = 230;
     static const int START_POSITION_Y = 0;
 

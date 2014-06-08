@@ -23,6 +23,8 @@ public:
 
 protected:
     virtual void connect();
+    struct sockaddr_in address;
+    int udpsock;
 };
 
 #endif // HELLOSERVER_H

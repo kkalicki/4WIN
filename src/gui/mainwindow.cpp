@@ -268,6 +268,13 @@ void MainWindow::update(unsigned short column, int result)
        o<< (game->getAktuelleZeile(column)) << " - "<< column;
        gameInfoWidget->changePlayer(game->getAktuellerSpieler(),game->getRunde(),o.str());
     }
+
+    if(guiThread != 0)
+    {
+        guiThread->exit();
+        guiThread->quit();
+        guiThread=0;
+    }
 }
 
 void MainWindow::on_endGame(Spieler* winner,bool giveUp)
@@ -300,11 +307,17 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
         game=0;
     }
 
+    if(guiThread != 0)
+    {
+        guiThread->exit();
+        guiThread->quit();
+        guiThread=0;
+    }
 }
 
 void MainWindow::incommingMove(unsigned short column,int row)
 {
-    QThread* guiThread = new QThread;
+    guiThread = new QThread;
     guiUpdaterThread = new MoveThread(column,row);
     guiUpdaterThread->moveToThread(guiThread);
     connect(guiThread, SIGNAL(started()), guiUpdaterThread, SLOT(process()));
@@ -314,7 +327,7 @@ void MainWindow::incommingMove(unsigned short column,int row)
 
 void MainWindow::incommingGiveUp(Spieler *remoteSpieler, bool giveUp)
 {
-    QThread* guiThread = new QThread;
+    guiThread = new QThread;
     giveUpThread = new GiveUpThread(remoteSpieler,giveUp);
     giveUpThread->moveToThread(guiThread);
     connect(guiThread, SIGNAL(started()), giveUpThread, SLOT(process()));
