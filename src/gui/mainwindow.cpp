@@ -90,10 +90,7 @@ void MainWindow::postExecute()
 
 void MainWindow::on_resultSettings(GameSettings* gameSettings)
 {
-    settingsWidget->close();
-    delete settingsWidget;
-    settingsWidget=0;
-
+    this->settingsWidget->hide();
     this->gameSettings = gameSettings;
 
     //Bord init...

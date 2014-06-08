@@ -43,7 +43,7 @@ void *UdpServer::startUdpServerThread(void *ptr)
         connection = (connection_t *)malloc(sizeof(connection_t));
 
         NetworkMessage incomingMessage(LOGINREQUEST);
-        connection->sock = recvfrom(sock,&incomingMessage,sizeof(NetworkMessage),MSG_WAITSTREAM,(struct sockaddr*)&sender, &sendsize);
+        connection->sock = recvfrom(sock,&incomingMessage,sizeof(NetworkMessage),0,(struct sockaddr*)&sender, &sendsize);
         if (connection->sock <= 0){
              free(connection);
         }
