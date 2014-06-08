@@ -120,7 +120,7 @@ void TcpClient::sendHelloBroadcast()
     struct sockaddr_in address;
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = inet_addr(BROADCAST);
+    address.sin_addr.s_addr = inet_addr(BROADCAST.c_str());
     address.sin_port = htons(DEFAULT_PORT_UDP);
 
     NetworkMessage networkMessage(UDPHELLO);

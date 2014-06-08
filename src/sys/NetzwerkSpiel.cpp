@@ -149,7 +149,6 @@ void NetzwerkSpiel::on_udpHello(string remoteIp)
 {
     cout << "Incoming to on_udpHello() VALUE: " << remoteIp << endl;
     HelloReply helloReply("",this->nameSpieler1,this->spielfeld->getZeilen(),this->spielfeld->getSpalten());
-    tcpClient->setIpAddress(remoteIp);
     tcpClient->sendHelloReply(remoteIp,&helloReply);
 }
 
