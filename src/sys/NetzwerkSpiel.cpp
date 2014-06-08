@@ -13,7 +13,7 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     dynamic_cast<TcpServer*>(tcpServer)->LoginReplySignal.connect(boost::bind(&NetzwerkSpiel::on_loginReply, this,_1));
     dynamic_cast<TcpServer*>(tcpServer)->RemoteMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_remoteMove, this,_1));
     dynamic_cast<TcpServer*>(tcpServer)->GiveUpSignal.connect(boost::bind(&NetzwerkSpiel::on_giveUp, this));
-    dynamic_cast<TcpServer*>(tcpServer)->HelloReplySignal.connect(boost::bind(&NetzwerkSpiel::on_helloReply, this,_1));
+    //dynamic_cast<TcpServer*>(tcpServer)->HelloReplySignal.connect(boost::bind(&NetzwerkSpiel::on_helloReply, this,_1));
     tcpServer->start();
 
     this->udpServer = new UdpServer();
