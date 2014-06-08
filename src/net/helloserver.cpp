@@ -59,7 +59,7 @@ void *HelloServer::startTcpServerThread(void *ptr)
                 char* ip = inet_ntoa(connection->address.sin_addr);
                 string ipstr(ip);
                 HelloReply helloReply;
-                temp.insert(ipstr.length(),ipstr);
+                temp.insert(0,ipstr);
                 helloReply.fromCsvString(temp);
                 cout << helloReply << " empfangen!" << endl;
                 ((HelloServer *)ptr)->HelloReplySignal(helloReply);
