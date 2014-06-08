@@ -57,6 +57,8 @@ public:
 
     int werfeStein(Spieler* spieler, int spalte);
 
+    int werfeTestStein(unsigned short farbe, int spalte);
+
     /**
      * Gibt Anzahl der schon gelegten Steine in einer Spalte zurueck
      * @param x gibt an welche Spalte gemeint ist
@@ -72,6 +74,12 @@ public:
     unsigned short getZeilen() const{
         return this->zeilen;
     }
+    void loescheStein(int x, int y) {
+        feld[y][x].setFarbe(2);
+        aktuell[x]--;
+    }
+
+    unsigned short pruefeWurf(unsigned short farbe, unsigned short spalte);
 private:
 
     void init();
@@ -85,7 +93,6 @@ private:
         feld[y][x].setFarbe(wert);
         aktuell[x]++;
     }
-
 
 
     int pruefeStein(int farbe, int spalte);
