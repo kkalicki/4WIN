@@ -33,28 +33,17 @@ TcpClient::~TcpClient()
 void TcpClient::openConnection(string ipAddress,int port)
 {
     struct sockaddr_in address;
-    struct hostent * host;
-
     sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    if(sock <= 0)
+        throw ClientException("Client konnte keinen Socket erstellen!");
 
     address.sin_family = AF_INET;
     address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(port);
-    ostringstream o;
-    o << ipAddress;
-    host = gethostbyname(o.str().c_str());
-
-    if (!host)
-    {
-        throw ClientException("Host konnte nicht identifiziert werden! -> Ip-Adresse pruefen!");
-    }
-
-    memcpy(&address.sin_addr, host->h_addr_list[0], host->h_length);
-
+    address.sin_addr.s_addr = inet_addr(ipAddress.c_str());
     if(connect(sock, (struct sockaddr *)&address, sizeof(address)))
-    {
         throw ClientException("Client konnte keine Verbindung zum Server herstellen (" +ipAddress+")");
-    }
+
 }
 
 void TcpClient::disconnect()
@@ -159,7 +148,7 @@ string TcpClient::getIpAddress() const
     return ipAddress;
 }
 
-void TcpClient::setIpAddress(const string &value)
+void TcpClient::setIpAddress(string value)
 {
     ipAddress = value;
 }

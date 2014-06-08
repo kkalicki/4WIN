@@ -25,7 +25,7 @@ public:
    void sendHelloReply(string ip,HelloReply* reply);
 
    string getIpAddress() const;
-   void setIpAddress(const string &value);
+   void setIpAddress(string value);
 
 private:
    int sock;
