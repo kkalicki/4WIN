@@ -184,7 +184,6 @@ void MainWindow::lockBoad()
             default:
                 break;
             }
-            startGame();
         break;
     case OPEN:
             if(game->getSp1()->getIstAmZug()){
