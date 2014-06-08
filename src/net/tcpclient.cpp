@@ -126,7 +126,7 @@ void TcpClient::sendHelloBroadcast()
     NetworkMessage networkMessage(UDPHELLO);
     sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
 
-    disconnect();
+   close(udpsock);
 }
 
 void TcpClient::sendHelloReply(string ip, HelloReply *reply)
