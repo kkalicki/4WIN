@@ -271,13 +271,6 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
 
     postExecute();
 
-    if(game != 0)
-    {
-        delete game;
-        game=0;
-    }
-
-
     if(winner == 0)
     {
         //UNENTSCHIEDEN...
@@ -294,6 +287,13 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
         msg.setText(QString::fromStdString(strmsg));
         msg.exec();
     }
+
+    if(game != 0)
+    {
+        delete game;
+        game=0;
+    }
+
 }
 
 void MainWindow::incommingMove(unsigned short column,int row)
