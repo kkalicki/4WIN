@@ -52,7 +52,9 @@ void Server4Win::stop()
                     pthread_join(tcpServerThread, NULL);
 
                     pthread_cancel(tcpServerThread);
-                    cout << "Server beendet" << endl;
+                    tcpServerThread=0;
+                    cout << "Server beendet(TCP)" << endl;
+
                 }
         break;
     case UDP:
@@ -62,7 +64,9 @@ void Server4Win::stop()
                     pthread_join(udpServerThread, NULL);
 
                     pthread_cancel(udpServerThread);
-                    cout << "Server beendet" << endl;
+                    udpServerThread=0;
+                    cout << "Server beendet (UDP)" << endl;
+
                 }
         break;
     case HELLO:
@@ -72,23 +76,13 @@ void Server4Win::stop()
                     pthread_join(helloServerThread, NULL);
 
                     pthread_cancel(helloServerThread);
-                    cout << "Server beendet" << endl;
+                    helloServerThread=0;
+                    cout << "Server beendet(HELLO)" << endl;
                 }
         break;
     default:    //Do Nothing...
         break;
     }
-
-
-    if(tcpServerThread != 0)
-    {
-        cout << "warte bis Server heruntergefahren ist..." << endl;
-        pthread_join(tcpServerThread, NULL);
-
-        pthread_cancel(tcpServerThread);
-        cout << "Server beendet" << endl;
-    }
-
 }
 
 void Server4Win::connect()
