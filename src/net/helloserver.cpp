@@ -40,23 +40,31 @@ void *HelloServer::startTcpServerThread(void *ptr)
         }
         else
         {
+            cout << "Verbindungen eingegangen(TCP)..Port: " <<  ((HelloServer *)ptr)->port << endl;
             cout << "starte verarbeitung!" << endl;
+
             NetworkMessage incomingMessage;
             read(connection->sock, &incomingMessage, sizeof(NetworkMessage));
-            int len;
-            string temp;
-            cout << "Verbindungen eingegangen(TCP)..SOCK: " << connection->sock << endl;
-            read(connection->sock, &len, sizeof(int));
-            char bufferhr[len];
-            read(connection->sock, bufferhr, len);
-            temp.assign(bufferhr,len);
-            char* ip = inet_ntoa(connection->address.sin_addr);
-            string ipstr(ip);
-            HelloReply helloReply;
-            temp.insert(0,ipstr);
-            helloReply.fromCsvString(temp);
-            cout << helloReply << " empfangen!" << endl;
-            ((HelloServer *)ptr)->HelloReplySignal(helloReply);
+
+            if(incomingMessage.getId() == HELLOREPLY)
+            {
+
+                int len;
+                string temp;
+
+                read(connection->sock, &len, sizeof(int));
+                char bufferhr[len];
+                read(connection->sock, bufferhr, len);
+                temp.assign(bufferhr,len);
+                char* ip = inet_ntoa(connection->address.sin_addr);
+                string ipstr(ip);
+                HelloReply helloReply;
+                temp.insert(ipstr.length(),ipstr);
+                helloReply.fromCsvString(temp);
+                cout << helloReply << " empfangen!" << endl;
+                ((HelloServer *)ptr)->HelloReplySignal(helloReply);
+
+            }
             close(connection->sock);
             free(connection);
         }
@@ -74,11 +82,11 @@ void HelloServer::sendHelloBroadcast()
     struct sockaddr_in address;
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = inet_addr("192.168.28.255");
+    address.sin_addr.s_addr = inet_addr("255.255.255.255");
     address.sin_port = htons(DEFAULT_PORT_UDP);
 
     NetworkMessage networkMessage(UDPHELLO);
-    sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+    sendto(udpsock,&networkMessage,sizeof(NetworkMessage),0,(struct sockaddr*)&address, sizeof(address));
 
     close(udpsock);
 }

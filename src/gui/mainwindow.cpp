@@ -342,10 +342,20 @@ void MainWindow::closeAllWidgets()
 
 void MainWindow::on_actionNeu_triggered()
 {
-    if(settingsWidget != 0)
-        settingsWidget->close();
+    if(getIsActiveGame())
+    {
+        QMessageBox msg;
+        msg.setText("ein Spiel ist noch aktiv! erst BEENDEN oder AUFGEBEN");
+        msg.exec();
 
-    settingsWidget->show();
+    }else
+    {
+        if(settingsWidget != 0)
+            settingsWidget->close();
+
+        settingsWidget->show();
+    }
+
 }
 
 void MainWindow::showException(exception& e)
