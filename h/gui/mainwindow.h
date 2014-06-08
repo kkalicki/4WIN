@@ -41,6 +41,9 @@ private slots:
     void update(unsigned short column, int result);
 
     void startGame();
+
+    void stopMoveThread();
+    void stopGiveUpThread();
     void incommingMove(unsigned short column, int row);
     void incommingGiveUp(Spieler* remoteSpieler, bool giveUp);
 

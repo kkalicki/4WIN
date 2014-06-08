@@ -269,12 +269,27 @@ void MainWindow::update(unsigned short column, int result)
        gameInfoWidget->changePlayer(game->getAktuellerSpieler(),game->getRunde(),o.str());
     }
 
+    std::cout << "Nach guiMoveThread destruieren!" << endl;
+}
+
+void MainWindow::stopMoveThread()
+{
     if(guiMoveThread != 0){
         guiMoveThread->quit();
         guiMoveThread=0;
     }
 
-    std::cout << "Nach guiMoveThread destruieren!" << endl;
+    std::cout << "Nach guiGiveUpThread destruieren!" << endl;
+}
+
+void MainWindow::stopGiveUpThread()
+{
+    if(guiGiveUpThread != 0)
+    {
+        guiGiveUpThread->quit();
+        guiGiveUpThread=0;
+    }
+
 }
 
 void MainWindow::on_endGame(Spieler* winner,bool giveUp)
@@ -308,14 +323,6 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
     }
 
      std::cout << "Nach GAME destruieren!" << endl;
-
-    if(guiGiveUpThread != 0)
-    {
-        guiGiveUpThread->quit();
-        guiGiveUpThread=0;
-    }
-
-    std::cout << "Nach guiGiveUpThread destruieren!" << endl;
 }
 
 void MainWindow::incommingMove(unsigned short column,int row)
@@ -324,6 +331,7 @@ void MainWindow::incommingMove(unsigned short column,int row)
     guiUpdaterThread = new MoveThread(column,row);
     guiUpdaterThread->moveToThread(guiMoveThread);
     connect(guiMoveThread, SIGNAL(started()), guiUpdaterThread, SLOT(process()));
+    connect(guiMoveThread, SIGNAL(finished()), guiUpdaterThread, SLOT(stopMoveThread()));
     connect(guiUpdaterThread, SIGNAL(updateGui(unsigned short,int)), this, SLOT(update(unsigned short, int)));
     guiMoveThread->start();
 }
@@ -334,6 +342,7 @@ void MainWindow::incommingGiveUp(Spieler *remoteSpieler, bool giveUp)
     giveUpThread = new GiveUpThread(remoteSpieler,giveUp);
     giveUpThread->moveToThread(guiGiveUpThread);
     connect(guiGiveUpThread, SIGNAL(started()), giveUpThread, SLOT(process()));
+    connect(guiGiveUpThread, SIGNAL(finished()), guiUpdaterThread, SLOT(stopGiveUpThread()));
     connect(giveUpThread, SIGNAL(updateGui(Spieler*,bool)), this, SLOT(on_endGame(Spieler*, bool)));
     guiGiveUpThread->start();
 }
