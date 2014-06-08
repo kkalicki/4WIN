@@ -269,7 +269,10 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QPushButton" name="pbrefreshs">
+       <widget class="QPushButton" name="pbrefresh">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
          <string>Refresh</string>
         </property>
@@ -279,7 +282,11 @@
     </widget>
    </item>
    <item>
-    <widget class="QListWidget" name="lvgames"/>
+    <widget class="QListWidget" name="lvgames">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
    <item>
     <widget class="QPushButton" name="btnstart">

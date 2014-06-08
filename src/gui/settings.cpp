@@ -22,13 +22,7 @@ Settings::~Settings()
     if(openGameThread != 0)
         delete openGameThread;
 
-    if(helloServer != 0)
-    {
-        if(helloServer->getIsActive())
-            helloServer->stop();
-
-        delete helloServer;
-    }
+   closeHelloServer();
 
 }
 
@@ -95,11 +89,13 @@ void Settings::on_rbenter_toggled(bool checked)
         ui->leplayer2->setEnabled(true);
         ui->gbgamefieldsetting->setEnabled(false);
         this->helloServer = new HelloServer();
+        ui->pbrefresh->setEnabled(true);
         helloServer->HelloReplySignal.connect(boost::bind(&Settings::incomingGames, this,_1));
         helloServer->start();
     }
     else
     {
+        ui->pbrefresh->setEnabled(false);
         ui->gbgamefieldsetting->setEnabled(true);
         ui->cbwatch->setEnabled(false);
 
@@ -165,6 +161,12 @@ void Settings::on_btnstart_clicked()
 
 void Settings::start()
 {
+    closeHelloServer();
+    emit resultSettings(gameSettings);
+}
+
+void Settings::closeHelloServer()
+{
     if(helloServer != 0)
     {
         if(helloServer->getIsActive())
@@ -174,7 +176,6 @@ void Settings::start()
         helloServer=0;
     }
 
-    emit resultSettings(gameSettings);
 }
 
 void Settings::on_cbwatch_toggled(bool checked)
@@ -227,13 +228,18 @@ void Settings::openGamesUpdate(HelloReply* incomingVal)
     ui->lvgames->scrollToBottom();
 }
 
-void Settings::on_pbrefreshs_clicked()
+void Settings::on_lvgames_itemActivated(QListWidgetItem *item)
+{
+    gameSettings->setRemoteIp(item->text().toStdString());
+}
+
+void Settings::on_pbrefresh_clicked()
 {
     ui->lvgames->clear();
     helloServer->sendHelloBroadcast();
 }
 
-void Settings::on_lvgames_itemActivated(QListWidgetItem *item)
+void Settings::closeEvent(QCloseEvent *event)
 {
-    gameSettings->setRemoteIp(item->text().toStdString());
+    closeHelloServer();
 }

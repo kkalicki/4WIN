@@ -27,6 +27,8 @@ private:
     GameSettings * gameSettings;
     OpenGameThread* openGameThread;
     HelloServer* helloServer;
+    void closeHelloServer();
+
 signals:
     void resultSettings(GameSettings* gameSettings);
 
@@ -41,9 +43,12 @@ private slots:
     void on_rbenter_toggled(bool checked);
     void on_btnstart_clicked();
     void on_cbwatch_toggled(bool checked);
-    void on_pbrefreshs_clicked();
     void openGamesUpdate(HelloReply *incomingVal);
     void on_lvgames_itemActivated(QListWidgetItem *item);
+    void on_pbrefresh_clicked();
+
+protected:
+    void closeEvent(QCloseEvent *event);
 };
 
 #endif // SETTINGS_H
