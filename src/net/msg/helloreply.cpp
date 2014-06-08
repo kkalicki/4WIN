@@ -77,10 +77,11 @@ void HelloReply::fromCsvString(string csv)
 }
 
 ostream &operator<<(ostream& out, HelloReply& object){
+
+    out << object.ipAdress << ";";
     out << object.name     << ";";
     out << object.rows     << ";";
-    out << object.columns  << ";";
-    out << object.ipAdress;
+    out << object.columns;
     return out;
 }
 
