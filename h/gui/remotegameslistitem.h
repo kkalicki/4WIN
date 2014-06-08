@@ -25,7 +25,6 @@ string RemoteGamesListItem::toString()
     return o.str();
 }
 
-
 Q_DECLARE_METATYPE(RemoteGamesListItem)
 
 #endif // REMOTEGAMESLISTITEM_H

@@ -245,7 +245,7 @@ void Settings::on_lvgames_itemActivated(QListWidgetItem *item)
 
     ui->sbrow->setValue(entry.rows);
     ui->sbcolumn->setValue(entry.columns);
-
+    ui->leplayer1->setText(QString::fromStdString(entry.name));
     gameSettings->setRemoteIp(entry.ipAdress);
 }
 
