@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <netinet/in.h>
 
-enum ServerType{TCP=1,UDP=2};
+enum ServerType{TCP=1,UDP=2,HELLO=3};
 
 typedef struct
 {
@@ -34,7 +34,9 @@ public:
 protected:
      virtual void connect()=0;
      bool isOwnAddress(sockaddr_in address);
-     pthread_t serverThread;
+     pthread_t tcpServerThread;
+     pthread_t udpServerThread;
+     pthread_t helloServerThread;
      int sock;
      int port;
      int isActive;

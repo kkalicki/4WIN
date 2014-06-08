@@ -22,8 +22,8 @@ UdpServer::~UdpServer()
 void UdpServer::connect()
 {
     Server4Win::connect();
-    pthread_create(&serverThread, 0, startUdpServerThread, this);
-    pthread_detach(serverThread);
+    pthread_create(&udpServerThread, 0, startUdpServerThread, this);
+    pthread_detach(udpServerThread);
 }
 
 void *UdpServer::startUdpServerThread(void *ptr)

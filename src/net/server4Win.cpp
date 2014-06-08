@@ -17,6 +17,10 @@ Server4Win::Server4Win(ServerType serverType, int port)
     this->port = port;
     this->sock = -1;
     this->serverType = serverType;
+    this->tcpServerThread = 0;
+    this->udpServerThread = 0;
+    this->helloServerThread = 0;
+
 }
 
 Server4Win::~Server4Win()
@@ -40,18 +44,58 @@ void Server4Win::stop()
         cout << "Socket geschlossen!" << endl;
     }
 
-    cout << "warte bis Server heruntergefahren ist..." << endl;
-    pthread_join(serverThread, NULL);
+    switch(serverType){
+    case TCP:
+                if(tcpServerThread != 0)
+                {
+                    cout << "warte bis Server heruntergefahren ist...(TCP)" << endl;
+                    pthread_join(tcpServerThread, NULL);
 
-    pthread_cancel(serverThread);
-    cout << "Server beendet" << endl;
+                    pthread_cancel(tcpServerThread);
+                    cout << "Server beendet" << endl;
+                }
+        break;
+    case UDP:
+                if(udpServerThread != 0)
+                {
+                    cout << "warte bis Server heruntergefahren ist...(UDP)" << endl;
+                    pthread_join(udpServerThread, NULL);
+
+                    pthread_cancel(udpServerThread);
+                    cout << "Server beendet" << endl;
+                }
+        break;
+    case HELLO:
+                if(helloServerThread != 0)
+                {
+                    cout << "warte bis Server heruntergefahren ist...(HELLO)" << endl;
+                    pthread_join(helloServerThread, NULL);
+
+                    pthread_cancel(helloServerThread);
+                    cout << "Server beendet" << endl;
+                }
+        break;
+    default:    //Do Nothing...
+        break;
+    }
+
+
+    if(tcpServerThread != 0)
+    {
+        cout << "warte bis Server heruntergefahren ist..." << endl;
+        pthread_join(tcpServerThread, NULL);
+
+        pthread_cancel(tcpServerThread);
+        cout << "Server beendet" << endl;
+    }
+
 }
 
 void Server4Win::connect()
 {
     int permission = 1;
     switch(serverType){
-    case TCP:
+    case TCP || HELLO:
                 cout << "erstelle Socket!(TCP)" << endl;
                 sock = (socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
                 if (sock <= 0){

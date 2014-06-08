@@ -7,16 +7,17 @@
 #include <arpa/inet.h>
 #include <sys/types.h>
 
-HelloServer::HelloServer(int port): Server4Win(TCP,port)
+HelloServer::HelloServer(int port): Server4Win(HELLO,port)
 {
     udpsock= socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     int broadcastPermission = 1;
+
     if (setsockopt(udpsock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0)
         printf("setsockopt() failed");
 
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = inet_addr("255.255.255.255");
+    address.sin_addr.s_addr = inet_addr(BROADCAST.c_str());
     address.sin_port = htons(DEFAULT_PORT_UDP);
 }
 
@@ -29,8 +30,8 @@ HelloServer::~HelloServer()
 void HelloServer::connect()
 {
     Server4Win::connect();
-    pthread_create(&serverThread, 0, startTcpServerThread, this);
-    pthread_detach(serverThread);
+    pthread_create(&helloServerThread, 0, startTcpServerThread, this);
+    pthread_detach(helloServerThread);
 }
 
 void *HelloServer::startTcpServerThread(void *ptr)

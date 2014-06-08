@@ -24,6 +24,11 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
 
 }
 
+void NetzwerkSpiel::disconnectSignals()
+{
+
+}
+
 NetzwerkSpiel::~NetzwerkSpiel()
 {
     std::cout << "schließe Netzwerkspiel!!!" << endl;
@@ -149,7 +154,8 @@ void NetzwerkSpiel::on_udpHello(string remoteIp)
 {
     cout << "Incoming to on_udpHello() VALUE: " << remoteIp << endl;
     HelloReply helloReply("",this->nameSpieler1,this->spielfeld->getZeilen(),this->spielfeld->getSpalten());
-    tcpClient->sendHelloReply(remoteIp,&helloReply);
+    if(!remoteIp.empty())
+        tcpClient->sendHelloReply(remoteIp,&helloReply);
 }
 
 void NetzwerkSpiel::sendHello()

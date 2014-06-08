@@ -109,15 +109,7 @@ void Settings::on_rbenter_toggled(bool checked)
         ui->pbrefresh->setEnabled(false);
         ui->gbgamefieldsetting->setEnabled(true);
         ui->cbwatch->setEnabled(false);
-
-        if(helloServer != 0)
-        {
-            if(helloServer->getIsActive())
-                helloServer->stop();
-
-            delete helloServer;
-            helloServer=0;
-        }
+        closeHelloServer();
 
     }
 }

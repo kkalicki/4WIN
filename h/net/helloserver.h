@@ -16,7 +16,6 @@ public:
     ~HelloServer();
 
     static void * startTcpServerThread(void * ptr);
-
     void sendHelloBroadcast();
 
     boost::signals2::signal<void(HelloReply)> HelloReplySignal;

@@ -24,6 +24,7 @@ public:
     virtual void aufgeben();
 
     void sendHello();
+    void disconnectSignals();
 
     void on_loginRequest(string loginPlayerName,string ip);
     void on_loginReply(Spieler spieler);
