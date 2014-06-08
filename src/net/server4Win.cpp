@@ -43,7 +43,7 @@ void Server4Win::stop()
     cout << "warte bis Server heruntergefahren ist..." << endl;
     pthread_join(serverThread, NULL);
 
-    //pthread_cancel(serverThread);
+    pthread_cancel(serverThread);
     cout << "Server beendet" << endl;
 }
 

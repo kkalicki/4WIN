@@ -223,7 +223,7 @@ NetworkMode Settings::getNetworkMode()
 
 void Settings::incomingGames(HelloReply incomingVal)
 {
-    QThread* guiThread = new QThread;
+    guiThread = new QThread;
     openGameThread = new OpenGameThread(incomingVal);
     openGameThread->moveToThread(guiThread);
     connect(guiThread, SIGNAL(started()), openGameThread, SLOT(process()));
@@ -246,6 +246,9 @@ void Settings::openGamesUpdate(HelloReply* incomingVal)
     item->setData(Qt::UserRole,qv);
     ui->lvgames->addItem(item);
     ui->lvgames->scrollToBottom();
+
+    guiThread->exit();
+    guiThread->quit();
 }
 
 void Settings::on_lvgames_itemActivated(QListWidgetItem *item)

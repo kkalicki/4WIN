@@ -26,6 +26,7 @@ private:
     Ui::settingsUi * ui;
     GameSettings * gameSettings;
     OpenGameThread* openGameThread;
+    QThread* guiThread;
     HelloServer* helloServer;
     void closeHelloServer();
 

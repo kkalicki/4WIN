@@ -15,7 +15,7 @@ public:
     }
 
 private:
-    bool isActiveGame;
+    bool isActiveGame=0;
 };
 
 #endif // I4WINWIDGET_H
