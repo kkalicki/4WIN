@@ -29,7 +29,7 @@ void *HelloServer::startTcpServerThread(void *ptr)
     connection_t * connection;
     int sock = ((HelloServer *)ptr)->sock;
     cout << "server gestartet!" << endl;
-    while (true)
+    while (((HelloServer *)ptr)->getIsActive())
     {
         cout << "warte auf eingehende Verbindungen.." << endl;
         connection = (connection_t *)malloc(sizeof(connection_t));
