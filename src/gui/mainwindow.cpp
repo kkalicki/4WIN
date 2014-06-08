@@ -24,7 +24,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
-    delete settingsWidget;
+    if(settingsWidget!=0)
+        delete settingsWidget;
+
     delete bordWidget;
     delete historyWidget;
     delete gameInfoWidget;
@@ -52,7 +54,6 @@ void MainWindow::init()
     this->guiUpdaterThread = 0;
     this->giveUpThread = 0;
 
-    connect( settingsWidget, SIGNAL(resultSettings(GameSettings*)), this, SLOT(on_resultSettings(GameSettings*)));
     connect( gameInfoWidget, SIGNAL(loose(Spieler*,bool)), this, SLOT(on_endGame(Spieler*,bool)));
 }
 
@@ -63,11 +64,10 @@ void MainWindow::load4WinWidgets()
     this->bordWidget = new Bord();
     bordWidget->show();
     bordWidget->setFocus(Qt::ActiveWindowFocusReason);
-
-    this->settingsWidget = new Settings();
-
     this->historyWidget = new History();
     historyWidget->show();
+
+    this->settingsWidget=0;
 }
 
 void MainWindow::preExecute()
@@ -90,8 +90,11 @@ void MainWindow::postExecute()
 
 void MainWindow::on_resultSettings(GameSettings* gameSettings)
 {
+    settingsWidget->close();
+    delete settingsWidget;
+    settingsWidget=0;
+
     this->gameSettings = gameSettings;
-    settingsWidget->hide();
 
     //Bord init...
     bordWidget->hide();
@@ -351,8 +354,14 @@ void MainWindow::on_actionNeu_triggered()
     }else
     {
         if(settingsWidget != 0)
+        {
             settingsWidget->close();
+            delete settingsWidget;
+            settingsWidget=0;
+        }
 
+        this->settingsWidget = new Settings();
+        connect( settingsWidget, SIGNAL(resultSettings(GameSettings*)), this, SLOT(on_resultSettings(GameSettings*)));
         settingsWidget->show();
     }
 

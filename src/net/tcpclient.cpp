@@ -38,6 +38,7 @@ void TcpClient::openConnection(string ipAddress,int port)
     sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 
     address.sin_family = AF_INET;
+    address.sin_addr.s_addr = INADDR_ANY;
     address.sin_port = htons(port);
     ostringstream o;
     o << ipAddress;

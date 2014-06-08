@@ -10,7 +10,7 @@ typedef struct
 {
     int sock;
     struct sockaddr_in address;
-    unsigned int addr_len;
+    socklen_t addr_len;
 } connection_t;
 
 class Server4Win{
