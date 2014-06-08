@@ -21,7 +21,8 @@ Server4Win::Server4Win(ServerType serverType, int port)
 
 Server4Win::~Server4Win()
 {
-    //kein new...
+    if(isActive)
+        stop();
 }
 
 void Server4Win::start()

@@ -153,7 +153,13 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
         default: // Do Nothing...
         break;
         }
-    }catch(TcpServerException& e){
+    }catch(Server4WinException& e){
+        showException(e);
+    }
+    catch(ClientException& e){
+        showException(e);
+    }
+    catch(exception& e){
         showException(e);
     }
 }
@@ -244,6 +250,9 @@ void MainWindow::update(unsigned short column, int result)
 
     bordWidget->setMove(game->getAktuellerSpieler(),game->getAktuelleZeile(column),column);
 
+    //history add..
+    historyWidget->addHisItem(game->getHistorie()->getLetztenEintrag());
+
     if(result == WIN){
         //Spiel zu ende...
         on_endGame(game->getAktuellerSpieler(),false);
@@ -259,9 +268,6 @@ void MainWindow::update(unsigned short column, int result)
        o<< (game->getAktuelleZeile(column)) << " - "<< column;
        gameInfoWidget->changePlayer(game->getAktuellerSpieler(),game->getRunde(),o.str());
     }
-
-    //history add..
-    historyWidget->addHisItem(game->getHistorie()->getLetztenEintrag());
 }
 
 void MainWindow::on_endGame(Spieler* winner,bool giveUp)

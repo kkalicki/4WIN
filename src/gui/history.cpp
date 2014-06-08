@@ -13,6 +13,7 @@ History::History(QWidget *parent)  : QWidget(parent),
 History::~History()
 {
     //delete model;
+    clear();
     delete ui;
 }
 
