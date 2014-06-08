@@ -3,6 +3,7 @@
 #include <QThread>
 #include <boost/signals2.hpp>
 #include "boost/bind.hpp"
+#include "../h/gui/remotegameslistitem.h"
 
 Settings::Settings(QWidget *parent) :
     QWidget(parent), ui(new Ui::settingsUi)
@@ -222,15 +223,30 @@ void Settings::incomingGames(HelloReply incomingVal)
 
 void Settings::openGamesUpdate(HelloReply* incomingVal)
 {
+    RemoteGamesListItem entry;
+    entry.ipAdress = incomingVal->getIpAdress();
+    entry.name = incomingVal->getName();
+    entry.rows = incomingVal->getRows();
+    entry.columns = incomingVal->getColumns();
+
+    QVariant qv;
+    qv.setValue(entry);
     QListWidgetItem *item = new QListWidgetItem();
-    item->setText(QString::fromStdString(incomingVal->getIpAdress()));
+    item->setText(QString::fromStdString(entry.toString()));
+    item->setData(Qt::UserRole,qv);
     ui->lvgames->addItem(item);
     ui->lvgames->scrollToBottom();
 }
 
 void Settings::on_lvgames_itemActivated(QListWidgetItem *item)
 {
-    gameSettings->setRemoteIp(item->text().toStdString());
+    QVariant qv = item->data(Qt::UserRole);
+    RemoteGamesListItem entry = qv.value<RemoteGamesListItem>();
+
+    ui->sbrow->setValue(entry.rows);
+    ui->sbcolumn->setValue(entry.columns);
+
+    gameSettings->setRemoteIp(entry.ipAdress);
 }
 
 void Settings::on_pbrefresh_clicked()

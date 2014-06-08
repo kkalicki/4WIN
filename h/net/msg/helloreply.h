@@ -7,6 +7,7 @@
 using namespace std;
 
 class HelloReply{
+
 public:
     HelloReply();
     HelloReply(string ipAdress, string name, unsigned int rows, unsigned int columns);
