@@ -331,7 +331,7 @@ void MainWindow::incommingMove(unsigned short column,int row)
     guiUpdaterThread = new MoveThread(column,row);
     guiUpdaterThread->moveToThread(guiMoveThread);
     connect(guiMoveThread, SIGNAL(started()), guiUpdaterThread, SLOT(process()));
-    connect(guiMoveThread, SIGNAL(finished()), guiUpdaterThread, SLOT(stopMoveThread()));
+    connect(guiMoveThread, SIGNAL(finished()), this, SLOT(stopMoveThread()));
     connect(guiUpdaterThread, SIGNAL(updateGui(unsigned short,int)), this, SLOT(update(unsigned short, int)));
     guiMoveThread->start();
 }
@@ -342,7 +342,7 @@ void MainWindow::incommingGiveUp(Spieler *remoteSpieler, bool giveUp)
     giveUpThread = new GiveUpThread(remoteSpieler,giveUp);
     giveUpThread->moveToThread(guiGiveUpThread);
     connect(guiGiveUpThread, SIGNAL(started()), giveUpThread, SLOT(process()));
-    connect(guiGiveUpThread, SIGNAL(finished()), guiUpdaterThread, SLOT(stopGiveUpThread()));
+    connect(guiGiveUpThread, SIGNAL(finished()), this, SLOT(stopGiveUpThread()));
     connect(giveUpThread, SIGNAL(updateGui(Spieler*,bool)), this, SLOT(on_endGame(Spieler*, bool)));
     guiGiveUpThread->start();
 }
