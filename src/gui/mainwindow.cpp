@@ -269,9 +269,7 @@ void MainWindow::update(unsigned short column, int result)
        gameInfoWidget->changePlayer(game->getAktuellerSpieler(),game->getRunde(),o.str());
     }
 
-    if(guiMoveThread != 0)
-    {
-        guiMoveThread->exit();
+    if(guiMoveThread != 0){
         guiMoveThread->quit();
         guiMoveThread=0;
     }
@@ -313,7 +311,6 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
 
     if(guiGiveUpThread != 0)
     {
-        guiGiveUpThread->exit();
         guiGiveUpThread->quit();
         guiGiveUpThread=0;
     }

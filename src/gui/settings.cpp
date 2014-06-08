@@ -247,7 +247,6 @@ void Settings::openGamesUpdate(HelloReply* incomingVal)
     ui->lvgames->addItem(item);
     ui->lvgames->scrollToBottom();
 
-    guiThread->exit();
     guiThread->quit();
 }
 
