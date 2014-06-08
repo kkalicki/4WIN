@@ -36,6 +36,8 @@ void *TcpServer::startTcpServerThread(void *ptr)
     connection_t * connection;
     int sock = ((TcpServer *)ptr)->sock;
     cout << "server gestartet!" << endl;
+
+    try{
     while (((TcpServer *)ptr)->getIsActive())
     {
         cout << "warte auf eingehende Verbindungen.." << endl;
@@ -56,6 +58,10 @@ void *TcpServer::startTcpServerThread(void *ptr)
             free(connection);
         }
     }
+   }
+   catch(exception& e){
+        cout << e.what() << endl;
+   }
 }
 
 void TcpServer::process(connection_t * conn, void *ptr)

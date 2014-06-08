@@ -37,7 +37,7 @@ void *UdpServer::startUdpServerThread(void *ptr)
 
     connection_t * connection;
     cout << "server gestartet!" << endl;
-    while (true)
+    while (((UdpServer *)ptr)->getIsActive())
     {
         cout << "warte auf Broadcast..." << endl;
         connection = (connection_t *)malloc(sizeof(connection_t));

@@ -40,7 +40,7 @@ void Server4Win::stop()
         cout << "Socket geschlossen!" << endl;
     }
 
-    pthread_cancel(serverThread);
+    //pthread_cancel(serverThread);
     cout << "Serverthread geschlossen!" << endl;
 }
 

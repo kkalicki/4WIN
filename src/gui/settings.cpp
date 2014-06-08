@@ -4,6 +4,7 @@
 #include <boost/signals2.hpp>
 #include "boost/bind.hpp"
 #include "../h/gui/remotegameslistitem.h"
+#include "../h/sys/FourWinExceptions.h"
 
 Settings::Settings(QWidget *parent) :
     QWidget(parent), ui(new Ui::settingsUi)
@@ -91,8 +92,17 @@ void Settings::on_rbenter_toggled(bool checked)
         ui->gbgamefieldsetting->setEnabled(false);
         this->helloServer = new HelloServer();
         ui->pbrefresh->setEnabled(true);
-        helloServer->HelloReplySignal.connect(boost::bind(&Settings::incomingGames, this,_1));
-        helloServer->start();
+        try
+        {
+            helloServer->HelloReplySignal.connect(boost::bind(&Settings::incomingGames, this,_1));
+            helloServer->start();
+        }catch(Server4WinException& e)
+        {
+            QMessageBox info;
+            info.setText(e.what());
+            info.exec();
+        }
+
     }
     else
     {
