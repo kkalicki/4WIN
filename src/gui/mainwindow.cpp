@@ -269,11 +269,11 @@ void MainWindow::update(unsigned short column, int result)
        gameInfoWidget->changePlayer(game->getAktuellerSpieler(),game->getRunde(),o.str());
     }
 
-    if(guiThread != 0)
+    if(guiMoveThread != 0)
     {
-        guiThread->exit();
-        guiThread->quit();
-        guiThread=0;
+        guiMoveThread->exit();
+        guiMoveThread->quit();
+        guiMoveThread=0;
     }
 }
 
@@ -307,32 +307,32 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
         game=0;
     }
 
-    if(guiThread != 0)
+    if(guiGiveUpThread != 0)
     {
-        guiThread->exit();
-        guiThread->quit();
-        guiThread=0;
+        guiGiveUpThread->exit();
+        guiGiveUpThread->quit();
+        guiGiveUpThread=0;
     }
 }
 
 void MainWindow::incommingMove(unsigned short column,int row)
 {
-    guiThread = new QThread;
+    guiMoveThread = new QThread;
     guiUpdaterThread = new MoveThread(column,row);
-    guiUpdaterThread->moveToThread(guiThread);
-    connect(guiThread, SIGNAL(started()), guiUpdaterThread, SLOT(process()));
+    guiUpdaterThread->moveToThread(guiMoveThread);
+    connect(guiMoveThread, SIGNAL(started()), guiUpdaterThread, SLOT(process()));
     connect(guiUpdaterThread, SIGNAL(updateGui(unsigned short,int)), this, SLOT(update(unsigned short, int)));
-    guiThread->start();
+    guiMoveThread->start();
 }
 
 void MainWindow::incommingGiveUp(Spieler *remoteSpieler, bool giveUp)
 {
-    guiThread = new QThread;
+    guiGiveUpThread = new QThread;
     giveUpThread = new GiveUpThread(remoteSpieler,giveUp);
-    giveUpThread->moveToThread(guiThread);
-    connect(guiThread, SIGNAL(started()), giveUpThread, SLOT(process()));
+    giveUpThread->moveToThread(guiGiveUpThread);
+    connect(guiGiveUpThread, SIGNAL(started()), giveUpThread, SLOT(process()));
     connect(giveUpThread, SIGNAL(updateGui(Spieler*,bool)), this, SLOT(on_endGame(Spieler*, bool)));
-    guiThread->start();
+    guiGiveUpThread->start();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
