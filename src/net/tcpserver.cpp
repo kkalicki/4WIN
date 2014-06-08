@@ -40,7 +40,7 @@ void *TcpServer::startTcpServerThread(void *ptr)
     try{
     while (((TcpServer *)ptr)->getIsActive())
     {
-        cout << "warte auf eingehende Verbindungen.." << endl;
+        cout << "warte auf eingehende Verbindungen..(TCP-SERVER)" << endl;
         connection = (connection_t *)malloc(sizeof(connection_t));
         socklen_t sendsize = sizeof(connection->address);
         connection->sock = accept(sock, (struct sockaddr*)&connection->address,&sendsize); //TODO Hier Select() nachlesen
