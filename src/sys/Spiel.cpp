@@ -91,11 +91,11 @@ int Spiel::naechsterZug(Spieler* spieler, unsigned short spalte)
 {
     int rslt = spielfeld->werfeStein(spieler,spalte);
     if(rslt > WIN){
-        erstelleNeuenHisEintrag(getAktuellerSpieler(),rslt,spalte,runde);
+        erstelleNeuenHisEintrag(getAktuellerSpieler(),getAktuelleZeile(spalte),spalte,runde);
         runde++;
     }else if(rslt == WIN){
         //letzter Zug soll noch Eingetragen werden...
-        erstelleNeuenHisEintrag(getAktuellerSpieler(),rslt,spalte,runde);
+        erstelleNeuenHisEintrag(getAktuellerSpieler(),getAktuelleZeile(spalte),spalte,runde);
     }
    // wechselSpieler();
     return rslt;
