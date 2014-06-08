@@ -111,7 +111,6 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
         game = 0;
     }
 
-
     try{
         switch(gameSettings->getNetworkMode()){
         case LOCAL:
@@ -256,6 +255,7 @@ void MainWindow::update(unsigned short column, int result)
     if(result == WIN){
         //Spiel zu ende...
         on_endGame(game->getAktuellerSpieler(),false);
+        std::cout << "Nach on_endGame destruieren!" << endl;
     }
     else if (result == VOLL){
         //Spiel unentschieden...
@@ -275,6 +275,8 @@ void MainWindow::update(unsigned short column, int result)
         guiMoveThread->quit();
         guiMoveThread=0;
     }
+
+    std::cout << "Nach guiMoveThread destruieren!" << endl;
 }
 
 void MainWindow::on_endGame(Spieler* winner,bool giveUp)
@@ -307,12 +309,16 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
         game=0;
     }
 
+     std::cout << "Nach GAME destruieren!" << endl;
+
     if(guiGiveUpThread != 0)
     {
         guiGiveUpThread->exit();
         guiGiveUpThread->quit();
         guiGiveUpThread=0;
     }
+
+    std::cout << "Nach guiGiveUpThread destruieren!" << endl;
 }
 
 void MainWindow::incommingMove(unsigned short column,int row)

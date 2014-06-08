@@ -23,6 +23,7 @@ HelloServer::HelloServer(int port): Server4Win(TCP,port)
 HelloServer::~HelloServer()
 {
     close(udpsock);
+    close(sock);
 }
 
 void HelloServer::connect()
@@ -37,46 +38,55 @@ void *HelloServer::startTcpServerThread(void *ptr)
     connection_t * connection;
     int sock = ((HelloServer *)ptr)->sock;
     cout << "server gestartet!" << endl;
-    while (((HelloServer *)ptr)->getIsActive())
+    try
     {
-        cout << "warte auf eingehende Verbindungen.." << endl;
-        connection = (connection_t *)malloc(sizeof(connection_t));
-        connection->sock = accept(sock, (struct sockaddr*)&connection->address, &connection->addr_len); //TODO Hier Select() nachlesen
-        if (connection->sock <= 0)
+        while (((HelloServer *)ptr)->getIsActive())
         {
-             free(connection);
-        }
-        else
-        {
-            cout << "Verbindungen eingegangen(TCP)..Port: " <<  ((HelloServer *)ptr)->port << endl;
-            cout << "starte verarbeitung!" << endl;
-
-            NetworkMessage incomingMessage;
-            read(connection->sock, &incomingMessage, sizeof(NetworkMessage));
-
-            if(incomingMessage.getId() == HELLOREPLY)
+            cout << "warte auf eingehende Verbindungen.." << endl;
+            connection = (connection_t *)malloc(sizeof(connection_t));
+            connection->sock = accept(sock, (struct sockaddr*)&connection->address, &connection->addr_len); //TODO Hier Select() nachlesen
+            if (connection->sock <= 0)
             {
-
-                int len;
-                string temp;
-
-                read(connection->sock, &len, sizeof(int));
-                char bufferhr[len];
-                read(connection->sock, bufferhr, len);
-                temp.assign(bufferhr,len);
-                char* ip = inet_ntoa(connection->address.sin_addr);
-                string ipstr(ip);
-                HelloReply helloReply;
-                temp.insert(0,ipstr);
-                helloReply.fromCsvString(temp);
-                cout << helloReply << " empfangen!" << endl;
-                ((HelloServer *)ptr)->HelloReplySignal(helloReply);
-
+                 free(connection);
             }
-            close(connection->sock);
-            free(connection);
+            else
+            {
+                cout << "Verbindungen eingegangen(TCP)..Port: " <<  ((HelloServer *)ptr)->port << endl;
+                cout << "starte verarbeitung!" << endl;
+
+                NetworkMessage incomingMessage;
+                read(connection->sock, &incomingMessage, sizeof(NetworkMessage));
+
+                if(incomingMessage.getId() == HELLOREPLY)
+                {
+
+                    int len;
+                    string temp;
+
+                    read(connection->sock, &len, sizeof(int));
+                    char bufferhr[len];
+                    read(connection->sock, bufferhr, len);
+                    temp.assign(bufferhr,len);
+                    char* ip = inet_ntoa(connection->address.sin_addr);
+                    string ipstr(ip);
+                    HelloReply helloReply;
+                    temp.insert(0,ipstr);
+                    helloReply.fromCsvString(temp);
+                    cout << helloReply << " empfangen!" << endl;
+                    ((HelloServer *)ptr)->HelloReplySignal(helloReply);
+
+                }
+                close(connection->sock);
+                free(connection);
+            }
         }
+    }catch(exception& e)
+    {
+        cout << "HELLOSERVER in CATCH-CLAUSE...." << e.what()<< endl;
     }
+
+
+     cout << "HELLOSERVER aus der WHILE-Schleife" << endl;
 }
 
 void HelloServer::sendHelloBroadcast()

@@ -21,7 +21,7 @@ TcpServer::TcpServer(int port): Server4Win(TCP,port)
 
 TcpServer::~TcpServer()
 {
-    // kein new...
+     close(sock);
 }
 
 void TcpServer::connect()
@@ -62,6 +62,8 @@ void *TcpServer::startTcpServerThread(void *ptr)
    catch(exception& e){
         cout << e.what() << endl;
    }
+
+     cout << "TCP-SERVER aus der WHILE-Schleife" << endl;
 }
 
 void TcpServer::process(connection_t * conn, void *ptr)
