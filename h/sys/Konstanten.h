@@ -14,9 +14,9 @@ const static unsigned short CELL_SIZE           = 80;
 const static unsigned short SEC_IN_MS           = 1000;
 
 // Konstanten fuer Netzwerkspiel
-const static unsigned short DEFAULT_PORT_TCP    = 9015;
-const static unsigned short DEFAULT_PORT_UDP    = 9025;
-const static unsigned short DEFAULT_PORT_HELLO  = 9035;
+const static unsigned short DEFAULT_PORT_TCP    = 8010;
+const static unsigned short DEFAULT_PORT_UDP    = 9011;
+const static unsigned short DEFAULT_PORT_HELLO  = 9012;
 const static std::string    LOCALHOST           = "127.0.0.1";
 const static std::string    BROADCAST           = "255.255.255.255";
 
