@@ -120,13 +120,13 @@ void TcpClient::sendHelloBroadcast()
     struct sockaddr_in address;
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
-    address.sin_addr.s_addr = inet_addr("192.168.28.255");
+    address.sin_addr.s_addr = inet_addr(BROADCAST);
     address.sin_port = htons(DEFAULT_PORT_UDP);
 
     NetworkMessage networkMessage(UDPHELLO);
     sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
 
-   close(udpsock);
+    close(udpsock);
 }
 
 void TcpClient::sendHelloReply(string ip, HelloReply *reply)
