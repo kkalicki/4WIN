@@ -304,8 +304,6 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
     if(giveUp)
         game->aufgeben();
 
-    postExecute();
-
     if(winner == 0)
     {
         //UNENTSCHIEDEN...
@@ -333,6 +331,7 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
     }*/
 
      std::cout << "Nach GAME destruieren!" << endl;
+     postExecute();
 }
 
 void MainWindow::incommingMove(unsigned short column,int row)
