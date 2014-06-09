@@ -322,13 +322,13 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
     }
 
     killNetworkSignalSlot();
-    game->beenden();
+    //game->beenden();
 
-   /* if(game != 0)
-    {
+   if(game != 0)
+   {
         delete game;
         game=0;
-    }*/
+   }
 
      std::cout << "Nach GAME destruieren!" << endl;
      postExecute();
