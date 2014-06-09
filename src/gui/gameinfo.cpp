@@ -49,8 +49,10 @@ void GameInfo::init()
 
 void GameInfo::preExecute()
 {
+
     unlock();
     setRound(1);
+    setIsActiveGame(true);
     ui->lblmove1->setText("0 - 0");
     ui->lblmove2->setText("0 - 0");
 
@@ -68,6 +70,7 @@ void GameInfo::preExecute()
 void GameInfo::postExecute()
 {
     lock();
+    setIsActiveGame(false);
     if(timerWorker != 0){
         timerWorker->stop();
     }
@@ -86,15 +89,29 @@ void GameInfo::postExecute()
 
 void GameInfo::lock()
 {
-    ui->btnlooseleft->setEnabled(false);
-    ui->btnlooseright->setEnabled(false);
+    //ui->btnlooseleft->setEnabled(false);
+    //ui->btnlooseright->setEnabled(false);
+    ui->gbdisplaysp1->setEnabled(false);
+    ui->gbdisplaysp2->setEnabled(false);
 }
 
 void GameInfo::unlock()
 {
-    ui->btnlooseleft->setEnabled(true);
-    ui->btnlooseright->setEnabled(true);
+    //ui->btnlooseleft->setEnabled(true);
+    //ui->btnlooseright->setEnabled(true);
+    ui->gbdisplaysp1->setEnabled(true);
+    ui->gbdisplaysp2->setEnabled(true);
 
+}
+
+void GameInfo::lockDisplaySp1()
+{
+    ui->gbdisplaysp1->setEnabled(false);
+}
+
+void GameInfo::lockDisplaySp2()
+{
+     ui->gbdisplaysp2->setEnabled(false);
 }
 
 void GameInfo::initPlayer(Spieler *player1,Spieler* player2)
@@ -181,12 +198,12 @@ void GameInfo::setRound(unsigned short round)
 
 void GameInfo::on_btnlooseleft_clicked()
 {
-    emit loose(player2);
+    emit loose(player2,true);
 }
 
 void GameInfo::on_btnlooseright_clicked()
 {
-    emit loose(player1);
+    emit loose(player1,true);
 }
 
 void GameInfo::on_timeChange()

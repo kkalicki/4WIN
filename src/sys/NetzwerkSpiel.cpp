@@ -1,30 +1,38 @@
 
 #include "../h/sys/NetzwerkSpiel.h"
 #include "../h/net/tcpclient.h"
+#include "../h/net/tcpserver.h"
+#include "../h/net/udpserver.h"
 #include "boost/bind.hpp"
 #include "iostream"
 
 NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Spiel(zeilen,spalten)
 {
     this->tcpServer = new TcpServer();
-    tcpServer->LoginRequestSignal.connect(boost::bind(&NetzwerkSpiel::on_loginRequest, this,_1));
-    tcpServer->LoginReplySignal.connect(boost::bind(&NetzwerkSpiel::on_loginReply, this,_1));
-    tcpServer->RemoteMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_remoteMove, this,_1));
+    dynamic_cast<TcpServer*>(tcpServer)->LoginRequestSignal.connect(boost::bind(&NetzwerkSpiel::on_loginRequest, this,_1,_2));
+    dynamic_cast<TcpServer*>(tcpServer)->LoginReplySignal.connect(boost::bind(&NetzwerkSpiel::on_loginReply, this,_1));
+    dynamic_cast<TcpServer*>(tcpServer)->RemoteMoveSignal.connect(boost::bind(&NetzwerkSpiel::on_remoteMove, this,_1));
+    dynamic_cast<TcpServer*>(tcpServer)->GiveUpSignal.connect(boost::bind(&NetzwerkSpiel::on_giveUp, this));
+    //dynamic_cast<TcpServer*>(tcpServer)->HelloReplySignal.connect(boost::bind(&NetzwerkSpiel::on_helloReply, this,_1));
     tcpServer->start();
 
-    this->tcpClient = new TcpClient("192.168.28.105");
+    this->udpServer = new UdpServer();
+    dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.connect(boost::bind(&NetzwerkSpiel::on_udpHello, this,_1));
+    udpServer->start();
+
+    this->tcpClient = new TcpClient();
 }
 
 NetzwerkSpiel::~NetzwerkSpiel()
 {
     std::cout << "schließe Netzwerkspiel!!!" << endl;
-    if(tcpServer->getIsActive())
-        tcpServer->stop();
-
     delete tcpServer;
+    tcpServer=0;
+    delete udpServer;
+    udpServer=0;
     delete tcpClient;
+    tcpClient=0;
     std::cout << "Netzwerkspiel geschlossen!!!" << endl;
-
 }
 
 void NetzwerkSpiel::starteNetzwerkSpiel(string spielerName)
@@ -36,8 +44,14 @@ void NetzwerkSpiel::starteNetzwerkSpiel(string spielerName)
 void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2)
 {
     this->sp2 = new Spieler(nameSpieler2);
+    this->remoteSpieler = sp2;
     cout << "melde an..."<< endl;
     tcpClient->sendLoginRequest(nameSpieler2);
+}
+
+void NetzwerkSpiel::startClient(string ip)
+{
+    tcpClient->setIpAddress(ip);
 }
 
 void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
@@ -72,6 +86,7 @@ void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
     std::cout << *sp1 << endl;
     std::cout << *sp2 << endl;
 
+
     //hier signal start...
     StartGameSignal();
 }
@@ -83,16 +98,32 @@ int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
     return rslt;
 }
 
-void NetzwerkSpiel::abmeldenNetzwerk()
+void NetzwerkSpiel::aufgeben()
 {
-    //sende beenden nachricht via tcp
-    //Blaa Blaa Blubb....
+    tcpClient->sendGiveUp();
 }
 
-void NetzwerkSpiel::on_loginRequest(string loginPlayerName)
+void NetzwerkSpiel::beenden()
+{
+    closeServer();
+}
+
+void NetzwerkSpiel::closeServer()
+{
+    if(tcpServer->getIsActive())
+        tcpServer->stop();
+
+    if(udpServer->getIsActive())
+        udpServer->stop();
+}
+
+
+void NetzwerkSpiel::on_loginRequest(string loginPlayerName, string ip)
 {
     cout << "Incoming to on_loginRequest() VALUE: " << loginPlayerName << endl;
     starteSpiel(nameSpieler1,loginPlayerName,false,false);
+    this->remoteSpieler = sp1;
+    tcpClient->setIpAddress(ip);
     this->tcpClient->sendLoginReply(sp1);
 
     //hier starte spiel...
@@ -111,3 +142,30 @@ void NetzwerkSpiel::on_remoteMove(unsigned short column)
     int rslt = Spiel::naechsterZug(aktuellerSpieler,column);
     RemoteMoveSignal(column,rslt);
 }
+
+void NetzwerkSpiel::on_giveUp()
+{
+    cout << "Incoming to on_giveUp()" << endl;
+
+    GiveUpRemotePlayerSignal(remoteSpieler,false);
+}
+
+void NetzwerkSpiel::on_helloReply(HelloReply reply)
+{
+    cout << "Incoming to on_helloReply() VALUE: " << reply << endl;
+    HelloReplySignal(reply);
+}
+
+void NetzwerkSpiel::on_udpHello(string remoteIp)
+{
+    cout << "Incoming to on_udpHello() VALUE: " << remoteIp << endl;
+    HelloReply helloReply("",this->nameSpieler1,this->spielfeld->getZeilen(),this->spielfeld->getSpalten());
+    if(!remoteIp.empty())
+        tcpClient->sendHelloReply(remoteIp,&helloReply);
+}
+
+void NetzwerkSpiel::sendHello()
+{
+    tcpClient->sendHelloBroadcast();
+}
+

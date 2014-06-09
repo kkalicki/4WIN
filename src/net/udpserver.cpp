@@ -1,132 +1,77 @@
 #include "../h/net/udpserver.h"
 #include "../h/sys/FourWinExceptions.h"
-#include "../h/net/netmessage.h"
-#include "../h/net/msg/loginrequest.h"
-#include "../h/net/msg/loginreply.h"
-#include "../h/net/msg/remotemove.h"
-#include <pthread.h>
-#include <sys/socket.h>
+
 #include <netdb.h>
-#include <stdio.h>
-#include <sstream>
+#include <pthread.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
 
-UdpServer::UdpServer(int port)
+#include <sys/types.h>
+
+UdpServer::UdpServer(int port) : Server4Win(UDP,port)
 {
-    this->port = port;
-    this->sock = -1;
+    //do Nothing...
 }
 
-void UdpServer::start()
+UdpServer::~UdpServer()
 {
-    connect();
+    //kein new...
 }
 
-void UdpServer::stop()
-{
-    isActive = false;
-    cout << "stoppe Server!" << endl;
-    if(sock > -1)
-    {
-        close(sock);
-        cout << "Socket geschlossen!" << endl;
-    }
-
-    pthread_cancel(udpServerThread);
-    cout << "Serverthread geschlossen!" << endl;
-}
 
 void UdpServer::connect()
 {
-    struct sockaddr_in address;
-    //pthread_t thread;
-
-    cout << "erstelle Socket!" << endl;
-    sock = (socket(AF_INET, SOCK_STREAM, IPPROTO_UDP));
-    if (sock <= 0)
-    {
-      throw TcpServerException("Socket konnte nicht erstellt werden!");
-    }
-
-    /* bind socket to port */
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(port);
-
-    cout << "Binde Socket!" << endl;
-    if (bind(sock, (struct sockaddr *)&address, sizeof(struct sockaddr_in)) < 0)
-    {
-        ostringstream o;
-        o << "Socket konnte nicht an Port gebunden werden ! (" << port << ")" << endl;
-        throw TcpServerException(o.str());
-    }
-
-    if (listen(sock, 5) < 0)
-    {
-        ostringstream o;
-        o << "Server kann horchen an Port! (" << port << ")" << endl;
-        throw TcpServerException(o.str());
-    }
-
-    isActive = true;
-    cout << "starte Server!" << endl;
-    pthread_create(&udpServerThread, 0, startServerThread, this);
+    Server4Win::connect();
+    pthread_create(&udpServerThread, 0, startUdpServerThread, this);
     pthread_detach(udpServerThread);
 }
 
-void *UdpServer::startServerThread(void *ptr)
+void *UdpServer::startUdpServerThread(void *ptr)
 {
+    int sock = ((UdpServer*)ptr)->getSock();
+
+    struct sockaddr_in sender;
+    sender.sin_family = AF_INET;
+    socklen_t sendsize = sizeof(sender);
+    bzero(&sender, sizeof(sender));
+
     connection_t * connection;
-    int sock = ((UdpServer *)ptr)->sock;
     cout << "server gestartet!" << endl;
-    while (true)
+    while (((UdpServer *)ptr)->getIsActive())
     {
-        cout << "warte auf eingehende Verbindungen.." << endl;
+        cout << "warte auf Broadcast..." << endl;
         connection = (connection_t *)malloc(sizeof(connection_t));
-        connection->sock = accept(sock, &connection->address, &connection->addr_len); //TODO Hier Select() nachlesen
-        if (connection->sock <= 0)
-        {
+
+        NetworkMessage incomingMessage(LOGINREQUEST);
+        connection->sock = recvfrom(sock,&incomingMessage,sizeof(NetworkMessage),0,(struct sockaddr*)&sender, &sendsize);
+        if (connection->sock <= 0){
              free(connection);
         }
-        else
-        {
-            cout << "Verbindungen eingegangen..PORT: " << connection->sock << endl;
-            process(connection,ptr);
-            close(connection->sock);
-            free(connection);
+        else{
+
+            if(!((UdpServer*)ptr)->isOwnAddress(sender)){
+                cout << "Verbindungen eingegangen(UDP)..SOCK: " << connection->sock << endl;
+                processThread((struct sockaddr_in)sender,ptr,incomingMessage);
+                close(connection->sock);
+                free(connection);
+            }
+
         }
+        cout << "Boradcast eigegangen!" << endl;
     }
 }
 
-void UdpServer::process(connection_t *conn, void *ptr)
+void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessage mid)
 {
-    int len= 0;
-    string templr;
-    cout << "starte verarbeitung!" << endl;
-    NetworkMessage incomingMessage(LOGINREQUEST);
-    read(conn->sock, &incomingMessage, sizeof(NetworkMessage));
-    switch(incomingMessage.getId())
+    switch(mid.getId()){
+    case UDPHELLO:
     {
-        default: // Do Nothing...
-        break;
+        char* ip = inet_ntoa(sender.sin_addr);
+        string ipstr(ip);
+        ((UdpServer*)ptr)->UdpHelloSignal(ipstr);
     }
-}
-
-int UdpServer::getSock() const
-{
-    return sock;
-}
-
-void UdpServer::setSock(int value)
-{
-     sock = value;
-}
-
-int UdpServer::getIsActive() const
-{
-    return isActive;
-}
-
-void UdpServer::setIsActive(int value)
-{
-    isActive = value;
+    break;
+    default: // Do Nothing...
+    break;
+    }
 }

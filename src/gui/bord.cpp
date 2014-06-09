@@ -90,25 +90,43 @@ void Bord::setMove(Spieler* player, int row, int col)
 
 void Bord::preExecute()
 {
+    setIsActiveGame(true);
     isLocked = false;
 }
 
 void Bord::postExecute()
 {
+    setIsActiveGame(false);
     isLocked = true;
 }
+int Bord::getIsLocked() const
+{
+    return isLocked;
+}
+
+void Bord::setIsLocked(int value)
+{
+    isLocked = value;
+}
+
 
 void Bord::on_tblbord_doubleClicked(const QModelIndex &index)
 {
     if(!isLocked)
-        emit executeMove(index.column() + 1);
-}
-
-void Bord::on_tblbord_clicked(const QModelIndex &index)
-{
-    if(isLocked){
+    {
+         emit executeMove(index.column() + 1);
+    }
+    else{
+        string message;
+        if(getIsActiveGame()){
+            message = "Gegner ist am Zug!";
+        }
+        else{
+            message = "Neues Spiel erstellen!  Menü->Spiel->Neu";
+        }
         QMessageBox msg;
-        msg.setText("Neues Spiel erstellen!  Menü->Spiel->Neu");
+        msg.setText(QString::fromStdString(message));
         msg.exec();
     }
+
 }

@@ -63,12 +63,13 @@ public:
 
     string toString() const;
     bool getIsKI() const;
+    virtual ~Spieler();
 
 protected:
     bool isKI;
+    short farbe;
 private:
     string name;
-    short farbe;
     int istAmZug;
 
 };

@@ -3,7 +3,7 @@
 
 #include "../h/gui/I4WinWidget.h"
 #include "../h/sys/Spieler.h"
-#include "../h/gui/timer4Win.h"
+#include "../h/gui/threads//timer4Win.h"
 #include <QWidget>
 #include <QPixmap>
 #include <string>
@@ -26,6 +26,8 @@ public:
     virtual void postExecute();
     void lock();
     void unlock();
+    void lockDisplaySp1();
+    void lockDisplaySp2();
     void initPlayer(Spieler* player1,Spieler* player2);
     void changePlayer(Spieler* currentPlayer, unsigned short round, string lastMove);
     void initPlayerDisplays(Spieler* player1,Spieler* player2);
@@ -39,7 +41,7 @@ private slots:
     void on_timeChange();
 
 signals:
-    void loose(Spieler* winner);
+    void loose(Spieler* winner,bool);
 
 private:
      //QPixmap imgRed;

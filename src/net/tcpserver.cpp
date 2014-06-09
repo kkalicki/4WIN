@@ -5,124 +5,65 @@
 #include "../h/net/msg/loginrequest.h"
 #include "../h/net/msg/loginreply.h"
 #include "../h/net/msg/remotemove.h"
+#include "../h/net/msg/helloreply.h"
 #include <pthread.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <stdio.h>
 #include <sstream>
+#include <arpa/inet.h>
 
 
-TcpServer::TcpServer(int port)
+TcpServer::TcpServer(int port): Server4Win(TCP,port)
 {
-    this->port = port;
-    this->sock = -1;
+    //Do Nothing...
 }
-
-int TcpServer::getSock() const
-{
-    return sock;
-}
-
-void TcpServer::setSock(int value)
-{
-    sock = value;
-}
-int TcpServer::getIsActive() const
-{
-    return isActive;
-}
-
-void TcpServer::setIsActive(int value)
-{
-    isActive = value;
-}
-
 
 TcpServer::~TcpServer()
 {
-    // kein new...
-}
-
-void TcpServer::start()
-{
-    connect();
-}
-
-void TcpServer::stop()
-{
-    isActive = false;
-    cout << "stoppe Server!" << endl;
-    if(sock > -1)
-    {
-        close(sock);
-        cout << "Socket geschlossen!" << endl;
-    }
-
-    pthread_cancel(tcpServerThread);
-    cout << "Serverthread geschlossen!" << endl;
+     close(sock);
 }
 
 void TcpServer::connect()
 {
-    struct sockaddr_in address;
-    //pthread_t thread;
-
-    cout << "erstelle Socket!" << endl;
-    sock = (socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
-    if (sock <= 0)
-    {
-      throw TcpServerException("Socket konnte nicht erstellt werden!");
-    }
-
-    /* bind socket to port */
-    address.sin_family = AF_INET;
-    address.sin_addr.s_addr = INADDR_ANY;
-    address.sin_port = htons(port);
-
-    cout << "Binde Socket!" << endl;
-    if (bind(sock, (struct sockaddr *)&address, sizeof(struct sockaddr_in)) < 0)
-    {
-        ostringstream o;
-        o << "Socket konnte nicht an Port gebunden werden ! (" << port << ")" << endl;
-        throw TcpServerException(o.str());
-    }
-
-    if (listen(sock, 5) < 0)
-    {
-        ostringstream o;
-        o << "Server kann horchen an Port! (" << port << ")" << endl;
-        throw TcpServerException(o.str());
-    }
-
-    isActive = true;
-    cout << "starte Server!" << endl;
-    pthread_create(&tcpServerThread, 0, startServerThread, this);
+    Server4Win::connect();
+    pthread_create(&tcpServerThread, 0, startTcpServerThread, this);
     pthread_detach(tcpServerThread);
 }
 
-
-void *TcpServer::startServerThread(void * ptr)
+void *TcpServer::startTcpServerThread(void *ptr)
 {
     connection_t * connection;
     int sock = ((TcpServer *)ptr)->sock;
     cout << "server gestartet!" << endl;
-    while (true)
+
+    try{
+    while (((TcpServer *)ptr)->getIsActive())
     {
-        cout << "warte auf eingehende Verbindungen.." << endl;
+        cout << "warte auf eingehende Verbindungen..(TCP-SERVER)" << endl;
         connection = (connection_t *)malloc(sizeof(connection_t));
-        connection->sock = accept(sock, &connection->address, &connection->addr_len); //TODO Hier Select() nachlesen
+        socklen_t sendsize = sizeof(connection->address);
+        connection->sock = accept(sock, (struct sockaddr*)&connection->address,&sendsize); //TODO Hier Select() nachlesen
         if (connection->sock <= 0)
         {
              free(connection);
         }
         else
         {
-            cout << "Verbindungen eingegangen..PORT: " << connection->sock << endl;
+            char* ip = inet_ntoa(connection->address.sin_addr);
+            string ipstr(ip);
+            cout << "Verbindungen eingegangen(TCP)..SOCK: " << connection->sock << endl;
             process(connection,ptr);
             close(connection->sock);
             free(connection);
         }
     }
+   }
+   catch(exception& e){
+        cout << e.what() << endl;
+   }
+
+     cout << "TCP-SERVER aus der WHILE-Schleife" << endl;
 }
 
 void TcpServer::process(connection_t * conn, void *ptr)
@@ -130,7 +71,7 @@ void TcpServer::process(connection_t * conn, void *ptr)
     int len= 0;
     string templr;
     cout << "starte verarbeitung!" << endl;
-    NetworkMessage incomingMessage(LOGINREQUEST);
+    NetworkMessage incomingMessage;
     read(conn->sock, &incomingMessage, sizeof(NetworkMessage));
     switch(incomingMessage.getId())
     {
@@ -146,7 +87,9 @@ void TcpServer::process(connection_t * conn, void *ptr)
             LoginRequest loginRequest;
             rsltlr >> loginRequest;
             cout << loginRequest << " empfangen!" << endl;
-            ((TcpServer *)ptr)->LoginRequestSignal(loginRequest.getPlayerName());
+            char* ip = inet_ntoa(conn->address.sin_addr);
+            string ipstr(ip);
+            ((TcpServer *)ptr)->LoginRequestSignal(loginRequest.getPlayerName(),ipstr);
         }
         break;
         case LOGINREPLY:
@@ -169,12 +112,35 @@ void TcpServer::process(connection_t * conn, void *ptr)
             ((TcpServer *)ptr)->RemoteMoveSignal(remoteMove.getColumn());
         }
         break;
+        case GIVEUP:
+        {
+            ((TcpServer *)ptr)->GiveUpSignal();
+        }
+        break;
+        case HELLOREPLY:
+        {
+            read(conn->sock, &len, sizeof(int));
+            char bufferhr[len];
+            read(conn->sock, bufferhr, len);
+
+            templr.assign(bufferhr,len);
+
+            char* ip = inet_ntoa(conn->address.sin_addr);
+            string ipstr(ip);
+            HelloReply helloReply;
+            templr.insert(0,ipstr);
+            helloReply.fromCsvString(templr);
+            cout << helloReply << " empfangen!" << endl;
+            ((TcpServer *)ptr)->HelloReplySignal(helloReply);
+        }
         default: // Do Nothing...
         break;
     }
 }
 
 
+//--------------------NUR ALS VORLAGE FUER MULTITHREADING SERVER (LISTENER--WORKER)-----------------------------------
+/*
 void *TcpServer::processThread(void * ptr)
 {
     int len;
@@ -187,18 +153,18 @@ void *TcpServer::processThread(void * ptr)
         conn = (connection_t *)ptr;
 
 
-        /*pthread_create(&thread, 0, process, (void *)connection);
-        pthread_detach(thread);*/
+        pthread_create(&thread, 0, process, (void *)connection);
+        pthread_detach(thread);
 
     // empfange Nachricht, nimm nur den ersten Teil der Klasse
-    /*len =sizeof(int);
+    len =sizeof(int);
     char buffer[1];
     read(conn->sock, buffer, 1);
     string temp;
     temp.assign(buffer);
     stringstream rslt;
     rslt << temp;
-    rslt >> incomingMessage;*/
+    rslt >> incomingMessage;
 
     read(conn->sock, &incomingMessage, sizeof(NetworkMessage));
 
@@ -209,24 +175,24 @@ void *TcpServer::processThread(void * ptr)
         {
             LoginRequest loginRequest;
             read(conn->sock, &loginRequest, sizeof(LoginRequest));
-            /*len= sizeof(LoginRequest);
+            len= sizeof(LoginRequest);
             char bufferlr[len];
             read(conn->sock, bufferlr, len);
             string templr;
             templr.assign(bufferlr);
             stringstream rsltlr;
             rsltlr << templr;
-            rsltlr >> loginRequest;*/
+            rsltlr >> loginRequest;
             //emit on_loginRequest();
             cout << loginRequest << endl;
 
 
 
-            /*char* buf = (char *)malloc(sizeof(LoginRequest));
+           char* buf = (char *)malloc(sizeof(LoginRequest));
             read(conn->sock, buf, sizeof(LoginRequest));
             LoginRequest loginRequest;
             loginRequest.fromCharArray(buf);
-            string name = loginRequest.getPlayerName();*/
+            string name = loginRequest.getPlayerName();
         }
         break;
 
@@ -234,7 +200,7 @@ void *TcpServer::processThread(void * ptr)
         {
             LoginReply loginReply;
             read(conn->sock, &loginReply, sizeof(LoginReply));
-            /*char bufferlrep[sizeof(LoginReply)];
+            char bufferlrep[sizeof(LoginReply)];
             read(conn->sock, bufferlrep, sizeof(LoginReply));
             string temp;
             temp.assign(bufferlrep);
@@ -244,18 +210,18 @@ void *TcpServer::processThread(void * ptr)
             cout << rsltlrep.str() << endl;
             rsltlrep >> loginReply;
             temp.clear();
-            //emit on_loginRequest();*/
+            //emit on_loginRequest();
             cout << loginReply << endl;
          }
          break;
     }
     cout << " beendet!" << endl;
 
-    /* close socket and clean up */
     close(conn->sock);
     free(conn);
     pthread_exit(0);
 }
+    */
 
 
 

@@ -1,46 +1,28 @@
 #ifndef UDPSERVER_H
 #define UDPSERVER_H
 
-#include "../h/net/msg/remotemove.h"
 #include "../h/sys/Konstanten.h"
+#include "../h/net/server4Win.h"
+#include "../h/net/netmessage.h"
 #include "boost/signals2.hpp"
-#include <netinet/in.h>
-#include <iostream>
-#include <string>
 
 using namespace std;
 
-typedef struct
-{
-    int sock;
-    struct sockaddr address;
-    unsigned int addr_len;
-} connection_t;
 
-class UdpServer{
+class UdpServer : public Server4Win{
 public:
-    UdpServer(int port=DEFAULT_PORT_TCP);
+    UdpServer(int port=DEFAULT_PORT_UDP);
     ~UdpServer();
-    void start();
-    void stop();
-    void connect();
-    static void * startServerThread(void * ptr);
-    static void * processThread(void * ptr);
-    static void process(connection_t * conn, void * ptr);
 
-    boost::signals2::signal<void(string)> LoginRequestSignal;
+    static void *startUdpServerThread(void * ptr);
+    static void *processThread(struct sockaddr_in sender, void *ptr, NetworkMessage mid);
 
-    int getSock() const;
-    void setSock(int value);
+    boost::signals2::signal<void(string)> UdpHelloSignal;
 
-    int getIsActive() const;
-    void setIsActive(int value);
+protected:
+    virtual void connect();
 
 private:
-    pthread_t udpServerThread;
-    int sock;
-    int port;
-    int isActive;
-
+    pthread_t thread;
 };
 #endif // UDPSERVER_H

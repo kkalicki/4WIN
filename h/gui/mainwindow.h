@@ -2,7 +2,8 @@
 #define MAINWINDOW_H
 
 #include <../4WIN/h/gui/I4WinWidget.h>
-#include <../4WIN/h/gui/guiupdater.h>
+#include <../4WIN/h/gui/threads/movethread.h>
+#include <../4WIN/h/gui/threads/giveupthread.h>
 #include <../h/gui/bord.h>
 #include <../h/gui/settings.h>
 #include <../h/gui/gameinfo.h>
@@ -23,6 +24,8 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     void load4WinWidgets();
     void closeAllWidgets();
+    void initNetworkSignalSlot();
+    void lockBoad();
     virtual void init();
     virtual void preExecute();
     virtual void postExecute();
@@ -30,7 +33,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void on_endGame(Spieler* winner);
+    void on_endGame(Spieler* winner, bool giveUp);
     void on_executeMove(unsigned short column);
     void on_resultSettings(GameSettings* gameSettings);
     void on_actionBeenden_triggered();
@@ -38,7 +41,11 @@ private slots:
     void update(unsigned short column, int result);
 
     void startGame();
+
+    void stopMoveThread();
+    void stopGiveUpThread();
     void incommingMove(unsigned short column, int row);
+    void incommingGiveUp(Spieler* remoteSpieler, bool giveUp);
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -50,7 +57,10 @@ private:
     GameInfo *gameInfoWidget;
     History * historyWidget;
     GameSettings * gameSettings;
-    GuiUpdater *guiUpdaterThread;
+    MoveThread *guiUpdaterThread;
+    GiveUpThread *giveUpThread;
+    QThread * guiMoveThread;
+    QThread * guiGiveUpThread;
     static const int START_POSITION_X = 230;
     static const int START_POSITION_Y = 0;
 

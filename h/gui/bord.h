@@ -37,6 +37,9 @@ public:
         colCount = value;
     }
 
+    int getIsLocked() const;
+    void setIsLocked(int value);
+
 private:
     int isLocked;
     unsigned short rowCount;
@@ -57,7 +60,6 @@ public slots:
 
 private slots:
     void on_tblbord_doubleClicked(const QModelIndex &index);
-    void on_tblbord_clicked(const QModelIndex &index);
 };
 
 #endif // BORD_H

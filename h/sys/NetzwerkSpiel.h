@@ -4,7 +4,7 @@
 #include "../h/sys/Spiel.h"
 #include "../h/sys/Spieler.h"
 #include "../h/sys/Konstanten.h"
-#include "../h/net/tcpserver.h"
+#include "../h/net/server4Win.h"
 #include "../h/net/tcpclient.h"
 #include "boost/signals2.hpp"
 
@@ -18,20 +18,34 @@ public:
     void starteNetzwerkSpiel(string spielerName);
     void anmeldenNetzwerk(string nameSpieler2);
     void abmeldenNetzwerk();
+    void startClient(string ip);
     void rueckgabeSpielerInfo(Spieler spieler);
     virtual int naechsterZug(Spieler* spieler, unsigned short spalte);
+    virtual void aufgeben();
+    virtual void beenden();
 
-    void on_loginRequest(string loginPlayerName);
+    void sendHello();
+    void closeServer();
+
+    void on_loginRequest(string loginPlayerName,string ip);
     void on_loginReply(Spieler spieler);
     void on_remoteMove(unsigned short column);
+    void on_giveUp();
+    void on_helloReply(HelloReply reply);
+
+    void on_udpHello(string remoteIp);
 
     boost::signals2::signal<void(unsigned short, int)> RemoteMoveSignal;
     boost::signals2::signal<void()> StartGameSignal;
+    boost::signals2::signal<void(Spieler*,bool)> GiveUpRemotePlayerSignal;
+    boost::signals2::signal<void(HelloReply)> HelloReplySignal;
 
 protected:
-    TcpServer* tcpServer;
+    Server4Win* tcpServer;
+    Server4Win* udpServer;
     TcpClient* tcpClient;
     string nameSpieler1;
+    Spieler * remoteSpieler;
 };
 
 #endif // NETZWERKSPIEL_H

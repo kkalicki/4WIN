@@ -13,6 +13,7 @@ History::History(QWidget *parent)  : QWidget(parent),
 History::~History()
 {
     //delete model;
+    clear();
     delete ui;
 }
 
@@ -28,12 +29,14 @@ void History::init()
 
 void History::preExecute()
 {
+   setIsActiveGame(true);
    clear();
 }
 
 
 void History::postExecute()
 {
+    setIsActiveGame(false);
     //keine implementierung notwendig...
 }
 

@@ -1,17 +1,31 @@
 #include "../h/gui/settings.h"
 #include <QMessageBox>
+#include <QThread>
+#include <boost/signals2.hpp>
+#include "boost/bind.hpp"
+#include "../h/gui/remotegameslistitem.h"
+#include "../h/sys/FourWinExceptions.h"
 
 Settings::Settings(QWidget *parent) :
     QWidget(parent), ui(new Ui::settingsUi)
 {
     ui->setupUi(this);
     this->gameSettings = new GameSettings();
+    this->openGameThread=0;
+    this->helloServer = 0;
+
 }
 
 Settings::~Settings()
 {
     if(gameSettings != 0)
         delete gameSettings;
+
+    if(openGameThread != 0)
+        delete openGameThread;
+
+   closeHelloServer();
+
 }
 
 void Settings::on_rbsvs_toggled(bool checked)
@@ -76,11 +90,27 @@ void Settings::on_rbenter_toggled(bool checked)
         ui->leplayer1->setEnabled(false);
         ui->leplayer2->setEnabled(true);
         ui->gbgamefieldsetting->setEnabled(false);
+        this->helloServer = new HelloServer();
+        ui->pbrefresh->setEnabled(true);
+        try
+        {
+            helloServer->HelloReplySignal.connect(boost::bind(&Settings::incomingGames, this,_1));
+            helloServer->start();
+        }catch(Server4WinException& e)
+        {
+            QMessageBox info;
+            info.setText(e.what());
+            info.exec();
+        }
+
     }
     else
     {
+        ui->pbrefresh->setEnabled(false);
         ui->gbgamefieldsetting->setEnabled(true);
         ui->cbwatch->setEnabled(false);
+        closeHelloServer();
+
     }
 }
 
@@ -99,7 +129,25 @@ void Settings::on_btnstart_clicked()
             gameSettings->setNetworkMode(getNetworkMode());
             gameSettings->setIsFollow(ui->cbwatch->isChecked());
 
-            emit resultSettings(gameSettings);
+            if(gameSettings->getNetworkMode() == JOIN)
+            {
+               if(gameSettings->getRemoteIp().empty())
+               {
+                   QMessageBox info;
+                   info.setText("Spiel muss ausgewaehlt sein für beitritt!");
+                   info.exec();
+               }
+               else
+               {
+                   start();
+               }
+            }
+            else
+            {
+                start();
+            }
+
+
        }
        else{
            QMessageBox info;
@@ -112,6 +160,25 @@ void Settings::on_btnstart_clicked()
         info.setText("Namen für Player1 eingeben!");
         info.exec();
     }
+}
+
+void Settings::start()
+{
+    closeHelloServer();
+    emit resultSettings(gameSettings);
+}
+
+void Settings::closeHelloServer()
+{
+    if(helloServer != 0)
+    {
+        if(helloServer->getIsActive())
+            helloServer->stop();
+
+        delete helloServer;
+        helloServer=0;
+    }
+
 }
 
 void Settings::on_cbwatch_toggled(bool checked)
@@ -144,4 +211,55 @@ NetworkMode Settings::getNetworkMode()
 
     if(ui->rbenter->isChecked())
         return JOIN;
+}
+
+void Settings::incomingGames(HelloReply incomingVal)
+{
+    guiThread = new QThread;
+    openGameThread = new OpenGameThread(incomingVal);
+    openGameThread->moveToThread(guiThread);
+    connect(guiThread, SIGNAL(started()), openGameThread, SLOT(process()));
+    connect(openGameThread, SIGNAL(updateGui(HelloReply*)), this, SLOT(openGamesUpdate(HelloReply*)));
+    guiThread->start();
+}
+
+void Settings::openGamesUpdate(HelloReply* incomingVal)
+{
+    RemoteGamesListItem entry;
+    entry.ipAdress = incomingVal->getIpAdress();
+    entry.name = incomingVal->getName();
+    entry.rows = incomingVal->getRows();
+    entry.columns = incomingVal->getColumns();
+
+    QVariant qv;
+    qv.setValue(entry);
+    QListWidgetItem *item = new QListWidgetItem();
+    item->setText(QString::fromStdString(entry.toString()));
+    item->setData(Qt::UserRole,qv);
+    ui->lvgames->addItem(item);
+    ui->lvgames->scrollToBottom();
+
+    guiThread->quit();
+}
+
+void Settings::on_lvgames_itemActivated(QListWidgetItem *item)
+{
+    QVariant qv = item->data(Qt::UserRole);
+    RemoteGamesListItem entry = qv.value<RemoteGamesListItem>();
+
+    ui->sbrow->setValue(entry.rows);
+    ui->sbcolumn->setValue(entry.columns);
+    ui->leplayer1->setText(QString::fromStdString(entry.name));
+    gameSettings->setRemoteIp(entry.ipAdress);
+}
+
+void Settings::on_pbrefresh_clicked()
+{
+    ui->lvgames->clear();
+    helloServer->sendHelloBroadcast();
+}
+
+void Settings::closeEvent(QCloseEvent *event)
+{
+    closeHelloServer();
 }
