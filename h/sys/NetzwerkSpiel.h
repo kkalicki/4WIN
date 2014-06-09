@@ -24,6 +24,8 @@ public:
     virtual void aufgeben();
     virtual void beenden();
 
+    void disconnectAllSignals();
+
     void sendHello();
     void closeServer();
 

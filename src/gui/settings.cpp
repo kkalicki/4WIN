@@ -90,10 +90,10 @@ void Settings::on_rbenter_toggled(bool checked)
         ui->leplayer1->setEnabled(false);
         ui->leplayer2->setEnabled(true);
         ui->gbgamefieldsetting->setEnabled(false);
-        this->helloServer = new HelloServer();
+
         ui->pbrefresh->setEnabled(true);
         try
-        {
+        {   this->helloServer = new HelloServer();
             helloServer->HelloReplySignal.connect(boost::bind(&Settings::incomingGames, this,_1));
             helloServer->start();
         }catch(Server4WinException& e)

@@ -23,7 +23,7 @@ void UdpServer::connect()
 {
     Server4Win::connect();
     pthread_create(&udpServerThread, 0, startUdpServerThread, this);
-    pthread_detach(udpServerThread);
+    //pthread_detach(udpServerThread);
 }
 
 void *UdpServer::startUdpServerThread(void *ptr)

@@ -23,8 +23,19 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     this->tcpClient = new TcpClient();
 }
 
+void NetzwerkSpiel::disconnectAllSignals()
+{
+    dynamic_cast<TcpServer*>(tcpServer)->LoginRequestSignal.disconnect(&NetzwerkSpiel::on_loginRequest);
+    dynamic_cast<TcpServer*>(tcpServer)->LoginReplySignal.disconnect(&NetzwerkSpiel::on_loginReply);
+    dynamic_cast<TcpServer*>(tcpServer)->RemoteMoveSignal.disconnect(&NetzwerkSpiel::on_remoteMove);
+    dynamic_cast<TcpServer*>(tcpServer)->GiveUpSignal.disconnect(&NetzwerkSpiel::on_giveUp);
+    dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.disconnect(&NetzwerkSpiel::on_udpHello);
+}
+
 NetzwerkSpiel::~NetzwerkSpiel()
 {
+    disconnectAllSignals();
+
     std::cout << "schließe Netzwerkspiel!!!" << endl;
     delete tcpServer;
     tcpServer=0;
@@ -107,6 +118,8 @@ void NetzwerkSpiel::beenden()
 {
     closeServer();
 }
+
+
 
 void NetzwerkSpiel::closeServer()
 {

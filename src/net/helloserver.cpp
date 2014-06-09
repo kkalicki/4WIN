@@ -31,7 +31,7 @@ void HelloServer::connect()
 {
     Server4Win::connect();
     pthread_create(&helloServerThread, 0, startTcpServerThread, this);
-    pthread_detach(helloServerThread);
+    //pthread_detach(helloServerThread);
 }
 
 void *HelloServer::startTcpServerThread(void *ptr)

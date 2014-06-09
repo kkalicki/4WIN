@@ -28,7 +28,7 @@ void TcpServer::connect()
 {
     Server4Win::connect();
     pthread_create(&tcpServerThread, 0, startTcpServerThread, this);
-    pthread_detach(tcpServerThread);
+    //pthread_detach(tcpServerThread);
 }
 
 void *TcpServer::startTcpServerThread(void *ptr)
