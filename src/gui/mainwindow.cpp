@@ -316,11 +316,13 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
         msg.exec();
     }
 
-    if(game != 0)
+    game->beenden();
+
+   /* if(game != 0)
     {
         delete game;
         game=0;
-    }
+    }*/
 
      std::cout << "Nach GAME destruieren!" << endl;
 }

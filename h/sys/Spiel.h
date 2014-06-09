@@ -24,6 +24,7 @@ public:
     virtual int naechsterZug(Spieler* spieler, unsigned short spalte);
     virtual void naechsterZugRemote(int spalte);
     virtual void aufgeben();
+    virtual void beenden();
     HisEintrag* getLetztenHisEintrag();
     void erstelleNeuenHisEintrag(Spieler* spieler,
                                  unsigned short zeile,

@@ -78,6 +78,11 @@ void Spiel::starteSpiel(string nameSpieler1, string nameSpieler2, bool sp1KI, bo
 
 void Spiel::aufgeben() //braucht evtl. noch Parameter...
 {
+    beenden();
+}
+
+void Spiel::beenden()
+{
     //implementieren...
 }
 

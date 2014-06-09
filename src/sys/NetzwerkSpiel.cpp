@@ -21,26 +21,17 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     udpServer->start();
 
     this->tcpClient = new TcpClient();
-
-}
-
-void NetzwerkSpiel::disconnectSignals()
-{
-
 }
 
 NetzwerkSpiel::~NetzwerkSpiel()
 {
     std::cout << "schließe Netzwerkspiel!!!" << endl;
-    if(tcpServer->getIsActive())
-        tcpServer->stop();
-
-    if(udpServer->getIsActive())
-        udpServer->stop();
-
     delete tcpServer;
+    tcpServer=0;
     delete udpServer;
+    udpServer=0;
     delete tcpClient;
+    tcpClient=0;
     std::cout << "Netzwerkspiel geschlossen!!!" << endl;
 }
 
@@ -112,6 +103,21 @@ void NetzwerkSpiel::aufgeben()
     tcpClient->sendGiveUp();
 }
 
+void NetzwerkSpiel::beenden()
+{
+    closeServer();
+}
+
+void NetzwerkSpiel::closeServer()
+{
+    if(tcpServer->getIsActive())
+        tcpServer->stop();
+
+    if(udpServer->getIsActive())
+        udpServer->stop();
+}
+
+
 void NetzwerkSpiel::on_loginRequest(string loginPlayerName, string ip)
 {
     cout << "Incoming to on_loginRequest() VALUE: " << loginPlayerName << endl;
@@ -162,5 +168,4 @@ void NetzwerkSpiel::sendHello()
 {
     tcpClient->sendHelloBroadcast();
 }
-
 

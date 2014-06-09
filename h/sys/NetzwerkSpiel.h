@@ -22,9 +22,10 @@ public:
     void rueckgabeSpielerInfo(Spieler spieler);
     virtual int naechsterZug(Spieler* spieler, unsigned short spalte);
     virtual void aufgeben();
+    virtual void beenden();
 
     void sendHello();
-    void disconnectSignals();
+    void closeServer();
 
     void on_loginRequest(string loginPlayerName,string ip);
     void on_loginReply(Spieler spieler);
