@@ -141,14 +141,11 @@ void Settings::on_btnstart_clicked()
                {
                    start();
                }
-               start();
             }
             else
             {
                 start();
             }
-
-
        }
        else{
            QMessageBox info;
@@ -263,4 +260,13 @@ void Settings::on_pbrefresh_clicked()
 void Settings::closeEvent(QCloseEvent *event)
 {
     closeHelloServer();
+
+    if(guiThread != 0)
+    {
+        guiThread->terminate();
+        guiThread->wait();
+        delete guiThread;
+        guiThread=0;
+    }
+
 }

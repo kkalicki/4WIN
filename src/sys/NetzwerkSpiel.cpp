@@ -16,9 +16,9 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     //dynamic_cast<TcpServer*>(tcpServer)->HelloReplySignal.connect(boost::bind(&NetzwerkSpiel::on_helloReply, this,_1));
     tcpServer->start();
 
-    /*this->udpServer = new UdpServer();
+    this->udpServer = new UdpServer();
     dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.connect(boost::bind(&NetzwerkSpiel::on_udpHello, this,_1));
-    udpServer->start();*/
+    udpServer->start();
 
     this->tcpClient = new TcpClient();
 }
@@ -29,18 +29,17 @@ void NetzwerkSpiel::disconnectAllSignals()
     dynamic_cast<TcpServer*>(tcpServer)->LoginReplySignal.disconnect(&NetzwerkSpiel::on_loginReply);
     dynamic_cast<TcpServer*>(tcpServer)->RemoteMoveSignal.disconnect(&NetzwerkSpiel::on_remoteMove);
     dynamic_cast<TcpServer*>(tcpServer)->GiveUpSignal.disconnect(&NetzwerkSpiel::on_giveUp);
-    //dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.disconnect(&NetzwerkSpiel::on_udpHello);
+    dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.disconnect(&NetzwerkSpiel::on_udpHello);
 }
 
 NetzwerkSpiel::~NetzwerkSpiel()
 {
     disconnectAllSignals();
 
+    closeServer();
     std::cout << "schließe Netzwerkspiel!!!" << endl;
     delete tcpServer;
-    tcpServer=0;
-    //delete udpServer;
-    //udpServer=0;
+    delete udpServer;
     delete tcpClient;
     tcpClient=0;
     std::cout << "Netzwerkspiel geschlossen!!!" << endl;
@@ -126,8 +125,8 @@ void NetzwerkSpiel::closeServer()
     if(tcpServer->getIsActive())
         tcpServer->stop();
 
-    //if(udpServer->getIsActive())
-      //  udpServer->stop();
+    if(udpServer->getIsActive())
+       udpServer->stop();
 }
 
 
