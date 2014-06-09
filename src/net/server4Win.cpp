@@ -89,7 +89,7 @@ void Server4Win::connect()
 {
     int permission = 1;
     switch(serverType){
-    case TCP || HELLO:
+    case TCP:
                 cout << "erstelle Socket!(TCP)" << endl;
                 sock = (socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
                 if (sock <= 0){
@@ -105,6 +105,13 @@ void Server4Win::connect()
 
                 if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void *) &permission, sizeof(permission)) < 0)
                     throw Server4WinException("Socketoptionen konnten nicht gesetzt werden(UDP)!");
+        break;
+    case HELLO:
+                cout << "erstelle Socket!(HELLO)" << endl;
+                sock = (socket(AF_INET, SOCK_STREAM, IPPROTO_TCP));
+                if (sock <= 0){
+                  throw Server4WinException("Socket konnte nicht erstellt werden (HELLO)!");
+                }
         break;
     default:    //Do Nothing...
         break;
@@ -125,9 +132,9 @@ void Server4Win::connect()
         throw Server4WinException(o.str());
     }
 
-    if(serverType==TCP){
+    if(serverType==TCP || serverType==HELLO){
         cout << "Socket listen!(TCP)" << endl;
-        if (listen(sock, 5) < 0){
+        if (listen(sock, 100) < 0){
             ostringstream o;
             o << "Server kann nicht an Port horchen (TCP)! (" << port << ")" << endl;
             throw Server4WinException(o.str());
