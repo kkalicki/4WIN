@@ -138,7 +138,6 @@ void TcpServer::process(connection_t * conn, void *ptr)
     }
 }
 
-
 //--------------------NUR ALS VORLAGE FUER MULTITHREADING SERVER (LISTENER--WORKER)-----------------------------------
 /*
 void *TcpServer::processThread(void * ptr)

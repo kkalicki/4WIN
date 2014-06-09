@@ -143,7 +143,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
             break;
         case JOIN:
                 this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
-                dynamic_cast<NetzwerkSpiel*>(game)->startClient(gameSettings->getRemoteIp());
+                dynamic_cast<NetzwerkSpiel*>(game)->startClient("192.168.178.51");//(gameSettings->getRemoteIp());
                 dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name());
                 gameInfoWidget->setSysMsg("Warte auf Antwort...");
                 gameInfoWidget->lockDisplaySp1();
@@ -168,6 +168,13 @@ void MainWindow::initNetworkSignalSlot()
     dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
     dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame, this));
     dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.connect(boost::bind(&MainWindow::incommingGiveUp, this,_1,_2));
+}
+
+void MainWindow::killNetworkSignalSlot()
+{
+    dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.disconnect(&MainWindow::incommingMove);
+    dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.disconnect(&MainWindow::startGame);
+    dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.disconnect(&MainWindow::incommingGiveUp);
 }
 
 void MainWindow::lockBoad()
@@ -316,6 +323,7 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
         msg.exec();
     }
 
+    killNetworkSignalSlot();
     game->beenden();
 
    /* if(game != 0)

@@ -141,6 +141,7 @@ void Settings::on_btnstart_clicked()
                {
                    start();
                }
+               start();
             }
             else
             {
