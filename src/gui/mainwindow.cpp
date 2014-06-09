@@ -283,9 +283,6 @@ void MainWindow::stopMoveThread()
 {
     if(guiMoveThread != 0){
         guiMoveThread->quit();
-        guiMoveThread->wait();
-        delete guiMoveThread;
-        delete guiUpdaterThread;
         guiMoveThread=0;
     }
 
@@ -295,15 +292,12 @@ void MainWindow::stopMoveThread()
 
 void MainWindow::stopGiveUpThread()
 {
-   /* if(guiGiveUpThread != 0)
+   if(guiGiveUpThread != 0)
     {
-        //guiGiveUpThread->wait();
         guiGiveUpThread->quit();
-        delete guiGiveUpThread;
-        delete giveUpThread;
         guiGiveUpThread=0;
     }
-    std::cout << "Nach guiGiveUpThread destruieren!" << endl;*/
+    std::cout << "Nach guiGiveUpThread destruieren!" << endl;
 }
 
 void MainWindow::on_endGame(Spieler* winner,bool giveUp)
@@ -365,7 +359,7 @@ void MainWindow::incommingMove(unsigned short column,int row)
     guiUpdaterThread = new MoveThread(column,row);
     guiUpdaterThread->moveToThread(guiMoveThread);
     connect(guiMoveThread, SIGNAL(started()), guiUpdaterThread, SLOT(process()));
-    //connect(guiMoveThread, SIGNAL(finished()), this, SLOT(stopMoveThread()));
+    connect(guiMoveThread, SIGNAL(finished()), this, SLOT(stopMoveThread()));
     connect(guiUpdaterThread, SIGNAL(updateGui(unsigned short,int)), this, SLOT(update(unsigned short, int)));
     guiMoveThread->start();
 
@@ -377,7 +371,7 @@ void MainWindow::incommingGiveUp(Spieler *remoteSpieler, bool giveUp)
     giveUpThread = new GiveUpThread(remoteSpieler,giveUp);
     giveUpThread->moveToThread(guiGiveUpThread);
     connect(guiGiveUpThread, SIGNAL(started()), giveUpThread, SLOT(process()));
-    //connect(guiGiveUpThread, SIGNAL(finished()), this, SLOT(stopGiveUpThread()));
+    connect(guiGiveUpThread, SIGNAL(finished()), this, SLOT(stopGiveUpThread()));
     connect(giveUpThread, SIGNAL(updateGui(Spieler*,bool)), this, SLOT(on_endGame(Spieler*, bool)));
     guiGiveUpThread->start();
 }
