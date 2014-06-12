@@ -52,7 +52,7 @@ void Server4Win::stop()
                     pthread_join(tcpServerThread, NULL);
 
                     pthread_cancel(tcpServerThread);
-                    delete tcpServerThread;
+                    //delete tcpServerThread;
                     tcpServerThread=0;
                     cout << "Server beendet(TCP)" << endl;
 
@@ -65,7 +65,7 @@ void Server4Win::stop()
                     pthread_join(udpServerThread, NULL);
 
                     pthread_cancel(udpServerThread);
-                    delete udpServerThread;
+                    //delete udpServerThread;
                     udpServerThread=0;
                     cout << "Server beendet (UDP)" << endl;
 
@@ -78,7 +78,7 @@ void Server4Win::stop()
                     pthread_join(helloServerThread, NULL);
 
                     pthread_cancel(helloServerThread);
-                    delete helloServerThread;
+                    //delete helloServerThread;
                     helloServerThread=0;
                     cout << "Server beendet(HELLO)" << endl;
                 }

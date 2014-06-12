@@ -239,9 +239,7 @@ void Settings::openGamesUpdate(HelloReply* incomingVal)
     ui->lvgames->scrollToBottom();
 
     if(guiThread != 0){
-        guiThread->quit();
-        delete guiThread;
-        delete openGameThread;
+        guiThread->terminate();
     }
 
 
