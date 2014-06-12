@@ -18,7 +18,7 @@ public:
     void fromCharArray(char* buffer);
 
     friend ostream& operator<< (ostream& out, NetworkMessage& object) {
-    out << object.id;  //The space (" ") is necessari for separete elements
+    out << object.id;
     return out;
     }
 
