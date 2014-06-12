@@ -13,6 +13,7 @@ Settings::Settings(QWidget *parent) :
     this->gameSettings = new GameSettings();
     this->openGameThread=0;
     this->helloServer = 0;
+    this->guiThread = 0;
 
 }
 
@@ -237,7 +238,13 @@ void Settings::openGamesUpdate(HelloReply* incomingVal)
     ui->lvgames->addItem(item);
     ui->lvgames->scrollToBottom();
 
-    guiThread->quit();
+    if(guiThread != 0){
+        guiThread->quit();
+        delete guiThread;
+        delete openGameThread;
+    }
+
+
 }
 
 void Settings::on_lvgames_itemActivated(QListWidgetItem *item)
