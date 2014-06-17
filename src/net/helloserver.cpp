@@ -10,10 +10,10 @@
 HelloServer::HelloServer(int port): Server4Win(HELLO,port)
 {
     udpsock= socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-    int broadcastPermission = 1;
+    //int broadcastPermission = 1;
 
-    if (setsockopt(udpsock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0)
-        printf("setsockopt() failed");
+    //if (setsockopt(udpsock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0)
+      //  printf("setsockopt() failed");
 
     memset(&address, 0, sizeof(address));
     address.sin_family = AF_INET;
