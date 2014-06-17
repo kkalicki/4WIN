@@ -31,7 +31,7 @@ void HelloServer::connect()
 {
     Server4Win::connect();
     pthread_create(&helloServerThread, 0, startTcpServerThread, this);
-    //pthread_detach(helloServerThread);
+    pthread_detach(helloServerThread);
 }
 
 void *HelloServer::startTcpServerThread(void *ptr)
@@ -84,10 +84,11 @@ void *HelloServer::startTcpServerThread(void *ptr)
     }catch(exception& e)
     {
         cout << "HELLOSERVER in CATCH-CLAUSE...." << e.what()<< endl;
+        pthread_exit((void*) false);
     }
 
-
      cout << "HELLOSERVER aus der WHILE-Schleife" << endl;
+     pthread_exit((void*) true);
 }
 
 void HelloServer::sendHelloBroadcast()

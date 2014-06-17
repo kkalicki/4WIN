@@ -64,6 +64,7 @@ void *TcpServer::startTcpServerThread(void *ptr)
    }
 
      cout << "TCP-SERVER aus der WHILE-Schleife" << endl;
+     pthread_exit((void*) true);
 }
 
 void TcpServer::process(connection_t * conn, void *ptr)

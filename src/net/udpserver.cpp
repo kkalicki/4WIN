@@ -59,6 +59,7 @@ void *UdpServer::startUdpServerThread(void *ptr)
         }
         cout << "Boradcast eigegangen!" << endl;
     }
+    pthread_exit((void*) true);
 }
 
 void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessage mid)
