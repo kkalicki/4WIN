@@ -107,8 +107,8 @@ void Server4Win::connect()
                   throw Server4WinException("Socket konnte nicht erstellt werden(UDP)!");
                 }
 
-                if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void *) &permission, sizeof(permission)) < 0)
-                    throw Server4WinException("Socketoptionen konnten nicht gesetzt werden(UDP)!");
+               // if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void *) &permission, sizeof(permission)) < 0)
+                 //   throw Server4WinException("Socketoptionen konnten nicht gesetzt werden(UDP)!");
         break;
     case HELLO:
                 cout << "erstelle Socket!(HELLO)" << endl;
