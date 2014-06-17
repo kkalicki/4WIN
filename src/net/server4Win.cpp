@@ -51,7 +51,6 @@ void Server4Win::stop()
                     cout << "warte bis Server heruntergefahren ist...(TCP)" << endl;
                     pthread_join(tcpServerThread, NULL);
 
-                    pthread_exit(tcpServerThread);
                     //pthread_cancel(tcpServerThread);
                     //delete tcpServerThread;
                     tcpServerThread=0;
@@ -65,7 +64,6 @@ void Server4Win::stop()
                     cout << "warte bis Server heruntergefahren ist...(UDP)" << endl;
                     pthread_join(udpServerThread, NULL);
 
-                     pthread_exit(udpServerThread);
                     //pthread_cancel(udpServerThread);
                     //delete udpServerThread;
                     udpServerThread=0;
