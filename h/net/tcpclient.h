@@ -23,7 +23,7 @@ public:
 
   void openConnectionBroadcast();
   void sendHelloBroadcast();
-  void sendVisitorPackageBroadcast(VisitorPackage pack);
+  void sendVisitorPackageBroadcast(VisitorPackage *pack);
   void sendHelloReply(string ip,HelloReply* reply);
 
    string getIpAddress() const;

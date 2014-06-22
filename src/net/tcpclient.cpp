@@ -126,7 +126,7 @@ void TcpClient::sendHelloBroadcast()
     close(udpsock);
 }
 
-void TcpClient::sendVisitorPackageBroadcast(VisitorPackage pack)
+void TcpClient::sendVisitorPackageBroadcast(VisitorPackage* pack)
 {
 
     struct sockaddr_in address;
