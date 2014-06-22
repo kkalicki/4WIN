@@ -3,8 +3,9 @@
 
 #include <sstream>
 
-VisitorPackage::VisitorPackage(Spieler sp1, Spieler sp2, Historie historie)
+VisitorPackage::VisitorPackage(Spieler sp1, Spieler sp2, Historie historie,int gameId)
 {
+    this->gameId = gameId;
     this->sp1 = sp1;
     this->sp2 = sp2;
     this->historie = historie;
