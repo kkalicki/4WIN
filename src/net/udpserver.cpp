@@ -1,5 +1,6 @@
 #include "../h/net/udpserver.h"
 #include "../h/sys/FourWinExceptions.h"
+#include "../h/net/msg/visitorpackage.h"
 
 #include <netdb.h>
 #include <pthread.h>
@@ -64,6 +65,9 @@ void *UdpServer::startUdpServerThread(void *ptr)
 
 void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessage mid)
 {
+    socklen_t sendsize = sizeof(sender);
+    bzero(&sender, sizeof(sender));
+
     switch(mid.getId()){
     case UDPHELLO:
     {
@@ -72,6 +76,18 @@ void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessa
         ((UdpServer*)ptr)->UdpHelloSignal(ipstr);
     }
     break;
+    case VISITORPACKAGE:
+    {
+        int len;
+        recvfrom(((UdpServer*)ptr)->getSock(), &len, sizeof(int),0,(struct sockaddr*)&sender, &sendsize);
+        char buffer[len];
+        recvfrom( ((UdpServer*)ptr)->getSock(), buffer, len,0,(struct sockaddr*)&sender, &sendsize);
+        string temp;
+        temp.assign(buffer,len);
+        VisitorPackage incomingVisitorPackage;
+        incomingVisitorPackage.fromStream(temp);
+        ((UdpServer*)ptr)->VisitorPackageSignal(incomingVisitorPackage);
+    }
     default: // Do Nothing...
     break;
     }

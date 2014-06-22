@@ -6,6 +6,7 @@
 
 class HisEintrag{
 public:
+    HisEintrag();
     HisEintrag(Spieler* spieler, unsigned short zeile=0, unsigned short spalte=0, unsigned short runde=0);
     ~HisEintrag();
 
@@ -26,6 +27,7 @@ public:
     unsigned short getRunde() const;
     void setRunde(unsigned short value);
 
+    void fromCsvString(string csvString);
     string toString();
 
     friend ostream& operator<<(ostream& out, HisEintrag& object);

@@ -34,7 +34,7 @@ public:
     void on_remoteMove(unsigned short column);
     void on_giveUp();
     void on_helloReply(HelloReply reply);
-    void on_visitorPackage();
+    void on_visitorPackage(VisitorPackage vp);
 
     void on_udpHello(string remoteIp);
 

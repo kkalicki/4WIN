@@ -76,7 +76,7 @@ void Spiel::starteSpiel(string nameSpieler1, string nameSpieler2, bool sp1KI, bo
     }
 
     //spiel-ID berechnen...
-    id = rand() % 10000 + 1000;
+    //id = rand() % 10000 + 1000;
     t = time(NULL);
     struct tm *ts;
     ts = localtime(&t);

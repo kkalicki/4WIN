@@ -7,10 +7,24 @@ Historie::Historie()
     this->hisList = new vector<HisEintrag>();
 }
 
+Historie::Historie(const Historie &rhs)
+{
+    this->hisList = new vector<HisEintrag>();
+
+    for(int i=0;i<rhs.getHisList()->size(); i++){
+        HisEintrag* copyItem = new HisEintrag(rhs.getHisList()->at(i));
+        this->hinzufuegenEintrag(copyItem);
+    }
+}
+
 Historie::~Historie()
 {
     loeschenHistorie();
-    delete hisList;
+    if(hisList != 0)
+    {
+        delete hisList;
+        hisList = 0;
+    }
 }
 
 void Historie::hinzufuegenEintrag(HisEintrag* hisEintrag)
@@ -67,8 +81,22 @@ string Historie::toString()
     }
     return o.str();
 }
+vector<HisEintrag> *Historie::getHisList() const
+{
+    return hisList;
+}
+
+void Historie::setHisList(vector<HisEintrag> *value)
+{
+    hisList = value;
+}
+
 
 ostream& operator<<(ostream& out, Historie& object) {
-    out << object.toString();
+    int s = object.getHisList()->size();
+    for(int i = 0; i < s; i++) {
+        HisEintrag outitem = object.getHisList()->at(i);
+        out << outitem << endl;
+    }
     return out;
 }

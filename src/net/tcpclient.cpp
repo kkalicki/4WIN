@@ -138,16 +138,16 @@ void TcpClient::sendVisitorPackageBroadcast(VisitorPackage* pack)
 
     NetworkMessage networkMessage(VISITORPACKAGE);
     stringstream o;
-    //o << pack;
-    //int len= strlen(o.str().c_str());
+    o << *pack;
+    int len= strlen(o.str().c_str());
 
-    //cout << o.str() << endl;
-    //openConnectionBroadcast();
+    cout << o.str() << endl;
+    openConnectionBroadcast();
     //sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
     //sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
     //sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
 
-    //close(udpsock);
+    close(udpsock);
 }
 
 void TcpClient::sendHelloReply(string ip, HelloReply *reply)

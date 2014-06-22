@@ -18,6 +18,7 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
 
     this->udpServer = new UdpServer();
     dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.connect(boost::bind(&NetzwerkSpiel::on_udpHello, this,_1));
+    dynamic_cast<UdpServer*>(udpServer)->VisitorPackageSignal.connect(boost::bind(&NetzwerkSpiel::on_visitorPackage, this,_1));
     udpServer->start();
 
     this->tcpClient = new TcpClient();
@@ -30,6 +31,7 @@ void NetzwerkSpiel::disconnectAllSignals()
     dynamic_cast<TcpServer*>(tcpServer)->RemoteMoveSignal.disconnect(&NetzwerkSpiel::on_remoteMove);
     dynamic_cast<TcpServer*>(tcpServer)->GiveUpSignal.disconnect(&NetzwerkSpiel::on_giveUp);
     dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.disconnect(&NetzwerkSpiel::on_udpHello);
+    dynamic_cast<UdpServer*>(udpServer)->VisitorPackageSignal.disconnect(&NetzwerkSpiel::on_visitorPackage);
 }
 
 NetzwerkSpiel::~NetzwerkSpiel()
@@ -111,8 +113,8 @@ int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
     int rslt = Spiel::naechsterZug(spieler,spalte);
     tcpClient->sendMove(spalte);
 
-    VisitorPackage vp(*sp1,*sp2,*historie,id);
-    //tcpClient->sendVisitorPackageBroadcast(&vp);
+    VisitorPackage vp(*sp1,*sp2,historie,id);
+    tcpClient->sendVisitorPackageBroadcast(&vp);
     return rslt;
 }
 
@@ -164,7 +166,6 @@ void NetzwerkSpiel::on_remoteMove(unsigned short column)
 void NetzwerkSpiel::on_giveUp()
 {
     cout << "Incoming to on_giveUp()" << endl;
-
     GiveUpRemotePlayerSignal(remoteSpieler,false);
 }
 
@@ -174,15 +175,16 @@ void NetzwerkSpiel::on_helloReply(HelloReply reply)
     HelloReplySignal(reply);
 }
 
-void NetzwerkSpiel::on_visitorPackage()
+void NetzwerkSpiel::on_visitorPackage(VisitorPackage vp)
 {
-    if(visitorMode)
-    {
+    if(visitorMode){
         //pruefe ID obs die richtige ist...
-        //if(....)
-        //{
-            //werte die Historie aus die reinkommt und ziehe jenachdem...
-        //}
+        int lastround = this->getHistorie()->getLetztenEintrag()->getRunde();
+        if(vp.getGameId() == id){
+           for(int i = lastround; i < vp.getHistorie()->getHisList()->size(); i++){
+               on_remoteMove(vp.getHistorie()->getEintrag(i)->getSpalte());
+           }
+        }
     }
 }
 

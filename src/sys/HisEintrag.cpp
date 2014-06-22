@@ -2,6 +2,11 @@
 #include "../h/sys/HisEintrag.h"
 #include <sstream>
 
+HisEintrag::HisEintrag()
+{
+    //nix
+}
+
 HisEintrag::HisEintrag(Spieler* spieler, unsigned short zeile, unsigned short spalte, unsigned short runde)
 {
     this->spieler = spieler;
@@ -61,6 +66,29 @@ void HisEintrag::setRunde(unsigned short value)
     runde = value;
 }
 
+void HisEintrag::fromCsvString(string csvString)
+{
+    char * buffer = new char[csvString.length()];
+    strcpy(buffer,csvString.c_str());
+
+    char delimiter1[] = ":";
+    char delimiter2[] = ";";
+    char *ptr;
+
+    ptr = strtok(buffer, delimiter1);
+    this->spieler = new Spieler();
+    spieler->fromCsvString(ptr);
+
+    ptr = strtok(NULL, delimiter2);
+    this->zeile = atoi(ptr);
+
+    ptr = strtok(NULL, delimiter2);
+    this->spalte = atoi(ptr);
+
+    ptr = strtok(NULL, delimiter2);
+    this->runde = atoi(ptr);
+}
+
 time_t HisEintrag::getTimestamp() const
 {
     return timestamp;
@@ -83,10 +111,10 @@ string HisEintrag::toString()
 }
 
 ostream& operator<<(ostream& out, HisEintrag& object) {
-    out << object.spieler << ":";
+    out << *object.spieler << ":";
     out << object.zeile << ";";
     out << object.spalte<< ";";
-    out << object.runde << endl;
+    out << object.runde;
     return out;
 }
 

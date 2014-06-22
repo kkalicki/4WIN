@@ -16,7 +16,7 @@ using namespace std;
 class Spieler {
 public:
     Spieler(string name="Spieler",unsigned short farbe=ROT);
-
+    Spieler(const Spieler &rhs);
 	const string& getName() const {
 		return name;
 	}
