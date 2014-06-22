@@ -65,9 +65,6 @@ void *UdpServer::startUdpServerThread(void *ptr)
 
 void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessage mid)
 {
-    socklen_t sendsize = sizeof(sender);
-    bzero(&sender, sizeof(sender));
-
     switch(mid.getId()){
     case UDPHELLO:
     {
@@ -79,6 +76,7 @@ void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessa
     case VISITORPACKAGE:
     {
         int len;
+        socklen_t sendsize = sizeof(sender);
         recvfrom(((UdpServer*)ptr)->getSock(), &len, sizeof(int),0,(struct sockaddr*)&sender, &sendsize);
         char buffer[len];
         recvfrom( ((UdpServer*)ptr)->getSock(), buffer, len,0,(struct sockaddr*)&sender, &sendsize);
