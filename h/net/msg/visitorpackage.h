@@ -7,7 +7,7 @@
 class VisitorPackage{
 
 public:
-    VisitorPackage(Spieler sp1, Spieler sp2, Historie historie);
+    VisitorPackage(Spieler sp1, Spieler sp2, Historie historie, int gameId);
     ~VisitorPackage();
 
     int getGameId() const;
