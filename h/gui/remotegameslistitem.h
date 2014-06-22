@@ -16,12 +16,18 @@ public:
     string name;
     unsigned int rows;
     unsigned int columns;
+    int isActive;
 };
 
 string RemoteGamesListItem::toString()
 {
+    string activeString = "";
+
+    if(isActive)
+        activeString = "Nur Zuschauen!";
+
     ostringstream o;
-    o << "IP: "<< ipAdress << " NAME: " << name << " [" << rows << "-" << columns << "]" << flush;
+    o << "IP: "<< ipAdress << " NAME: " << name << " [" << rows << "-" << columns << "] "<< activeString << flush;
     return o.str();
 }
 
