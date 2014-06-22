@@ -74,6 +74,9 @@ void HelloReply::fromCsvString(string csv)
 
     ptr = strtok(NULL, delimiter);
     this->columns = atoi(ptr);
+
+    ptr = strtok(NULL, delimiter);
+    this->isActive = atoi(ptr);
 }
 
 ostream &operator<<(ostream& out, HelloReply& object){
@@ -81,7 +84,8 @@ ostream &operator<<(ostream& out, HelloReply& object){
     out << object.ipAdress << ";";
     out << object.name     << ";";
     out << object.rows     << ";";
-    out << object.columns;
+    out << object.columns  << ";";
+    out << object.isActive;
     return out;
 }
 
@@ -91,6 +95,7 @@ istream &operator>>(istream& in, HelloReply& object){
     in >> object.name;
     in >> object.rows;
     in >> object.columns;
+    in >> object.isActive;
     return in;
 }
 
