@@ -111,8 +111,9 @@ int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
     int rslt = Spiel::naechsterZug(spieler,spalte);
     tcpClient->sendMove(spalte);
 
-    VisitorPackage vp(*sp1,*sp2,*historie);
-    tcpClient->sendVisitorPackageBroadcast(vp);
+    VisitorPackage *vp = new VisitorPackage(*sp1,*sp2,*historie);
+    tcpClient->sendVisitorPackageBroadcast(*vp);
+    delete vp;
     return rslt;
 }
 
