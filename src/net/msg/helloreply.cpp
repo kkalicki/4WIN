@@ -5,12 +5,13 @@ HelloReply::HelloReply()
     //Do Nothing...
 }
 
-HelloReply::HelloReply(string ipAdress, string name, unsigned int rows, unsigned int columns)
+HelloReply::HelloReply(string ipAdress, string name, unsigned int rows, unsigned int columns,int isActive)
 {
     this->ipAdress = ipAdress;
     this->name = name;
     this->rows = rows;
     this->columns = columns;
+    this->isActive = isActive;
 }
 
 HelloReply::~HelloReply()
@@ -106,6 +107,7 @@ string HelloReply::toString()
     o << "Name     : " << name << endl;
     o << "Rows     : " << rows << endl;
     o << "Columns  : " << columns << endl;
+    o << "isActive : " << isActive << endl;
     return o.str();
 }
 int HelloReply::getIsActive() const

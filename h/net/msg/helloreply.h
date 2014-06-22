@@ -10,7 +10,7 @@ class HelloReply{
 
 public:
     HelloReply();
-    HelloReply(string ipAdress, string name, unsigned int rows, unsigned int columns);
+    HelloReply(string ipAdress, string name, unsigned int rows, unsigned int columns, int isActive);
     ~HelloReply();
     string getIpAdress() const;
     void setIpAdress(const string &value);
