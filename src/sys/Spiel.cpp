@@ -80,7 +80,7 @@ void Spiel::starteSpiel(string nameSpieler1, string nameSpieler2, bool sp1KI, bo
     t = time(NULL);
     struct tm *ts;
     ts = localtime(&t);
-    id += ts->tm_hour + ts->tm_min + ts->tm_sec;
+    id = 4711;//+= ts->tm_hour + ts->tm_min + ts->tm_sec;
 
     cout << "Spiel-ID: " << id << endl;
     wechselSpieler();
