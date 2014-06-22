@@ -144,7 +144,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
         case JOIN:
                 this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
                 dynamic_cast<NetzwerkSpiel*>(game)->startClient(gameSettings->getRemoteIp());
-                dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name());
+                dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name(),gameSettings->getGameId(),gameSettings->getVisitorMode());
                 gameInfoWidget->setSysMsg("Warte auf Antwort...");
                 gameInfoWidget->lockDisplaySp1();
                 initNetworkSignalSlot();

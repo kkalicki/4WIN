@@ -49,14 +49,19 @@ void NetzwerkSpiel::starteNetzwerkSpiel(string spielerName)
 {
    cout << "starte Netzwerkspiel..."<< endl;
    this->nameSpieler1 = spielerName;
+   this->visitorMode = false;
 }
 
-void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2)
+void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2,int gameId, bool visitorMode)
 {
-    this->sp2 = new Spieler(nameSpieler2);
-    this->remoteSpieler = sp2;
-    cout << "melde an..."<< endl;
-    tcpClient->sendLoginRequest(nameSpieler2);
+    this->id = gameId;
+    this->visitorMode = visitorMode;
+    if(!visitorMode){
+        this->sp2 = new Spieler(nameSpieler2);
+        this->remoteSpieler = sp2;
+        cout << "melde an..."<< endl;
+        tcpClient->sendLoginRequest(nameSpieler2);
+    }
 }
 
 void NetzwerkSpiel::startClient(string ip)
@@ -105,6 +110,9 @@ int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
 {
     int rslt = Spiel::naechsterZug(spieler,spalte);
     tcpClient->sendMove(spalte);
+
+    VisitorPackage vp(*sp1,*sp2,*historie);
+    tcpClient->sendVisitorPackageBroadcast(vp);
     return rslt;
 }
 
@@ -166,6 +174,18 @@ void NetzwerkSpiel::on_helloReply(HelloReply reply)
     HelloReplySignal(reply);
 }
 
+void NetzwerkSpiel::on_visitorPackage()
+{
+    if(visitorMode)
+    {
+        //pruefe ID obs die richtige ist...
+        //if(....)
+        //{
+            //werte die Historie aus die reinkommt und ziehe jenachdem...
+        //}
+    }
+}
+
 void NetzwerkSpiel::on_udpHello(string remoteIp)
 {
     cout << "Incoming to on_udpHello() VALUE: " << remoteIp << endl;
@@ -173,7 +193,7 @@ void NetzwerkSpiel::on_udpHello(string remoteIp)
     if(istAktiv)
         isAct=1;
 
-    HelloReply helloReply("",this->nameSpieler1,this->spielfeld->getZeilen(),this->spielfeld->getSpalten(),isAct);
+    HelloReply helloReply("",this->nameSpieler1,this->spielfeld->getZeilen(),this->spielfeld->getSpalten(),isAct, this->id);
     if(!remoteIp.empty())
         tcpClient->sendHelloReply(remoteIp,&helloReply);
 }

@@ -105,10 +105,7 @@ void TcpClient::sendGiveUp()
 
 void TcpClient::openConnectionBroadcast()
 {
-    //struct hostent * host;
-
     udpsock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-
     int broadcastPermission = 1;
         if (setsockopt(udpsock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0)
             printf("setsockopt() failed");
@@ -125,6 +122,30 @@ void TcpClient::sendHelloBroadcast()
 
     NetworkMessage networkMessage(UDPHELLO);
     sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+
+    close(udpsock);
+}
+
+void TcpClient::sendVisitorPackageBroadcast(VisitorPackage pack)
+{
+
+    struct sockaddr_in address;
+    memset(&address, 0, sizeof(address));
+    address.sin_family = AF_INET;
+    address.sin_addr.s_addr = inet_addr(BROADCAST.c_str());
+    address.sin_port = htons(DEFAULT_PORT_UDP);
+
+
+    NetworkMessage networkMessage(VISITORPACKAGE);
+    stringstream o;
+    o << pack;
+    int len= strlen(o.str().c_str());
+
+    cout << o.str() << endl;
+    openConnectionBroadcast();
+    //sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+    //sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+    //sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
 
     close(udpsock);
 }

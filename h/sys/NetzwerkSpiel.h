@@ -16,7 +16,7 @@ public:
     NetzwerkSpiel(unsigned short zeilen=Y, unsigned short spalten=X);
     ~NetzwerkSpiel();
     void starteNetzwerkSpiel(string spielerName);
-    void anmeldenNetzwerk(string nameSpieler2);
+    void anmeldenNetzwerk(string nameSpieler2, int gameId, bool visitorMode);
     void abmeldenNetzwerk();
     void startClient(string ip);
     void rueckgabeSpielerInfo(Spieler spieler);
@@ -34,6 +34,7 @@ public:
     void on_remoteMove(unsigned short column);
     void on_giveUp();
     void on_helloReply(HelloReply reply);
+    void on_visitorPackage();
 
     void on_udpHello(string remoteIp);
 
@@ -48,6 +49,7 @@ protected:
     TcpClient* tcpClient;
     string nameSpieler1;
     Spieler * remoteSpieler;
+    bool visitorMode;
 };
 
 #endif // NETZWERKSPIEL_H

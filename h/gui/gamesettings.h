@@ -12,8 +12,8 @@ enum NetworkMode {LOCAL,OPEN,JOIN};
 
 class GameSettings{
 public:
-    GameSettings(GameMode mode=SVS,string player1Name="Player1",string player2Name="Player2",int bordId=4711,
-                 unsigned short bordRows=Y,unsigned short bordColumns=X,unsigned short cellSize=CELL_SIZE,NetworkMode networkMode=LOCAL,int isFollow=false);
+    GameSettings(GameMode mode=SVS, string player1Name="Player1", string player2Name="Player2", int bordId=4711,
+                 unsigned short bordRows=Y, unsigned short bordColumns=X, unsigned short cellSize=CELL_SIZE, NetworkMode networkMode=LOCAL, bool visitorMode=false);
     ~GameSettings();
 
     GameMode getMode() const;
@@ -37,14 +37,17 @@ public:
     unsigned short getCellSize() const;
     void setCellSize(unsigned short value);
 
-    int getIsFollow() const;
-    void setIsFollow(int value);
-
     NetworkMode getNetworkMode() const;
     void setNetworkMode(const NetworkMode &value);
 
     string getRemoteIp() const;
     void setRemoteIp(const string &value);
+
+    bool getVisitorMode() const;
+    void setVisitorMode(bool value);
+
+    int getGameId() const;
+    void setGameId(int value);
 
 private:
     GameMode mode;
@@ -55,7 +58,8 @@ private:
     unsigned short bordColumns;
     unsigned short cellSize;
     NetworkMode networkMode;
-    int isFollow;
+    int gameId;
+    bool visitorMode;
     string remoteIp;
 };
 

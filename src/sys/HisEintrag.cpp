@@ -82,4 +82,13 @@ string HisEintrag::toString()
     return o.str();
 }
 
+ostream& operator<<(ostream& out, HisEintrag& object) {
+    out << object.spieler << ":";
+    out << object.zeile << ";";
+    out << object.spalte<< ";";
+    out << object.runde << endl;
+    return out;
+}
+
+
 

@@ -18,6 +18,7 @@ public:
     HisEintrag* getLetztenEintrag();
     vector<HisEintrag> getEintraegeAb(HisEintrag* hisEintrag);
 
+    friend ostream& operator<<(ostream& out, Historie& object);
     string toString();
 private:
     vector<HisEintrag>* hisList;

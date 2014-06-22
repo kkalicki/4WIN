@@ -67,3 +67,8 @@ string Historie::toString()
     }
     return o.str();
 }
+
+ostream& operator<<(ostream& out, Historie& object) {
+    out << object.toString();
+    return out;
+}

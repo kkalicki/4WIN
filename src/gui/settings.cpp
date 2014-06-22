@@ -71,6 +71,8 @@ void Settings::on_rblocal_toggled(bool checked)
 {
     if(checked){
         ui->lvgames->setEnabled(false);
+        ui->gbplayer1->setEnabled(true);
+        ui->gbplayer2->setEnabled(true);
     }
 }
 
@@ -128,7 +130,8 @@ void Settings::on_btnstart_clicked()
             gameSettings->setBordColumns(ui->sbcolumn->text().toShort());
             gameSettings->setCellSize(ui->sbcellsize->text().toShort());
             gameSettings->setNetworkMode(getNetworkMode());
-            gameSettings->setIsFollow(ui->cbwatch->isChecked());
+            gameSettings->setGameId(ui->leGameId->text().toInt());
+            gameSettings->setVisitorMode(ui->cbwatch->isChecked());
 
             if(gameSettings->getNetworkMode() == JOIN)
             {
@@ -229,6 +232,8 @@ void Settings::openGamesUpdate(HelloReply* incomingVal)
     entry.name = incomingVal->getName();
     entry.rows = incomingVal->getRows();
     entry.columns = incomingVal->getColumns();
+    entry.isActive = incomingVal->getIsActive();
+    entry.gameId = incomingVal->getGameId();
 
     QVariant qv;
     qv.setValue(entry);
@@ -242,7 +247,6 @@ void Settings::openGamesUpdate(HelloReply* incomingVal)
         guiThread->terminate();
     }
 
-
 }
 
 void Settings::on_lvgames_itemActivated(QListWidgetItem *item)
@@ -254,6 +258,16 @@ void Settings::on_lvgames_itemActivated(QListWidgetItem *item)
     ui->sbcolumn->setValue(entry.columns);
     ui->leplayer1->setText(QString::fromStdString(entry.name));
     gameSettings->setRemoteIp(entry.ipAdress);
+    ui->leGameId->setText(QString::number(entry.gameId));
+
+    if(entry.isActive){
+        ui->cbwatch->setChecked(true);
+        ui->cbwatch->setEnabled(false);
+    }
+    else{
+        ui->cbwatch->setChecked(false);
+        ui->cbwatch->setEnabled(true);
+    }
 }
 
 void Settings::on_pbrefresh_clicked()

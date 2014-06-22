@@ -74,6 +74,15 @@ void Spiel::starteSpiel(string nameSpieler1, string nameSpieler2, bool sp1KI, bo
     else{
          sp1->setIstAmZug(true);
     }
+
+    //spiel-ID berechnen...
+    id = rand() % 10000 + 1000;
+    t = time(NULL);
+    struct tm *ts;
+    ts = localtime(&t);
+    id += ts->tm_hour + ts->tm_min + ts->tm_sec;
+
+    cout << "Spiel-ID: " << id << endl;
     wechselSpieler();
     istAktiv = true;
 }

@@ -26,10 +26,10 @@ public:
     unsigned short getRunde() const;
     void setRunde(unsigned short value);
 
-    //erst mal nicht fuer toString verwenden da Objekt serialsisiert werden muss und Operator dafuer benoetigt wird
-    friend ostream& operator<<(ostream& out, HisEintrag& sp);
     string toString();
 
+    friend ostream& operator<<(ostream& out, HisEintrag& object);
+    friend istream& operator>>(istream& in, HisEintrag &object );
 
 private:
     Spieler* spieler;

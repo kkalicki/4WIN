@@ -5,13 +5,14 @@ HelloReply::HelloReply()
     //Do Nothing...
 }
 
-HelloReply::HelloReply(string ipAdress, string name, unsigned int rows, unsigned int columns,int isActive)
+HelloReply::HelloReply(string ipAdress, string name, unsigned int rows, unsigned int columns,int isActive, int gameId)
 {
     this->ipAdress = ipAdress;
     this->name = name;
     this->rows = rows;
     this->columns = columns;
     this->isActive = isActive;
+    this->gameId = gameId;
 }
 
 HelloReply::~HelloReply()
@@ -78,6 +79,9 @@ void HelloReply::fromCsvString(string csv)
 
     ptr = strtok(NULL, delimiter);
     this->isActive = atoi(ptr);
+
+    ptr = strtok(NULL, delimiter);
+    this->gameId = atoi(ptr);
 }
 
 ostream &operator<<(ostream& out, HelloReply& object){
@@ -86,7 +90,8 @@ ostream &operator<<(ostream& out, HelloReply& object){
     out << object.name     << ";";
     out << object.rows     << ";";
     out << object.columns  << ";";
-    out << object.isActive;
+    out << object.isActive << ";";
+    out << object.gameId;
     return out;
 }
 
@@ -97,6 +102,7 @@ istream &operator>>(istream& in, HelloReply& object){
     in >> object.rows;
     in >> object.columns;
     in >> object.isActive;
+    in >> object.gameId;
     return in;
 }
 
@@ -108,8 +114,19 @@ string HelloReply::toString()
     o << "Rows     : " << rows << endl;
     o << "Columns  : " << columns << endl;
     o << "isActive : " << isActive << endl;
+    o << "GameID   : " << gameId << endl;
     return o.str();
 }
+int HelloReply::getGameId() const
+{
+    return gameId;
+}
+
+void HelloReply::setGameId(int value)
+{
+    gameId = value;
+}
+
 int HelloReply::getIsActive() const
 {
     return isActive;

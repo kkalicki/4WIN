@@ -6,6 +6,7 @@
 #include "../h/net/msg/loginreply.h"
 #include "../h/net/msg/remotemove.h"
 #include "../h/net/msg/helloreply.h"
+#include "../h/net/msg/visitorpackage.h"
 #include <string>
 
 class TcpClient
@@ -22,7 +23,8 @@ public:
 
   void openConnectionBroadcast();
   void sendHelloBroadcast();
-   void sendHelloReply(string ip,HelloReply* reply);
+  void sendVisitorPackageBroadcast(VisitorPackage pack);
+  void sendHelloReply(string ip,HelloReply* reply);
 
    string getIpAddress() const;
    void setIpAddress(string value);

@@ -17,6 +17,7 @@ public:
     unsigned int rows;
     unsigned int columns;
     int isActive;
+    int gameId;
 };
 
 string RemoteGamesListItem::toString()
