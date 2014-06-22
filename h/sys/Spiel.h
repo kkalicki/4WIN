@@ -100,6 +100,7 @@ protected:
     Spieler *aktuellerSpieler;
     Spieler *vorherigerSpieler;
     unsigned short runde;
+    bool istAktiv;
 
 };
 

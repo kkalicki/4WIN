@@ -115,6 +115,7 @@ void NetzwerkSpiel::aufgeben()
 
 void NetzwerkSpiel::beenden()
 {
+    Spiel::beenden();
     closeServer();
 }
 

@@ -103,6 +103,16 @@ string HelloReply::toString()
     o << "Columns  : " << columns << endl;
     return o.str();
 }
+int HelloReply::getIsActive() const
+{
+    return isActive;
+}
+
+void HelloReply::setIsActive(int value)
+{
+    isActive = value;
+}
+
 
 
 

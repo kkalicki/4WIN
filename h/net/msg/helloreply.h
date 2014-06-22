@@ -24,15 +24,20 @@ public:
     unsigned int getColumns() const;
     void setColumns(unsigned int value);
 
+    int getIsActive() const;
+    void setIsActive(int value);
+
     friend ostream& operator<<(ostream& out, HelloReply& object);
     friend istream& operator>>(istream& in, HelloReply& object);
 
     void fromCsvString(string csv);
     string toString();
+
 private:
     string ipAdress;
     string name;
     unsigned int rows;
     unsigned int columns;
+    int isActive;
 };
 #endif // HELLOREPLY_H

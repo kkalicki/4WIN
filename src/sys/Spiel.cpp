@@ -22,6 +22,7 @@ Spiel::Spiel(unsigned short zeilen, unsigned short spalten)
     this->aktuellerSpieler = 0;
     this->sp1 = 0;
     this->sp2 = 0;
+    istAktiv = false;
 }
 
 Spiel::~Spiel() {
@@ -74,6 +75,7 @@ void Spiel::starteSpiel(string nameSpieler1, string nameSpieler2, bool sp1KI, bo
          sp1->setIstAmZug(true);
     }
     wechselSpieler();
+    istAktiv = true;
 }
 
 void Spiel::aufgeben() //braucht evtl. noch Parameter...
@@ -83,6 +85,7 @@ void Spiel::aufgeben() //braucht evtl. noch Parameter...
 
 void Spiel::beenden()
 {
+    istAktiv = false;
     //implementieren...
 }
 
