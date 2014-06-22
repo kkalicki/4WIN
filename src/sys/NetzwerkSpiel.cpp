@@ -113,7 +113,6 @@ int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
 
     VisitorPackage vp(*sp1,*sp2,*historie);
     tcpClient->sendVisitorPackageBroadcast(&vp);
-    delete vp;
     return rslt;
 }
 
