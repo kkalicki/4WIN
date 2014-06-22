@@ -118,8 +118,6 @@ void NetzwerkSpiel::beenden()
     closeServer();
 }
 
-
-
 void NetzwerkSpiel::closeServer()
 {
     if(tcpServer->getIsActive())
@@ -128,7 +126,6 @@ void NetzwerkSpiel::closeServer()
     if(udpServer->getIsActive())
        udpServer->stop();
 }
-
 
 void NetzwerkSpiel::on_loginRequest(string loginPlayerName, string ip)
 {

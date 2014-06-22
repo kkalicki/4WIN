@@ -52,7 +52,7 @@ void *UdpServer::startUdpServerThread(void *ptr)
             if(!((UdpServer*)ptr)->isOwnAddress(sender)){
                 cout << "Verbindungen eingegangen(UDP)..SOCK: " << connection->sock << endl;
                 processThread((struct sockaddr_in)sender,ptr,incomingMessage);
-                close(connection->sock);
+                //close(connection->sock);
                 free(connection);
             }
 
