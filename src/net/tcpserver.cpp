@@ -83,10 +83,11 @@ void TcpServer::process(connection_t * conn, void *ptr)
             read(conn->sock, bufferlr, len);
 
             templr.assign(bufferlr,len);
-            stringstream rsltlr;
-            rsltlr << templr;
+            //stringstream rsltlr;
+            //rsltlr << templr;
             LoginRequest loginRequest;
-            rsltlr >> loginRequest;
+            loginRequest.setPlayerName(templr);
+            //rsltlr >> loginRequest;
             cout << loginRequest << " empfangen!" << endl;
             char* ip = inet_ntoa(conn->address.sin_addr);
             string ipstr(ip);
