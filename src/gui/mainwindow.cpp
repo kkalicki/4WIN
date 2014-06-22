@@ -302,6 +302,9 @@ void MainWindow::stopGiveUpThread()
 
 void MainWindow::on_endGame(Spieler* winner,bool giveUp)
 {
+
+    postExecute();
+
     if(giveUp)
         game->aufgeben();
 
@@ -322,8 +325,8 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
         msg.exec();
     }
 
-    killNetworkSignalSlot();
-    //game->beenden();
+    if(gameSettings->getNetworkMode() == JOIN ||  gameSettings->getNetworkMode() == OPEN)
+        killNetworkSignalSlot();
 
    if(game != 0)
    {
@@ -332,7 +335,6 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
    }
 
      std::cout << "Nach GAME destruieren!" << endl;
-     postExecute();
 
       if(guiGiveUpThread != 0)
       {
