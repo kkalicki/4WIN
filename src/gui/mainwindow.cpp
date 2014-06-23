@@ -147,6 +147,8 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
                 dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name(),gameSettings->getGameId(),gameSettings->getVisitorMode());
                 gameInfoWidget->setSysMsg("Warte auf Antwort...");
                 gameInfoWidget->lockDisplaySp1();
+                if(gameSettings->getVisitorMode())
+                    gameInfoWidget->lockDisplaySp2();
                 initNetworkSignalSlot();
             break;
         default: // Do Nothing...
