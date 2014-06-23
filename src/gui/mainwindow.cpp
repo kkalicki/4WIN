@@ -114,7 +114,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
     try{
         switch(gameSettings->getNetworkMode()){
         case LOCAL:
-                this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
+                this->game = new Spiel(gameSettings->getBordRows(), gameSettings->getBordColumns(),gameSettings->getLevel());
 
                 switch (gameSettings->getMode()) {
                 case SVS:

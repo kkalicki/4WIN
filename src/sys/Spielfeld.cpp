@@ -9,12 +9,12 @@
 #include <sstream>
 #include "../h/sys/FourWinExceptions.h"
 
-Spielfeld::Spielfeld(unsigned short zeilen, unsigned short spalten)
+Spielfeld::Spielfeld(unsigned short zeilen, unsigned short spalten, int schwierigkeitsstufe)
 {
     this->zeilen = zeilen;
     this->spalten = spalten;
     this->aktuell = new int[spalten];
-    this->schwierigkeitsstufe = 10;
+    this->schwierigkeitsstufe = schwierigkeitsstufe;
     init();
 }
 

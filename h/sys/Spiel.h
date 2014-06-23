@@ -17,7 +17,7 @@
 class Spiel {
 
 public:
-    Spiel(unsigned short zeilen=Y, unsigned short spalten=X);
+    Spiel(unsigned short zeilen=Y, unsigned short spalten=X, int schwierigkeitsstufe = 0);
     virtual ~Spiel();
 
     void starteSpiel(string nameSpieler1, string nameSpieler2, bool sp1KI, bool sp2KI);

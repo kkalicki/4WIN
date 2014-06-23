@@ -20,7 +20,7 @@ public:
 	/**
 	 * Standardkonstruktor
 	 */
-    Spielfeld(unsigned short zeilen=Y, unsigned short spalten=X);
+    Spielfeld(unsigned short zeilen=Y, unsigned short spalten=X, int schwierigkeitsstufe=0);
 
 	/**
 	 * Gibt die Groesse des Feldes als String aus

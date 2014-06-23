@@ -14,10 +14,10 @@
 
 
 
-Spiel::Spiel(unsigned short zeilen, unsigned short spalten)
+Spiel::Spiel(unsigned short zeilen, unsigned short spalten, int schwierigkeitsstufe)
 {
     this->historie = new Historie();
-    this->spielfeld = new Spielfeld(zeilen,spalten);
+    this->spielfeld = new Spielfeld(zeilen,spalten, schwierigkeitsstufe);
     this->runde = 1;
     this->aktuellerSpieler = 0;
     this->sp1 = 0;
