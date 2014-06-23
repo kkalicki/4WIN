@@ -178,7 +178,7 @@ void NetzwerkSpiel::on_helloReply(HelloReply reply)
 void NetzwerkSpiel::on_visitorPackage(VisitorPackage vp)
 {
     cout << "Incoming to on_visitorPackage VALUE: " << vp << endl;
-    if(true){
+    if(visitorMode){
         //pruefe ID obs die richtige ist...
         if(vp.getGameId() == id){
            int lastround = this->getHistorie()->getLetztenEintrag()->getRunde();
