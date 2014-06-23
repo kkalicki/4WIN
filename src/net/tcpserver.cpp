@@ -28,7 +28,7 @@ void TcpServer::connect()
 {
     Server4Win::connect();
     pthread_create(&tcpServerThread, 0, startTcpServerThread, this);
-    pthread_detach(tcpServerThread);
+    //pthread_detach(tcpServerThread);
 }
 
 void *TcpServer::startTcpServerThread(void *ptr)
@@ -64,6 +64,7 @@ void *TcpServer::startTcpServerThread(void *ptr)
    }
 
      cout << "TCP-SERVER aus der WHILE-Schleife" << endl;
+     pthread_exit((void*) true);
 }
 
 void TcpServer::process(connection_t * conn, void *ptr)
@@ -82,10 +83,11 @@ void TcpServer::process(connection_t * conn, void *ptr)
             read(conn->sock, bufferlr, len);
 
             templr.assign(bufferlr,len);
-            stringstream rsltlr;
-            rsltlr << templr;
+            //stringstream rsltlr;
+            //rsltlr << templr;
             LoginRequest loginRequest;
-            rsltlr >> loginRequest;
+            loginRequest.setPlayerName(templr);
+            //rsltlr >> loginRequest;
             cout << loginRequest << " empfangen!" << endl;
             char* ip = inet_ntoa(conn->address.sin_addr);
             string ipstr(ip);
@@ -137,7 +139,6 @@ void TcpServer::process(connection_t * conn, void *ptr)
         break;
     }
 }
-
 
 //--------------------NUR ALS VORLAGE FUER MULTITHREADING SERVER (LISTENER--WORKER)-----------------------------------
 /*

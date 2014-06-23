@@ -22,6 +22,19 @@ Spiel::Spiel(unsigned short zeilen, unsigned short spalten)
     this->aktuellerSpieler = 0;
     this->sp1 = 0;
     this->sp2 = 0;
+    istAktiv = false;
+
+    //spiel-ID berechnen...
+    time_t t;
+    time(&t);
+    srand((unsigned int)t);
+    t = time(NULL);
+    struct tm *ts;
+    ts = localtime(&t);
+    //id = 4711;
+    id = rand() % 10000 + 1000;//+= ts->tm_hour + ts->tm_min + ts->tm_sec;
+
+    cout << "Spiel-ID: " << id << endl;
 }
 
 Spiel::~Spiel() {
@@ -74,6 +87,7 @@ void Spiel::starteSpiel(string nameSpieler1, string nameSpieler2, bool sp1KI, bo
          sp1->setIstAmZug(true);
     }
     wechselSpieler();
+    istAktiv = true;
 }
 
 void Spiel::aufgeben() //braucht evtl. noch Parameter...
@@ -83,13 +97,14 @@ void Spiel::aufgeben() //braucht evtl. noch Parameter...
 
 void Spiel::beenden()
 {
+    istAktiv = false;
     //implementieren...
 }
 
 void Spiel::erstelleNeuenHisEintrag(Spieler* spieler, unsigned short zeile, unsigned short spalte, unsigned short runde)
 {
     HisEintrag* neuerEintrag = new HisEintrag(spieler,zeile,spalte,runde);
-    historie->hinzufuegenEintrag(neuerEintrag);
+    historie->hinzufuegenEintrag(*neuerEintrag);
 }
 
 int Spiel::naechsterZug(Spieler* spieler, unsigned short spalte)

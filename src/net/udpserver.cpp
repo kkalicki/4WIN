@@ -1,5 +1,6 @@
 #include "../h/net/udpserver.h"
 #include "../h/sys/FourWinExceptions.h"
+#include "../h/net/msg/visitorpackage.h"
 
 #include <netdb.h>
 #include <pthread.h>
@@ -23,7 +24,7 @@ void UdpServer::connect()
 {
     Server4Win::connect();
     pthread_create(&udpServerThread, 0, startUdpServerThread, this);
-    pthread_detach(udpServerThread);
+    //pthread_detach(udpServerThread);
 }
 
 void *UdpServer::startUdpServerThread(void *ptr)
@@ -52,13 +53,14 @@ void *UdpServer::startUdpServerThread(void *ptr)
             if(!((UdpServer*)ptr)->isOwnAddress(sender)){
                 cout << "Verbindungen eingegangen(UDP)..SOCK: " << connection->sock << endl;
                 processThread((struct sockaddr_in)sender,ptr,incomingMessage);
-                close(connection->sock);
+                //close(connection->sock);
                 free(connection);
             }
 
         }
         cout << "Boradcast eigegangen!" << endl;
     }
+    pthread_exit((void*) true);
 }
 
 void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessage mid)
@@ -71,6 +73,19 @@ void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessa
         ((UdpServer*)ptr)->UdpHelloSignal(ipstr);
     }
     break;
+    case VISITORPACKAGE:
+    {
+        int len;
+        socklen_t sendsize = sizeof(sender);
+        recvfrom(((UdpServer*)ptr)->getSock(), &len, sizeof(int),0,(struct sockaddr*)&sender, &sendsize);
+        char buffer[len];
+        recvfrom( ((UdpServer*)ptr)->getSock(), buffer, len,0,(struct sockaddr*)&sender, &sendsize);
+        string temp;
+        temp.assign(buffer,len);
+        VisitorPackage incomingVisitorPackage;
+        incomingVisitorPackage.fromStream(temp);
+        ((UdpServer*)ptr)->VisitorPackageSignal(incomingVisitorPackage);
+    }
     default: // Do Nothing...
     break;
     }

@@ -18,18 +18,30 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
 
     this->udpServer = new UdpServer();
     dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.connect(boost::bind(&NetzwerkSpiel::on_udpHello, this,_1));
+    dynamic_cast<UdpServer*>(udpServer)->VisitorPackageSignal.connect(boost::bind(&NetzwerkSpiel::on_visitorPackage, this,_1));
     udpServer->start();
 
     this->tcpClient = new TcpClient();
 }
 
+void NetzwerkSpiel::disconnectAllSignals()
+{
+    dynamic_cast<TcpServer*>(tcpServer)->LoginRequestSignal.disconnect(&NetzwerkSpiel::on_loginRequest);
+    dynamic_cast<TcpServer*>(tcpServer)->LoginReplySignal.disconnect(&NetzwerkSpiel::on_loginReply);
+    dynamic_cast<TcpServer*>(tcpServer)->RemoteMoveSignal.disconnect(&NetzwerkSpiel::on_remoteMove);
+    dynamic_cast<TcpServer*>(tcpServer)->GiveUpSignal.disconnect(&NetzwerkSpiel::on_giveUp);
+    dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.disconnect(&NetzwerkSpiel::on_udpHello);
+    dynamic_cast<UdpServer*>(udpServer)->VisitorPackageSignal.disconnect(&NetzwerkSpiel::on_visitorPackage);
+}
+
 NetzwerkSpiel::~NetzwerkSpiel()
 {
+    disconnectAllSignals();
+
+    closeServer();
     std::cout << "schließe Netzwerkspiel!!!" << endl;
     delete tcpServer;
-    tcpServer=0;
     delete udpServer;
-    udpServer=0;
     delete tcpClient;
     tcpClient=0;
     std::cout << "Netzwerkspiel geschlossen!!!" << endl;
@@ -39,14 +51,19 @@ void NetzwerkSpiel::starteNetzwerkSpiel(string spielerName)
 {
    cout << "starte Netzwerkspiel..."<< endl;
    this->nameSpieler1 = spielerName;
+   this->visitorMode = false;
 }
 
-void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2)
+void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2,int gameId, bool visitorMode)
 {
-    this->sp2 = new Spieler(nameSpieler2);
-    this->remoteSpieler = sp2;
-    cout << "melde an..."<< endl;
-    tcpClient->sendLoginRequest(nameSpieler2);
+    this->id = gameId;
+    this->visitorMode = visitorMode;
+    if(!visitorMode){
+        this->sp2 = new Spieler(nameSpieler2);
+        this->remoteSpieler = sp2;
+        cout << "melde an..."<< endl;
+        tcpClient->sendLoginRequest(nameSpieler2);
+    }
 }
 
 void NetzwerkSpiel::startClient(string ip)
@@ -95,6 +112,9 @@ int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
 {
     int rslt = Spiel::naechsterZug(spieler,spalte);
     tcpClient->sendMove(spalte);
+
+    VisitorPackage vp(sp1,sp2,historie,id);
+    tcpClient->sendVisitorPackageBroadcast(&vp);
     return rslt;
 }
 
@@ -105,6 +125,7 @@ void NetzwerkSpiel::aufgeben()
 
 void NetzwerkSpiel::beenden()
 {
+    Spiel::beenden();
     closeServer();
 }
 
@@ -114,9 +135,8 @@ void NetzwerkSpiel::closeServer()
         tcpServer->stop();
 
     if(udpServer->getIsActive())
-        udpServer->stop();
+       udpServer->stop();
 }
-
 
 void NetzwerkSpiel::on_loginRequest(string loginPlayerName, string ip)
 {
@@ -146,7 +166,6 @@ void NetzwerkSpiel::on_remoteMove(unsigned short column)
 void NetzwerkSpiel::on_giveUp()
 {
     cout << "Incoming to on_giveUp()" << endl;
-
     GiveUpRemotePlayerSignal(remoteSpieler,false);
 }
 
@@ -156,10 +175,28 @@ void NetzwerkSpiel::on_helloReply(HelloReply reply)
     HelloReplySignal(reply);
 }
 
+void NetzwerkSpiel::on_visitorPackage(VisitorPackage vp)
+{
+    if(visitorMode){
+        //pruefe ID obs die richtige ist...
+        int lastround = this->getHistorie()->getLetztenEintrag()->getRunde();
+        if(vp.getGameId() == id){
+           for(int i = lastround; i < vp.getHistorie()->getHisList()->size(); i++){
+               unsigned int col = vp.getHistorie()->getEintragAt(i)->getSpalte();
+               on_remoteMove(col);
+           }
+        }
+    }
+}
+
 void NetzwerkSpiel::on_udpHello(string remoteIp)
 {
     cout << "Incoming to on_udpHello() VALUE: " << remoteIp << endl;
-    HelloReply helloReply("",this->nameSpieler1,this->spielfeld->getZeilen(),this->spielfeld->getSpalten());
+    int isAct=0;
+    if(istAktiv)
+        isAct=1;
+
+    HelloReply helloReply("",this->nameSpieler1,this->spielfeld->getZeilen(),this->spielfeld->getSpalten(),isAct, this->id);
     if(!remoteIp.empty())
         tcpClient->sendHelloReply(remoteIp,&helloReply);
 }

@@ -92,7 +92,7 @@ public:
     boost::signals2::signal<void(unsigned short,int)> RemoteZugSignal;
 
 protected:
-    int id;
+    unsigned short id;
     Spielfeld *spielfeld;
     Historie *historie;
     Spieler *sp1;
@@ -100,6 +100,7 @@ protected:
     Spieler *aktuellerSpieler;
     Spieler *vorherigerSpieler;
     unsigned short runde;
+    bool istAktiv;
 
 };
 

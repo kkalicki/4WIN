@@ -13,6 +13,7 @@ Settings::Settings(QWidget *parent) :
     this->gameSettings = new GameSettings();
     this->openGameThread=0;
     this->helloServer = 0;
+    this->guiThread = 0;
 
 }
 
@@ -37,6 +38,7 @@ void Settings::on_rbsvs_toggled(bool checked)
         ui->leplayer2->setText("Spieler 2");
 
         ui->gbnetwork->setEnabled(true);
+        ui->gblevel->setEnabled(false);
     }
 }
 
@@ -50,6 +52,7 @@ void Settings::on_rbsvc_toggled(bool checked)
 
         ui->gbnetwork->setEnabled(false);
         ui->rblocal->setChecked(true);
+        ui->gblevel->setEnabled(true);
     }
 }
 
@@ -63,6 +66,7 @@ void Settings::on_rbcvc_toggled(bool checked)
 
         ui->gbnetwork->setEnabled(false);
         ui->rblocal->setChecked(true);
+        ui->gblevel->setEnabled(true);
     }
 }
 
@@ -70,6 +74,8 @@ void Settings::on_rblocal_toggled(bool checked)
 {
     if(checked){
         ui->lvgames->setEnabled(false);
+        ui->gbplayer1->setEnabled(true);
+        ui->gbplayer2->setEnabled(true);
     }
 }
 
@@ -90,10 +96,10 @@ void Settings::on_rbenter_toggled(bool checked)
         ui->leplayer1->setEnabled(false);
         ui->leplayer2->setEnabled(true);
         ui->gbgamefieldsetting->setEnabled(false);
-        this->helloServer = new HelloServer();
+
         ui->pbrefresh->setEnabled(true);
         try
-        {
+        {   this->helloServer = new HelloServer();
             helloServer->HelloReplySignal.connect(boost::bind(&Settings::incomingGames, this,_1));
             helloServer->start();
         }catch(Server4WinException& e)
@@ -127,7 +133,9 @@ void Settings::on_btnstart_clicked()
             gameSettings->setBordColumns(ui->sbcolumn->text().toShort());
             gameSettings->setCellSize(ui->sbcellsize->text().toShort());
             gameSettings->setNetworkMode(getNetworkMode());
-            gameSettings->setIsFollow(ui->cbwatch->isChecked());
+            gameSettings->setLevel(getLevel());
+            gameSettings->setGameId(ui->leGameId->text().toInt());
+            gameSettings->setVisitorMode(ui->cbwatch->isChecked());
 
             if(gameSettings->getNetworkMode() == JOIN)
             {
@@ -146,8 +154,6 @@ void Settings::on_btnstart_clicked()
             {
                 start();
             }
-
-
        }
        else{
            QMessageBox info;
@@ -213,6 +219,21 @@ NetworkMode Settings::getNetworkMode()
         return JOIN;
 }
 
+Level Settings::getLevel()
+{
+    if(ui->rbeasy->isChecked())
+        return EASY;
+
+    if(ui->rbmedium->isChecked())
+        return MEDIUM;
+
+    if(ui->rbhard->isChecked())
+        return HARD;
+
+    if(ui->rbultimate->isChecked())
+        return ULTIMATE;
+}
+
 void Settings::incomingGames(HelloReply incomingVal)
 {
     guiThread = new QThread;
@@ -230,6 +251,8 @@ void Settings::openGamesUpdate(HelloReply* incomingVal)
     entry.name = incomingVal->getName();
     entry.rows = incomingVal->getRows();
     entry.columns = incomingVal->getColumns();
+    entry.isActive = incomingVal->getIsActive();
+    entry.gameId = incomingVal->getGameId();
 
     QVariant qv;
     qv.setValue(entry);
@@ -239,7 +262,10 @@ void Settings::openGamesUpdate(HelloReply* incomingVal)
     ui->lvgames->addItem(item);
     ui->lvgames->scrollToBottom();
 
-    guiThread->quit();
+    if(guiThread != 0){
+        guiThread->terminate();
+    }
+
 }
 
 void Settings::on_lvgames_itemActivated(QListWidgetItem *item)
@@ -251,6 +277,16 @@ void Settings::on_lvgames_itemActivated(QListWidgetItem *item)
     ui->sbcolumn->setValue(entry.columns);
     ui->leplayer1->setText(QString::fromStdString(entry.name));
     gameSettings->setRemoteIp(entry.ipAdress);
+    ui->leGameId->setText(QString::number(entry.gameId));
+
+    if(entry.isActive){
+        ui->cbwatch->setChecked(true);
+        ui->cbwatch->setEnabled(false);
+    }
+    else{
+        ui->cbwatch->setChecked(false);
+        ui->cbwatch->setEnabled(true);
+    }
 }
 
 void Settings::on_pbrefresh_clicked()
@@ -262,4 +298,13 @@ void Settings::on_pbrefresh_clicked()
 void Settings::closeEvent(QCloseEvent *event)
 {
     closeHelloServer();
+
+    if(guiThread != 0)
+    {
+        guiThread->terminate();
+        guiThread->wait();
+        delete guiThread;
+        guiThread=0;
+    }
+
 }

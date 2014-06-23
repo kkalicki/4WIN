@@ -19,6 +19,7 @@ public:
     ~Settings();
     GameMode getGameMode();
     NetworkMode getNetworkMode();
+    Level getLevel();
     void incomingGames(HelloReply incomingVal);
     void start();
 

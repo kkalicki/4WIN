@@ -9,16 +9,21 @@ using namespace std;
 class Historie{
 public:
     Historie();
+    Historie(const Historie& rhs);
     ~Historie();
-    void hinzufuegenEintrag(HisEintrag* hisEintrag);
+    Historie& operator= (Historie const& rhs);
+    void hinzufuegenEintrag(const HisEintrag &hisEintrag);
     void loeschenEintrag(int index);
-    int  loeschenEintrag(HisEintrag* hisEintrag);
+    int  loeschenEintrag(HisEintrag hisEintrag);
     void loeschenHistorie();
-    HisEintrag*  getEintrag(int index);
+    HisEintrag*  getEintragAt(int index);
     HisEintrag* getLetztenEintrag();
     vector<HisEintrag> getEintraegeAb(HisEintrag* hisEintrag);
-
+    friend ostream& operator<<(ostream& out, Historie& object);
     string toString();
+    vector<HisEintrag> *getHisList() const;
+    void setHisList(vector<HisEintrag> *value);
+
 private:
     vector<HisEintrag>* hisList;
 };

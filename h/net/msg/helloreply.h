@@ -10,7 +10,7 @@ class HelloReply{
 
 public:
     HelloReply();
-    HelloReply(string ipAdress, string name, unsigned int rows, unsigned int columns);
+    HelloReply(string ipAdress, string name, unsigned int rows, unsigned int columns, int isActive, int gameId);
     ~HelloReply();
     string getIpAdress() const;
     void setIpAdress(const string &value);
@@ -24,15 +24,24 @@ public:
     unsigned int getColumns() const;
     void setColumns(unsigned int value);
 
+    int getIsActive() const;
+    void setIsActive(int value);
+
+    int getGameId() const;
+    void setGameId(int value);
+
     friend ostream& operator<<(ostream& out, HelloReply& object);
     friend istream& operator>>(istream& in, HelloReply& object);
 
     void fromCsvString(string csv);
     string toString();
+
 private:
     string ipAdress;
     string name;
     unsigned int rows;
     unsigned int columns;
+    int isActive;
+    int gameId;
 };
 #endif // HELLOREPLY_H

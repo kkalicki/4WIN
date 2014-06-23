@@ -84,10 +84,11 @@ void *HelloServer::startTcpServerThread(void *ptr)
     }catch(exception& e)
     {
         cout << "HELLOSERVER in CATCH-CLAUSE...." << e.what()<< endl;
+        pthread_exit((void*) false);
     }
 
-
      cout << "HELLOSERVER aus der WHILE-Schleife" << endl;
+     pthread_exit((void*) true);
 }
 
 void HelloServer::sendHelloBroadcast()

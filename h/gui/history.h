@@ -22,7 +22,6 @@ public:
     virtual void postExecute();
     void addHisItem(HisEintrag* addItem);
     void clear();
-
     //void setHistoryEntry(historyItem addItem)
 
 private:

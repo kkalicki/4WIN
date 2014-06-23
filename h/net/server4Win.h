@@ -17,7 +17,7 @@ class Server4Win{
 
 public:
     Server4Win(ServerType serverType,int port);
-    ~Server4Win();
+    virtual ~Server4Win();
 
     void start();
     void stop();

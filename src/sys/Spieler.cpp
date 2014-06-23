@@ -16,6 +16,14 @@ Spieler::Spieler(string name, unsigned short farbe) {
     this->isKI = false;
 }
 
+Spieler::Spieler(const Spieler &rhs) {
+    this->name=rhs.getName();
+    this->farbe = rhs.getFarbe();
+    this->istAmZug = rhs.getIstAmZug();
+    this->isKI = rhs.getIsKI();
+}
+
+
 void Spieler::fromCsvString(string csv)
 {
     char * buffer = new char[csv.length()];

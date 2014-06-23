@@ -1,10 +1,11 @@
 #include "../h/gui/gamesettings.h"
 
-GameSettings::GameSettings(GameMode mode, string player1Name, string player2Name,
+GameSettings::GameSettings(GameMode mode, Level level, string player1Name, string player2Name,
                            int bordId, unsigned short bordRows, unsigned short bordColumns,
-                           unsigned short cellSize,NetworkMode networkMode, int isFollow)
+                           unsigned short cellSize, NetworkMode networkMode, bool visitorMode)
 {
     this->mode = mode;
+    this->level = level;
     this->player1Name = player1Name;
     this->player2Name = player2Name;
     this->bordId = bordId;
@@ -12,7 +13,7 @@ GameSettings::GameSettings(GameMode mode, string player1Name, string player2Name
     this->bordColumns = bordColumns;
     this->cellSize = cellSize;
     this->networkMode = networkMode;
-    this->isFollow = isFollow;
+    this->visitorMode = visitorMode;
     this->remoteIp = "";
 }
 
@@ -84,15 +85,7 @@ void GameSettings::setCellSize(unsigned short value)
 {
 cellSize = value;
 }
-int GameSettings::getIsFollow() const
-{
-return isFollow;
-}
 
-void GameSettings::setIsFollow(int value)
-{
-isFollow = value;
-}
 NetworkMode GameSettings::getNetworkMode() const
 {
     return networkMode;
@@ -111,4 +104,34 @@ void GameSettings::setRemoteIp(const string &value)
 {
     remoteIp = value;
 }
+bool GameSettings::getVisitorMode() const
+{
+    return visitorMode;
+}
+
+void GameSettings::setVisitorMode(bool value)
+{
+    visitorMode = value;
+}
+int GameSettings::getGameId() const
+{
+    return gameId;
+}
+
+void GameSettings::setGameId(int value)
+{
+    gameId = value;
+}
+Level GameSettings::getLevel() const
+{
+    return level;
+}
+
+void GameSettings::setLevel(const Level &value)
+{
+    level = value;
+}
+
+
+
 

@@ -144,7 +144,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
         case JOIN:
                 this->game = new NetzwerkSpiel(gameSettings->getBordRows(), gameSettings->getBordColumns());
                 dynamic_cast<NetzwerkSpiel*>(game)->startClient(gameSettings->getRemoteIp());
-                dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name());
+                dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name(),gameSettings->getGameId(),gameSettings->getVisitorMode());
                 gameInfoWidget->setSysMsg("Warte auf Antwort...");
                 gameInfoWidget->lockDisplaySp1();
                 initNetworkSignalSlot();
@@ -168,6 +168,13 @@ void MainWindow::initNetworkSignalSlot()
     dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
     dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame, this));
     dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.connect(boost::bind(&MainWindow::incommingGiveUp, this,_1,_2));
+}
+
+void MainWindow::killNetworkSignalSlot()
+{
+    dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.disconnect(&MainWindow::incommingMove);
+    dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.disconnect(&MainWindow::startGame);
+    dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.disconnect(&MainWindow::incommingGiveUp);
 }
 
 void MainWindow::lockBoad()
@@ -279,25 +286,27 @@ void MainWindow::stopMoveThread()
         guiMoveThread=0;
     }
 
-    std::cout << "Nach guiGiveUpThread destruieren!" << endl;
+    std::cout << "Nach stopMoveThread destruieren!" << endl;
+
 }
 
 void MainWindow::stopGiveUpThread()
 {
-    if(guiGiveUpThread != 0)
+   if(guiGiveUpThread != 0)
     {
         guiGiveUpThread->quit();
         guiGiveUpThread=0;
     }
-
+    std::cout << "Nach guiGiveUpThread destruieren!" << endl;
 }
 
 void MainWindow::on_endGame(Spieler* winner,bool giveUp)
 {
-    if(giveUp)
-        game->aufgeben();
 
     postExecute();
+
+    if(giveUp)
+        game->aufgeben();
 
     if(winner == 0)
     {
@@ -316,15 +325,34 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
         msg.exec();
     }
 
-    game->beenden();
+    if(gameSettings->getNetworkMode() == JOIN ||  gameSettings->getNetworkMode() == OPEN)
+        killNetworkSignalSlot();
 
-   /* if(game != 0)
-    {
+   if(game != 0)
+   {
         delete game;
         game=0;
-    }*/
+   }
 
      std::cout << "Nach GAME destruieren!" << endl;
+
+      if(guiGiveUpThread != 0)
+      {
+          guiGiveUpThread->terminate();
+          guiGiveUpThread->wait();
+          delete guiGiveUpThread;
+          delete giveUpThread;
+          guiGiveUpThread=0;
+      }
+
+      if(guiMoveThread != 0){
+          guiMoveThread->terminate();
+          guiMoveThread->wait();
+          delete guiMoveThread;
+          delete guiUpdaterThread;
+          guiMoveThread=0;
+      }
+      std::cout << "Nach guiGiveUpThread destruieren!" << endl;
 }
 
 void MainWindow::incommingMove(unsigned short column,int row)
@@ -336,6 +364,7 @@ void MainWindow::incommingMove(unsigned short column,int row)
     connect(guiMoveThread, SIGNAL(finished()), this, SLOT(stopMoveThread()));
     connect(guiUpdaterThread, SIGNAL(updateGui(unsigned short,int)), this, SLOT(update(unsigned short, int)));
     guiMoveThread->start();
+
 }
 
 void MainWindow::incommingGiveUp(Spieler *remoteSpieler, bool giveUp)
@@ -351,8 +380,14 @@ void MainWindow::incommingGiveUp(Spieler *remoteSpieler, bool giveUp)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if(getIsActiveGame())
-        game->aufgeben();
+    try{
+        if(getIsActiveGame())
+            game->aufgeben();
+    }
+    catch(ClientException& e){
+        //Do Nothing... ist korrekt, wenn Exception auftritt...
+    }
+
 
     postExecute();
     closeAllWidgets();

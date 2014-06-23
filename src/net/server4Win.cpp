@@ -51,7 +51,8 @@ void Server4Win::stop()
                     cout << "warte bis Server heruntergefahren ist...(TCP)" << endl;
                     pthread_join(tcpServerThread, NULL);
 
-                    pthread_cancel(tcpServerThread);
+                    //pthread_cancel(tcpServerThread);
+                    //delete tcpServerThread;
                     tcpServerThread=0;
                     cout << "Server beendet(TCP)" << endl;
 
@@ -63,7 +64,8 @@ void Server4Win::stop()
                     cout << "warte bis Server heruntergefahren ist...(UDP)" << endl;
                     pthread_join(udpServerThread, NULL);
 
-                    pthread_cancel(udpServerThread);
+                    //pthread_cancel(udpServerThread);
+                    //delete udpServerThread;
                     udpServerThread=0;
                     cout << "Server beendet (UDP)" << endl;
 
@@ -75,7 +77,9 @@ void Server4Win::stop()
                     cout << "warte bis Server heruntergefahren ist...(HELLO)" << endl;
                     pthread_join(helloServerThread, NULL);
 
-                    pthread_cancel(helloServerThread);
+
+                    //pthread_cancel(helloServerThread);
+                    //delete helloServerThread;
                     helloServerThread=0;
                     cout << "Server beendet(HELLO)" << endl;
                 }
@@ -103,8 +107,8 @@ void Server4Win::connect()
                   throw Server4WinException("Socket konnte nicht erstellt werden(UDP)!");
                 }
 
-                if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void *) &permission, sizeof(permission)) < 0)
-                    throw Server4WinException("Socketoptionen konnten nicht gesetzt werden(UDP)!");
+               // if (setsockopt(sock, SOL_SOCKET, SO_BROADCAST, (void *) &permission, sizeof(permission)) < 0)
+                 //   throw Server4WinException("Socketoptionen konnten nicht gesetzt werden(UDP)!");
         break;
     case HELLO:
                 cout << "erstelle Socket!(HELLO)" << endl;

@@ -6,6 +6,7 @@
 
 class HisEintrag{
 public:
+    HisEintrag();
     HisEintrag(Spieler* spieler, unsigned short zeile=0, unsigned short spalte=0, unsigned short runde=0);
     ~HisEintrag();
 
@@ -26,10 +27,11 @@ public:
     unsigned short getRunde() const;
     void setRunde(unsigned short value);
 
-    //erst mal nicht fuer toString verwenden da Objekt serialsisiert werden muss und Operator dafuer benoetigt wird
-    friend ostream& operator<<(ostream& out, HisEintrag& sp);
+    void fromCsvString(string csvString);
     string toString();
 
+    friend ostream& operator<<(ostream& out, HisEintrag& object);
+    friend istream& operator>>(istream& in, HisEintrag &object );
 
 private:
     Spieler* spieler;
