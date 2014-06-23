@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>577</width>
-    <height>610</height>
+    <height>674</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>4Win Einstellungen</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_4">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
       <string>Spielmodus</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_4">
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
        <widget class="QRadioButton" name="rbsvs">
         <property name="text">
@@ -48,11 +48,57 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="gblevel">
+     <property name="enabled">
+      <bool>false</bool>
+     </property>
+     <property name="title">
+      <string>Schwierigkeitsgrad</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <item>
+       <widget class="QRadioButton" name="rbeasy">
+        <property name="text">
+         <string>Leicht</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="rbmedium">
+        <property name="text">
+         <string>Mittel</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="rbhard">
+        <property name="text">
+         <string>Schwierig</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QRadioButton" name="rbultimate">
+        <property name="text">
+         <string>De Shit,Alla!</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox_3">
      <property name="title">
       <string>Spielereinstellung</string>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <layout class="QHBoxLayout" name="horizontalLayout_4">
       <item>
        <widget class="QGroupBox" name="gbplayer1">
         <property name="enabled">

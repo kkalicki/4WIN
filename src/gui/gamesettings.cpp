@@ -1,10 +1,11 @@
 #include "../h/gui/gamesettings.h"
 
-GameSettings::GameSettings(GameMode mode, string player1Name, string player2Name,
+GameSettings::GameSettings(GameMode mode, Level level, string player1Name, string player2Name,
                            int bordId, unsigned short bordRows, unsigned short bordColumns,
-                           unsigned short cellSize,NetworkMode networkMode, bool visitorMode)
+                           unsigned short cellSize, NetworkMode networkMode, bool visitorMode)
 {
     this->mode = mode;
+    this->level = level;
     this->player1Name = player1Name;
     this->player2Name = player2Name;
     this->bordId = bordId;
@@ -121,6 +122,16 @@ void GameSettings::setGameId(int value)
 {
     gameId = value;
 }
+Level GameSettings::getLevel() const
+{
+    return level;
+}
+
+void GameSettings::setLevel(const Level &value)
+{
+    level = value;
+}
+
 
 
 

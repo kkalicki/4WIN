@@ -38,6 +38,7 @@ void Settings::on_rbsvs_toggled(bool checked)
         ui->leplayer2->setText("Spieler 2");
 
         ui->gbnetwork->setEnabled(true);
+        ui->gblevel->setEnabled(false);
     }
 }
 
@@ -51,6 +52,7 @@ void Settings::on_rbsvc_toggled(bool checked)
 
         ui->gbnetwork->setEnabled(false);
         ui->rblocal->setChecked(true);
+        ui->gblevel->setEnabled(true);
     }
 }
 
@@ -64,6 +66,7 @@ void Settings::on_rbcvc_toggled(bool checked)
 
         ui->gbnetwork->setEnabled(false);
         ui->rblocal->setChecked(true);
+        ui->gblevel->setEnabled(true);
     }
 }
 
@@ -130,6 +133,7 @@ void Settings::on_btnstart_clicked()
             gameSettings->setBordColumns(ui->sbcolumn->text().toShort());
             gameSettings->setCellSize(ui->sbcellsize->text().toShort());
             gameSettings->setNetworkMode(getNetworkMode());
+            gameSettings->setLevel(getLevel());
             gameSettings->setGameId(ui->leGameId->text().toInt());
             gameSettings->setVisitorMode(ui->cbwatch->isChecked());
 
@@ -213,6 +217,21 @@ NetworkMode Settings::getNetworkMode()
 
     if(ui->rbenter->isChecked())
         return JOIN;
+}
+
+Level Settings::getLevel()
+{
+    if(ui->rbeasy->isChecked())
+        return EASY;
+
+    if(ui->rbmedium->isChecked())
+        return MEDIUM;
+
+    if(ui->rbhard->isChecked())
+        return HARD;
+
+    if(ui->rbultimate->isChecked())
+        return ULTIMATE;
 }
 
 void Settings::incomingGames(HelloReply incomingVal)

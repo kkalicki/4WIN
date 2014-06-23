@@ -9,10 +9,11 @@ using namespace std;
 
 enum GameMode {SVS,SVC,CVC};
 enum NetworkMode {LOCAL,OPEN,JOIN};
+enum Level {EASY=3,MEDIUM=6,HARD=10,ULTIMATE=12};
 
 class GameSettings{
 public:
-    GameSettings(GameMode mode=SVS, string player1Name="Player1", string player2Name="Player2", int bordId=4711,
+    GameSettings(GameMode mode=SVS,Level level=MEDIUM, string player1Name="Player1", string player2Name="Player2", int bordId=4711,
                  unsigned short bordRows=Y, unsigned short bordColumns=X, unsigned short cellSize=CELL_SIZE, NetworkMode networkMode=LOCAL, bool visitorMode=false);
     ~GameSettings();
 
@@ -49,8 +50,12 @@ public:
     int getGameId() const;
     void setGameId(int value);
 
+    Level getLevel() const;
+    void setLevel(const Level &value);
+
 private:
     GameMode mode;
+    Level level;
     string player1Name;
     string player2Name;
     int bordId;
