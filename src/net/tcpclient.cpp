@@ -151,9 +151,8 @@ void TcpClient::sendVisitorPackageBroadcast(VisitorPackage* pack)
 
     openConnectionBroadcast();
     sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
-    sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
-    sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
-
+    sendto(udpsock,(char*) &len,sizeof(int),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+    sendto(udpsock,o.str().c_str(),len,MSG_SEND,(struct sockaddr*)&address, sizeof(address));
     close(udpsock);
 }
 
