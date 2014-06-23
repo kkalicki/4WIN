@@ -29,7 +29,7 @@ public:
 	string toString() const;
 
 	/**
-	 * Ueberladung des << Operators für toString-Methode
+	 * Ueberladung des << Operators fï¿½r toString-Methode
 	 * @param out Variable des Outstreams
 	 * @param spf Variable der Klasse Spielfeld
 	 * @return manipulierter outstream
@@ -51,8 +51,8 @@ public:
 	 * @param y Wert der y-Achse
 	 * @return
 	 */
-	Stein getFeldPos(int x, int y) {
-		return feld[y][x];
+    Stein* getFeldPos(int x, int y) {
+        return &feld[y][x];
 	}
 
     int werfeStein(Spieler* spieler, int spalte);
@@ -86,7 +86,7 @@ public:
     void loescheSteinSpalte(int spalte){
         int zeile = this->getSpalteSteine(spalte);
         if (zeile > 0)
-            loescheStein(spalte,(this->getSpalteSteine(spalte)));
+            loescheStein(spalte,(this->getSpalteSteine(spalte-1)));
     }
 
     unsigned short pruefeWurf(unsigned short farbe, unsigned short spalte);
@@ -94,9 +94,13 @@ public:
     void setSchwierigkeitsstufe(unsigned short value);
     bool pruefeSpielfeld();
     int pruefeStein(int farbe, int spalte);
-private:
-
-    void init();
+    int bewerteSteine();
+    int bewerteStein(int x, int y);
+    int bewerteSteinFarbe(int farbe, int steinFarbe);
+    int checkHorizontal(int farbe, int spalte);
+    int checkVertikal(int farbe, int spalte);
+    int checkDiagonal(int farbe, int spalte);
+    int bewerteFarbe(int farbe, int spalte);
     /**
      * setzt einen Stein in das Feld
      * @param x wert der x-Achse
@@ -108,13 +112,9 @@ private:
         aktuell[x]++;
     }
 
+private:
 
-
-
-
-    int checkHorizontal(int farbe, int spalte);
-    int checkVertikal(int farbe, int spalte);
-    int checkDiagonal(int farbe, int spalte);
+    void init();
 
 	/**
 	 * das Spielfeld als mehrdimensionales Array

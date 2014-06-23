@@ -7,11 +7,12 @@
 
 #include "../h/sys/SpielerKI.h"
 #include "../h/sys/FourWinExceptions.h"
-#include <pthread.h>
+
 
 SpielerKI::SpielerKI(string name, Spielfeld* feld, unsigned short farbe):Spieler(name,farbe) {
     this->isKI = true;
     this->feld = feld;
+    besteSpalte = 3;
     time(&t);
     srand((unsigned int)t);
 }
@@ -28,20 +29,17 @@ void *SpielerKI::starteDenkprozess(void *ptr)
 
     unsigned short spalte;
     do{
-        spalte = rand() % (sp->feld->getSpalten());
-    }while(sp->feld->getSpalteSteine(spalte) == sp->feld->getZeilen());
+        sp->besteSpalte = rand() % (sp->feld->getSpalten());
+    }while(sp->feld->getSpalteSteine(sp->besteSpalte) == sp->feld->getZeilen());
 
-    int ergebnis = sp->pruefeZuege(sp);
-
+    //int ergebnis = sp->pruefeZuege(sp);
+int ergebnis = -1;
     if (ergebnis >=0)
         sp->WerfeSteinSignal(ergebnis+1);
     else{
-        ergebnis = sp->denkeWeiter(sp,sp->feld->getSchwierigkeitsstufe(),sp->farbe);
-        if (ergebnis >= 1 )
+        ergebnis = sp->denkeWeiter(sp,sp->feld->getSchwierigkeitsstufe(),sp->farbe,-10000000,10000000);
             sp->WerfeSteinSignal(sp->besteSpalte+1);
-        else{
-            sp->WerfeSteinSignal(spalte+1);
-        }
+
     }
 
 }
@@ -62,9 +60,9 @@ int SpielerKI::pruefeZuege(SpielerKI* sp)
             if (pruefeWinZug(sp->farbe,i,sp->feld)){
                 return i;
             }
-            if (pruefeWinZug(gegnerFarbe,i,sp->feld)){ //zum Blocken
-                block = i;
-            }
+//            if (pruefeWinZug(gegnerFarbe,i,sp->feld)){ //zum Blocken
+//                block = i;
+//            }
         }
     }
     return block;
@@ -80,61 +78,98 @@ int SpielerKI::pruefeWinZug(unsigned short farbe, int spalte, Spielfeld* feld)
     return ergebnis;
 }
 
-int SpielerKI::denkeWeiter(SpielerKI *sp, int tiefe, unsigned short farbe)
+
+int SpielerKI::denkeWeiter(SpielerKI *sp, int tiefe, unsigned short farbe, int alpha, int beta)
 {
     unsigned short gegnerFarbe;
     (farbe == ROT) ? gegnerFarbe = GELB: gegnerFarbe = ROT;
-    int maxWert = -10000000;
-    int bewertung;
+    int maxWert = alpha;
+    int bewertung = 0;
+    int zeile=0;
+    int ergebnis;
+    int aktuell;
+    int wert;
+
+
+
+//    ergebnis = sp->pruefeZuege(sp);//WIN&BLOCK
+//    if (ergebnis != -1){
+//        maxWert = 10000000;
+//        if (tiefe == sp->feld->getSchwierigkeitsstufe()){
+//            sp->besteSpalte = ergebnis;
+//        }
+////        cout << "return WIN&BLOCK tiefe : " << tiefe << endl;
+//        return maxWert;
+//    }
+
+    // Ende Rekursion
     if (sp->feld->pruefeSpielfeld() || tiefe == 0 ){
-
-
-        bewertung = sp->bewerteFeld(sp->feld, sp->farbe, gegnerFarbe);
-        if (bewertung >= 1){
-            cout << *feld << endl;
-            cout << bewertung << endl;
-        }
+        bewertung = sp->bewerteFeld(sp->feld, gegnerFarbe, farbe);
         return bewertung;
     }
-    int zeile=0;
-
-    int wert = 0;
     if (!sp->feld->pruefeSpielfeld()){
         for (int i = 0;i<sp->feld->getSpalten();i++){
-            if(sp->feld->getSpalteSteine(i) < sp->feld->getZeilen()){
+            aktuell = feld->getSpalteSteine(i);
+            if(aktuell < sp->feld->getZeilen()){
 
-                sp->feld->werfeTestStein(farbe,i);
-                zeile = sp->feld->getSpalteSteine(i);
-
-                wert = denkeWeiter(sp, tiefe-1, gegnerFarbe);
-
-                sp->feld->loescheStein(i,zeile-1);
-
-            }
-            if (wert > maxWert) {
-                maxWert = wert;
-                if (tiefe == sp->feld->getSchwierigkeitsstufe()){
-                    sp->besteSpalte = i;
+                sp->feld->setFeldPos(i,aktuell,farbe);
+                if (feld->pruefeStein(farbe,0)){
+                    wert = 10000000;
                 }
-           }
+                else{
+                    wert = -denkeWeiter(sp, tiefe-1, gegnerFarbe, -beta, -maxWert);
+                }
+                sp->feld->loescheStein(i,aktuell);
+                if (wert > maxWert) {
+                    maxWert = wert;
+
+                    if (tiefe == sp->feld->getSchwierigkeitsstufe()){
+                        cout << *feld << endl;
+                        cout << i << endl;
+                        sp->besteSpalte = i;
+                    }
+                    if (maxWert >= beta)
+                        break;
+                }
+            }
         }
     }
+//    cout << "return denkeweiter tiefe : " << tiefe << endl;
     return maxWert;
 }
 
 int SpielerKI::bewerteFeld(Spielfeld *feld, unsigned short farbe, unsigned short gegnerFarbe)
 {
-    int ergebnis = feld->pruefeStein(gegnerFarbe,0);
-    if (ergebnis)
-            return -10000000;
-    ergebnis = feld->pruefeStein(farbe,0);
-    if (ergebnis){
-        return 1;
-    }
-    return 0; // :-)
+    int ergebnis = 0;
+//    ergebnis = feld->pruefeStein(gegnerFarbe,0);
+//    if (ergebnis){
+//        return -10000000;
+//    }
+//    ergebnis = feld->pruefeStein(farbe,0);
+//    if (ergebnis){
+//        return 10000000;
+//    }
+
+    feld->bewerteSteine();
+//    ergebnis += feld->checkHorizontal(farbe,0);
+//    ergebnis -= feld->checkHorizontal(gegnerFarbe,0);
+//    ergebnis += feld->checkDiagonal(farbe,0);
+//    ergebnis -= feld->checkDiagonal(gegnerFarbe,0);
+//    ergebnis += feld->checkVertikal(farbe,0);
+//    ergebnis -= feld->checkVertikal(gegnerFarbe,0);
+    ergebnis = feld->bewerteFarbe(farbe,0);
+    int ergebnisGegner = feld->bewerteFarbe(gegnerFarbe,0);
+
+
+//    if (ergebnis< ergebnisGegner){
+//        return -ergebnisGegner;
+//    }else{
+        return ergebnis - ergebnisGegner;
+//    }
 }
 
 SpielerKI::~SpielerKI() {
+    close();
 
 }
 int SpielerKI::getBesteSpalte() const

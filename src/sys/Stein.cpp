@@ -10,11 +10,14 @@
 
 Stein::Stein() {
 	this->farbe = ROT;
+    this->wert = 0;
 }
 
 Stein::Stein(const Stein& rhs) {
 	farbe = rhs.getFarbe();
 	*pos=*rhs.pos;
+    this->wert = rhs.wert;
+
 }
 
 Stein::Stein(short int farbe, short int x, short int y) {
@@ -51,9 +54,19 @@ Stein& Stein::operator= (Stein const& rhs)
   }
   return *this; //Referenz auf das Objekt selbst zurückgeben
 }
+int Stein::getWert() const
+{
+    return wert;
+}
+
+void Stein::setWert(int value)
+{
+    wert = value;
+}
+
 
 istream& operator>>(istream& in, Stein& st){
-	return in;
+    return in;
 }
 
 ostream& operator<<(ostream& out, Stein& st){
