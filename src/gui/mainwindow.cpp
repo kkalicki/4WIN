@@ -380,8 +380,14 @@ void MainWindow::incommingGiveUp(Spieler *remoteSpieler, bool giveUp)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    if(getIsActiveGame())
-        game->aufgeben();
+    try{
+        if(getIsActiveGame())
+            game->aufgeben();
+    }
+    catch(ClientException& e){
+        //Do Nothing... ist korrekt, wenn Exception auftritt...
+    }
+
 
     postExecute();
     closeAllWidgets();
