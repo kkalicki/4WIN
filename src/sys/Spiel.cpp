@@ -23,6 +23,18 @@ Spiel::Spiel(unsigned short zeilen, unsigned short spalten)
     this->sp1 = 0;
     this->sp2 = 0;
     istAktiv = false;
+
+    //spiel-ID berechnen...
+    time_t t;
+    time(&t);
+    srand((unsigned int)t);
+    t = time(NULL);
+    struct tm *ts;
+    ts = localtime(&t);
+    id = 4711;
+    //id = rand() % 10000 + 1000;//+= ts->tm_hour + ts->tm_min + ts->tm_sec;
+
+    cout << "Spiel-ID: " << id << endl;
 }
 
 Spiel::~Spiel() {
@@ -74,15 +86,6 @@ void Spiel::starteSpiel(string nameSpieler1, string nameSpieler2, bool sp1KI, bo
     else{
          sp1->setIstAmZug(true);
     }
-
-    //spiel-ID berechnen...
-    //id = rand() % 10000 + 1000;
-    t = time(NULL);
-    struct tm *ts;
-    ts = localtime(&t);
-    id = 4711;//+= ts->tm_hour + ts->tm_min + ts->tm_sec;
-
-    cout << "Spiel-ID: " << id << endl;
     wechselSpieler();
     istAktiv = true;
 }
