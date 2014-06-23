@@ -149,12 +149,12 @@ void TcpClient::sendVisitorPackageBroadcast(VisitorPackage* pack)
     test.fromStream(o.str());
     cout << test << endl;
 
-    //openConnectionBroadcast();
-    //sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
-    //sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
-    //sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+    openConnectionBroadcast();
+    sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+    sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+    sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
 
-    //close(udpsock);
+    close(udpsock);
 }
 
 void TcpClient::sendHelloReply(string ip, HelloReply *reply)

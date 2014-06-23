@@ -183,7 +183,7 @@ void NetzwerkSpiel::on_visitorPackage(VisitorPackage vp)
         if(vp.getGameId() == id){
            for(int i = lastround; i < vp.getHistorie()->getHisList()->size(); i++){
                unsigned int col = vp.getHistorie()->getEintragAt(i)->getSpalte();
-               on_remoteMove(col);
+               //on_remoteMove(col);
            }
         }
     }
