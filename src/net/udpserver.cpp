@@ -49,14 +49,10 @@ void *UdpServer::startUdpServerThread(void *ptr)
              free(connection);
         }
         else{
-
-            if(!((UdpServer*)ptr)->isOwnAddress(sender)){
                 cout << "Verbindungen eingegangen(UDP)..SOCK: " << connection->sock << endl;
                 processThread((struct sockaddr_in)sender,ptr,incomingMessage);
                 //close(connection->sock);
                 free(connection);
-            }
-
         }
         cout << "Boradcast eigegangen!" << endl;
     }
@@ -70,7 +66,9 @@ void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessa
     {
         char* ip = inet_ntoa(sender.sin_addr);
         string ipstr(ip);
-        ((UdpServer*)ptr)->UdpHelloSignal(ipstr);
+
+        if(!((UdpServer*)ptr)->isOwnAddress(sender)){
+            ((UdpServer*)ptr)->UdpHelloSignal(ipstr);
     }
     break;
     case VISITORPACKAGE:
@@ -84,7 +82,9 @@ void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessa
         temp.assign(buffer,len);
         VisitorPackage incomingVisitorPackage;
         incomingVisitorPackage.fromStream(temp);
-        ((UdpServer*)ptr)->VisitorPackageSignal(incomingVisitorPackage);
+
+        if(!((UdpServer*)ptr)->isOwnAddress(sender)){
+            ((UdpServer*)ptr)->VisitorPackageSignal(incomingVisitorPackage);
     }
     default: // Do Nothing...
     break;
