@@ -85,13 +85,17 @@ public:
 		return pos;
 	}
 
+    int getWert() const;
+    void setWert(int value);
+
 private:
 
-	/**
-	 * Farbe des Spielsteins, entweder ROT oder GELB (Konstanten)
+    /**
+     * Farbe des Spielsteins, entweder ROT oder GELB (Konstanten)
 	 */
 	short int farbe;
 	short int pos[2];
+    int wert;
 
 };
 
