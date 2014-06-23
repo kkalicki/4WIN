@@ -177,11 +177,12 @@ void NetzwerkSpiel::on_helloReply(HelloReply reply)
 
 void NetzwerkSpiel::on_visitorPackage(VisitorPackage vp)
 {
-    if(visitorMode){
+    cout << "Incoming to on_visitorPackage VALUE: " << vp << endl;
+    if(true){
         //pruefe ID obs die richtige ist...
-        int lastround = this->getHistorie()->getLetztenEintrag()->getRunde();
         if(vp.getGameId() == id){
-           for(int i = lastround; i < vp.getHistorie()->getHisList()->size(); i++){
+           int lastround = this->getHistorie()->getLetztenEintrag()->getRunde();
+           for(int i = lastround; i < (int)vp.getHistorie()->getHisList()->size(); i++){
                unsigned int col = vp.getHistorie()->getEintragAt(i)->getSpalte();
                //on_remoteMove(col);
            }
