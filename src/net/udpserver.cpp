@@ -67,7 +67,7 @@ void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessa
         char* ip = inet_ntoa(sender.sin_addr);
         string ipstr(ip);
 
-        if(!((UdpServer*)ptr)->isOwnAddress(sender)){
+        if(!((UdpServer*)ptr)->isOwnAddress(sender))
             ((UdpServer*)ptr)->UdpHelloSignal(ipstr);
     }
     break;
@@ -83,7 +83,7 @@ void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessa
         VisitorPackage incomingVisitorPackage;
         incomingVisitorPackage.fromStream(temp);
 
-        if(!((UdpServer*)ptr)->isOwnAddress(sender)){
+        if(!((UdpServer*)ptr)->isOwnAddress(sender))
             ((UdpServer*)ptr)->VisitorPackageSignal(incomingVisitorPackage);
     }
     default: // Do Nothing...
