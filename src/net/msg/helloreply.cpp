@@ -65,7 +65,7 @@ void HelloReply::fromCsvString(string csv)
     char delimiter[] = ";";
     char *ptr;
 
-    ptr = strtok(NULL, delimiter);
+    ptr = strtok(buffer, delimiter);
     this->ipAdress = ptr;
 
     ptr = strtok(NULL, delimiter);
@@ -80,7 +80,7 @@ void HelloReply::fromCsvString(string csv)
     ptr = strtok(NULL, delimiter);
     this->isActive = atoi(ptr);
 
-    ptr = strtok(buffer, delimiter);
+    ptr = strtok(NULL, delimiter);
     this->gameId = atoi(ptr);
 
 }
