@@ -69,6 +69,9 @@ void HelloReply::fromCsvString(string csv)
     this->gameId = atoi(ptr);
 
     ptr = strtok(NULL, delimiter);
+    this->ipAdress = ptr;
+
+    ptr = strtok(NULL, delimiter);
     this->name = ptr;
 
     ptr = strtok(NULL, delimiter);
@@ -79,9 +82,6 @@ void HelloReply::fromCsvString(string csv)
 
     ptr = strtok(NULL, delimiter);
     this->isActive = atoi(ptr);
-
-    ptr = strtok(NULL, delimiter);
-    this->ipAdress = ptr;
 
 }
 
@@ -111,12 +111,12 @@ istream &operator>>(istream& in, HelloReply& object){
 string HelloReply::toString()
 {
     ostringstream o;
+    o << "GameID   : " << gameId << endl;
     o << "IpAddress: " << ipAdress << endl;
     o << "Name     : " << name << endl;
     o << "Rows     : " << rows << endl;
     o << "Columns  : " << columns << endl;
     o << "isActive : " << isActive << endl;
-    o << "GameID   : " << gameId << endl;
     return o.str();
 }
 int HelloReply::getGameId() const
