@@ -32,7 +32,7 @@ Spiel::Spiel(unsigned short zeilen, unsigned short spalten)
     struct tm *ts;
     ts = localtime(&t);
     //id = 4711;
-    id = rand() % 100000 + 1000;//+= ts->tm_hour + ts->tm_min + ts->tm_sec;
+    id = rand() % 10000 + 1000;//+= ts->tm_hour + ts->tm_min + ts->tm_sec;
 
     cout << "Spiel-ID: " << id << endl;
 }

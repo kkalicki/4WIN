@@ -77,9 +77,14 @@ void HisEintrag::fromCsvString(string csvString)
 
     ptr = strtok(buffer, delimiter1);
     this->spieler = new Spieler();
-    spieler->fromCsvString(ptr);
+    string spstr = ptr;
 
-    ptr = strtok(NULL, delimiter2);
+    ptr = strtok(NULL, delimiter1);
+    string hisValues(ptr);
+    char * buffer2 = new char[hisValues.length()];
+    strcpy(buffer2,hisValues.c_str());
+
+    ptr = strtok(buffer2, delimiter2);
     this->zeile = atoi(ptr);
 
     ptr = strtok(NULL, delimiter2);
@@ -87,6 +92,8 @@ void HisEintrag::fromCsvString(string csvString)
 
     ptr = strtok(NULL, delimiter2);
     this->runde = atoi(ptr);
+
+    spieler->fromCsvString(spstr);
 }
 
 time_t HisEintrag::getTimestamp() const
