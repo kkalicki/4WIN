@@ -7,12 +7,12 @@ HelloReply::HelloReply()
 
 HelloReply::HelloReply(string ipAdress, string name, unsigned int rows, unsigned int columns,int isActive, int gameId)
 {
+    this->gameId = gameId;
     this->ipAdress = ipAdress;
     this->name = name;
     this->rows = rows;
     this->columns = columns;
     this->isActive = isActive;
-    this->gameId = gameId;
 }
 
 HelloReply::~HelloReply()
@@ -66,7 +66,7 @@ void HelloReply::fromCsvString(string csv)
     char *ptr;
 
     ptr = strtok(buffer, delimiter);
-    this->ipAdress = ptr;
+    this->gameId = atoi(ptr);
 
     ptr = strtok(NULL, delimiter);
     this->name = ptr;
@@ -81,28 +81,30 @@ void HelloReply::fromCsvString(string csv)
     this->isActive = atoi(ptr);
 
     ptr = strtok(NULL, delimiter);
-    this->gameId = atoi(ptr);
+    this->ipAdress = ptr;
+
 }
 
 ostream &operator<<(ostream& out, HelloReply& object){
 
+    out << object.gameId   << ";";
     out << object.ipAdress << ";";
     out << object.name     << ";";
     out << object.rows     << ";";
     out << object.columns  << ";";
-    out << object.isActive << ";";
-    out << object.gameId;
+    out << object.isActive;
+
     return out;
 }
 
 istream &operator>>(istream& in, HelloReply& object){
 
+    in >> object.gameId;
     in >> object.ipAdress;
     in >> object.name;
     in >> object.rows;
     in >> object.columns;
     in >> object.isActive;
-    in >> object.gameId;
     return in;
 }
 
