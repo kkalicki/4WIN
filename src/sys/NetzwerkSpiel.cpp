@@ -113,7 +113,7 @@ int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
     int rslt = Spiel::naechsterZug(spieler,spalte);
     tcpClient->sendMove(spalte);
 
-    VisitorPackage vp(*sp1,*sp2,historie,id);
+    VisitorPackage vp(sp1,sp2,historie,id);
     tcpClient->sendVisitorPackageBroadcast(&vp);
     return rslt;
 }
@@ -182,7 +182,8 @@ void NetzwerkSpiel::on_visitorPackage(VisitorPackage vp)
         int lastround = this->getHistorie()->getLetztenEintrag()->getRunde();
         if(vp.getGameId() == id){
            for(int i = lastround; i < vp.getHistorie()->getHisList()->size(); i++){
-               on_remoteMove(vp.getHistorie()->getEintrag(i)->getSpalte());
+               unsigned int col = vp.getHistorie()->getEintragAt(i)->getSpalte();
+               on_remoteMove(col);
            }
         }
     }

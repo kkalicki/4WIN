@@ -8,7 +8,7 @@ class VisitorPackage{
 
 public:
      VisitorPackage();
-    VisitorPackage(Spieler sp1, Spieler sp2, Historie *historie, int gameId);
+    VisitorPackage(Spieler *sp1, Spieler *sp2, Historie *historie, int gameId);
     ~VisitorPackage();
 
     int getGameId() const;
@@ -20,8 +20,8 @@ public:
     Spieler getSp2() const;
     void setSp2(const Spieler &value);
 
-    Historie* getHistorie() const;
-    void setHistorie(Historie *value);
+    Historie* getHistorie();
+    void setHistorie(const Historie &value);
 
     friend ostream& operator<< (ostream& out, VisitorPackage& object);
     friend istream& operator>>(istream& in, VisitorPackage& object);
@@ -33,7 +33,7 @@ private:
     int gameId;
     Spieler sp1;
     Spieler sp2;
-    Historie* historie;
+    Historie historie;
 };
 
 #endif // VISITORPACKAGE_H

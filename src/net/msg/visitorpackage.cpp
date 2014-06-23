@@ -5,22 +5,22 @@
 
 VisitorPackage::VisitorPackage()
 {
-   this->historie = new Historie();
+   this->historie = *new Historie();
 }
 
-VisitorPackage::VisitorPackage(Spieler sp1, Spieler sp2, Historie* historie, int gameId)
+VisitorPackage::VisitorPackage(Spieler* sp1, Spieler* sp2, Historie* historie, int gameId)
 {
     this->gameId = gameId;
-    this->sp1 = sp1;
-    this->sp2 = sp2;
-    this->historie = historie;
+    this->sp1 = *sp1;
+    this->sp2 = *sp2;
+    this->historie = *historie;
 }
 
 VisitorPackage::~VisitorPackage()
 {
-    if(historie != 0){
-        delete historie;
-    }
+    //if(historie != 0){
+      //  delete historie;
+    //}
 }
 
 Spieler VisitorPackage::getSp1() const
@@ -41,12 +41,13 @@ void VisitorPackage::setSp2(const Spieler &value)
 {
     sp2 = value;
 }
-Historie *VisitorPackage::getHistorie() const
+
+Historie *VisitorPackage::getHistorie()
 {
-    return historie;
+    return &historie;
 }
 
-void VisitorPackage::setHistorie(Historie* value)
+void VisitorPackage::setHistorie(const Historie& value)
 {
     historie = value;
 }
@@ -73,9 +74,9 @@ void VisitorPackage::fromStream(string stream)
     //historie
     while(getline(in,line))
     {
-        HisEintrag incomingEntry;
-        incomingEntry.fromCsvString(line);
-        this->historie->hinzufuegenEintrag(&incomingEntry);
+        HisEintrag* incomingEntry = new HisEintrag();
+        incomingEntry->fromCsvString(line);
+        this->historie.hinzufuegenEintrag(*incomingEntry);
     }
 }
 
@@ -100,7 +101,7 @@ ostream& operator<<(ostream& out, VisitorPackage& object) {
     out << object.gameId << endl;
     out << object.sp1 << endl;
     out << object.sp2 << endl;
-    out << *object.historie;
+    out << object.historie;
     return out;
 }
 

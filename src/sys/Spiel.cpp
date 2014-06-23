@@ -101,7 +101,7 @@ void Spiel::beenden()
 void Spiel::erstelleNeuenHisEintrag(Spieler* spieler, unsigned short zeile, unsigned short spalte, unsigned short runde)
 {
     HisEintrag* neuerEintrag = new HisEintrag(spieler,zeile,spalte,runde);
-    historie->hinzufuegenEintrag(neuerEintrag);
+    historie->hinzufuegenEintrag(*neuerEintrag);
 }
 
 int Spiel::naechsterZug(Spieler* spieler, unsigned short spalte)
