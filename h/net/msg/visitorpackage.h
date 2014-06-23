@@ -8,7 +8,7 @@ class VisitorPackage{
 
 public:
      VisitorPackage();
-    VisitorPackage(Spieler *sp1, Spieler *sp2, Historie *historie, int gameId);
+    VisitorPackage(Spieler *sp1, Spieler *sp2, Historie *historie, unsigned short gameId);
     ~VisitorPackage();
 
     int getGameId() const;
@@ -30,7 +30,7 @@ public:
     string toString();
 
 private:
-    int gameId;
+    unsigned short gameId;
     Spieler sp1;
     Spieler sp2;
     Historie historie;

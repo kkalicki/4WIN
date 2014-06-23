@@ -8,7 +8,7 @@ VisitorPackage::VisitorPackage()
    this->historie = *new Historie();
 }
 
-VisitorPackage::VisitorPackage(Spieler* sp1, Spieler* sp2, Historie* historie, int gameId)
+VisitorPackage::VisitorPackage(Spieler* sp1, Spieler* sp2, Historie* historie, unsigned short gameId)
 {
     this->gameId = gameId;
     this->sp1 = *sp1;
