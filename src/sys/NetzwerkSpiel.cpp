@@ -178,13 +178,24 @@ void NetzwerkSpiel::on_helloReply(HelloReply reply)
 void NetzwerkSpiel::on_visitorPackage(VisitorPackage vp)
 {
     cout << "Incoming to on_visitorPackage VALUE: " << vp << endl;
+
+    if(sp1 == 0){
+         sp1 = new Spieler(vp.getSp1());
+         sp2 = new Spieler(vp.getSp2());
+         if(sp1->getIstAmZug()){
+            aktuellerSpieler = sp1;
+         }else{
+             aktuellerSpieler = sp2;
+         }
+    }
+
     if(visitorMode){
         //pruefe ID obs die richtige ist...
         if(vp.getGameId() == id){
            int lastround = this->getHistorie()->getLetztenEintrag()->getRunde();
            for(int i = lastround; i < (int)vp.getHistorie()->getHisList()->size(); i++){
                unsigned int col = vp.getHistorie()->getEintragAt(i)->getSpalte();
-               //on_remoteMove(col);
+               on_remoteMove(col);
            }
         }
     }
