@@ -217,11 +217,15 @@ void NetzwerkSpiel::on_visitorPackage(VisitorPackage vp)
     if(visitorMode){
         //pruefe ID obs die richtige ist...
         if(vp.getGameId() == id){
-           int lastround = this->getHistorie()->getLetztenEintrag()->getRunde();
-           for(int i = lastround; i < (int)vp.getHistorie()->getHisList()->size(); i++){
-               unsigned int col = vp.getHistorie()->getEintragAt(i)->getSpalte();
-               on_remoteMove(col);
-           }
+            int lastround  = 0;
+            if(this->getHistorie()->getHisList()->size() > 0){
+                lastround = this->getHistorie()->getLetztenEintrag()->getRunde();
+            }
+
+            for(int i = lastround; i < (int)vp.getHistorie()->getHisList()->size(); i++){
+            unsigned int col = vp.getHistorie()->getEintragAt(i)->getSpalte();
+            on_remoteMove(col);
+            }
         }
     }
 }

@@ -101,7 +101,6 @@ protected:
     Spieler *vorherigerSpieler;
     unsigned short runde;
     bool istAktiv;
-
 };
 
 #endif /* SPIEL_H_ */
