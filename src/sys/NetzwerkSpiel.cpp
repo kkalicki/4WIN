@@ -233,7 +233,7 @@ void NetzwerkSpiel::on_udpHello(string remoteIp)
     if(istAktiv)
         isAct=1;
 
-    HelloReply helloReply("",this->sp1->getName(),this->spielfeld->getZeilen(),this->spielfeld->getSpalten(),isAct, this->id);
+    HelloReply helloReply("",this->nameSpieler1,this->spielfeld->getZeilen(),this->spielfeld->getSpalten(),isAct, this->id);
     if(!remoteIp.empty())
         tcpClient->sendHelloReply(remoteIp,&helloReply);
 }
