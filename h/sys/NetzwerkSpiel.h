@@ -24,18 +24,22 @@ public:
     virtual void aufgeben();
     virtual void beenden();
 
-    void disconnectAllSignals();
-
     void sendHello();
-    void closeServer();
+
+    void startTcpServer();
+    void stopTcpServer();
+
+    void startUdpServer();
+    void stopUdpServer();
 
     void on_loginRequest(string loginPlayerName,string ip);
     void on_loginReply(Spieler spieler);
     void on_remoteMove(unsigned short column);
     void on_giveUp();
     void on_helloReply(HelloReply reply);
-    void on_visitorPackage(VisitorPackage vp);
 
+
+    void on_visitorPackage(VisitorPackage vp);
     void on_udpHello(string remoteIp);
 
     boost::signals2::signal<void(unsigned short, int)> RemoteMoveSignal;
