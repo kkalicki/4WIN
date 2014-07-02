@@ -225,11 +225,7 @@ void NetzwerkSpiel::on_visitorPackage(VisitorPackage vp)
             if(this->getHistorie()->getHisList()->size() > 0){
                 lastround = this->getHistorie()->getLetztenEintrag()->getRunde();
             }
-
-            for(int i = lastround; i < (int)vp.getHistorie()->getHisList()->size(); i++){
-                unsigned int col = vp.getHistorie()->getEintragAt(i)->getSpalte();
-                on_remoteMove(col);
-            }
+            VisitorPackageSignal(vp,lastround);
         }
     }
 }

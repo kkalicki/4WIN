@@ -46,6 +46,7 @@ public:
     boost::signals2::signal<void()> StartGameSignal;
     boost::signals2::signal<void(Spieler*,bool)> GiveUpRemotePlayerSignal;
     boost::signals2::signal<void(HelloReply)> HelloReplySignal;
+    boost::signals2::signal<void(VisitorPackage,int)> VisitorPackageSignal;
 
 protected:
     Server4Win* tcpServer;

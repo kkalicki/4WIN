@@ -4,6 +4,8 @@
 #include <../4WIN/h/gui/I4WinWidget.h>
 #include <../4WIN/h/gui/threads/movethread.h>
 #include <../4WIN/h/gui/threads/giveupthread.h>
+#include <../4WIN/h/gui/threads/visitorthread.h>
+#include <../4WIN/h/net/msg/visitorpackage.h>
 #include <../h/gui/bord.h>
 #include <../h/gui/settings.h>
 #include <../h/gui/gameinfo.h>
@@ -47,6 +49,7 @@ private slots:
     void stopMoveThread();
     void stopGiveUpThread();
     void incommingMove(unsigned short column, int row);
+    void incommingVp(VisitorPackage vp, int lastround);
     void incommingGiveUp(Spieler* remoteSpieler, bool giveUp);
 
 protected:
@@ -61,8 +64,10 @@ private:
     GameSettings * gameSettings;
     MoveThread *guiUpdaterThread;
     GiveUpThread *giveUpThread;
+    VisitorThread *visitorThread;
     QThread * guiMoveThread;
     QThread * guiGiveUpThread;
+    QThread * guiVpThread;
     static const int START_POSITION_X = 230;
     static const int START_POSITION_Y = 0;
 
