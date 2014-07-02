@@ -28,7 +28,9 @@ public:
 	Stein(short int farbe, short int x, short int y);
 
 
-
+    /**
+     * Destruktor
+     */
 	virtual ~Stein();
 
 	/**
@@ -53,9 +55,21 @@ public:
 	 */
 	friend istream& operator>>(istream& in, Stein& st);
 
+    /**
+     * Überladung des '=' Operators
+     * @brief operator =
+     * @param rhs
+     * @return
+     */
 	Stein& operator= (Stein const& rhs);
 
-
+    /**
+      Überladung des '==' Operators
+     * @brief operator ==
+     * @param lhs
+     * @param rhs
+     * @return
+     */
 	friend bool operator==(Stein const& lhs, short int const& rhs){
         return (&lhs.farbe == &rhs);
 	}
@@ -76,16 +90,16 @@ public:
 		this->farbe = farbe;
 	}
 
-	void setPos(int x, int y) {
-		pos[0] = x;
-		pos[1] = y;
-	}
-
-	const short int* getPos() const {
-		return pos;
-	}
-
+    /**
+     * Getter fuer Wert
+     * @return
+     */
     int getWert() const;
+
+    /**
+     * Setter fuer Wert
+     * @param value
+     */
     void setWert(int value);
 
 private:
@@ -93,8 +107,7 @@ private:
     /**
      * Farbe des Spielsteins, entweder ROT oder GELB (Konstanten)
 	 */
-	short int farbe;
-	short int pos[2];
+    short int farbe;
     int wert;
 
 };

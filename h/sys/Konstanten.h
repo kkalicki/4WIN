@@ -12,6 +12,8 @@ const static unsigned short int X               = 7;
 const static unsigned short int Y               = 6;
 const static unsigned short CELL_SIZE           = 80;
 const static unsigned short SEC_IN_MS           = 1000;
+const static int MAXWERT                        = 10000000;
+const static int MINWERT                        = -10000000;
 
 // Konstanten fuer Netzwerkspiel
 const static unsigned short DEFAULT_PORT_TCP    = 8001;

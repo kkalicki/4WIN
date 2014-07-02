@@ -19,25 +19,6 @@
 
 int main(int argc, char* argv[]){
 
-    /*
-    TcpServer t(8000);
-    t.start();
-
-    TcpClient tc;
-    tc.sendLoginReply();
-    tc.sendLoginRequest();*/
-
-    //t.stop();
-
-    //NetzwerkSpiel test;
-    //test.starteNetzwerkSpiel("ICH");
-    //test.anmeldenNetzwerk("ICH_Remote");
-
-    //while(true){};
-
-    //Menue m;
-    //m.start();
-
     QApplication a(argc,argv);
     MainWindow w;
     w.show();

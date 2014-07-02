@@ -41,12 +41,19 @@ Spiel::~Spiel() {
 
     delete spielfeld;
 
-    if(sp1 != 0)
+    if(sp1 != 0){
+        if (sp1->getIsKI())
+            dynamic_cast<SpielerKI*>(sp1)->WerfeSteinSignal.disconnect(&Spiel::naechsterZugRemote);
         delete sp1;
-    if(sp2 != 0)
+    }
+    if(sp2 != 0){
+        if (sp2->getIsKI())
+            dynamic_cast<SpielerKI*>(sp2)->WerfeSteinSignal.disconnect(&Spiel::naechsterZugRemote);
         delete sp2;
+    }
 
     delete historie;
+
 }
 
 
