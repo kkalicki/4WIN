@@ -145,10 +145,13 @@ void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
 int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
 {
     int rslt = Spiel::naechsterZug(spieler,spalte);
-    tcpClient->sendMove(spalte);
 
-    VisitorPackage vp(&visitorSp1,&visitorSp2,historie,id);
-    tcpClient->sendVisitorPackageBroadcast(&vp);
+    if(!visitorMode){
+        tcpClient->sendMove(spalte);
+
+        VisitorPackage vp(&visitorSp1,&visitorSp2,historie,id);
+        tcpClient->sendVisitorPackageBroadcast(&vp);
+    }
     return rslt;
 }
 
