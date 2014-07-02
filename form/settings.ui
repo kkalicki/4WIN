@@ -86,7 +86,7 @@
       <item>
        <widget class="QRadioButton" name="rbultimate">
         <property name="text">
-         <string>De Shit,Alla!</string>
+         <string>Ultimativ</string>
         </property>
        </widget>
       </item>
