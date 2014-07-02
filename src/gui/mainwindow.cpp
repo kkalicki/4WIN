@@ -55,6 +55,7 @@ void MainWindow::init()
     this->giveUpThread = 0;
 
     connect( gameInfoWidget, SIGNAL(loose(Spieler*,bool)), this, SLOT(on_endGame(Spieler*,bool)));
+    connect( gameInfoWidget, SIGNAL(exitVmMode()), this, SLOT(on_exitVisitorMode()));
 }
 
 void MainWindow::load4WinWidgets()
@@ -208,10 +209,15 @@ void MainWindow::lockBoad()
             }
         break;
     case JOIN:
-            if(game->getSp2()->getIstAmZug()){
-                bordWidget->setIsLocked(false);
-            }
-            else{
+            if(!gameSettings->getVisitorMode()){
+                if(game->getSp2()->getIstAmZug()){
+                    bordWidget->setIsLocked(false);
+                }
+                else{
+                    bordWidget->setIsLocked(true);
+                }
+            }else
+            {
                 bordWidget->setIsLocked(true);
             }
         break;
@@ -227,11 +233,13 @@ void MainWindow::startGame()
     preExecute();
     lockBoad();
 
-    switch(gameSettings->getNetworkMode()){
-    case OPEN:gameInfoWidget->lockDisplaySp2();
-        break;
-    case JOIN:gameInfoWidget->lockDisplaySp1();
-        break;
+    if(!gameSettings->getVisitorMode()){
+        switch(gameSettings->getNetworkMode()){
+        case OPEN:gameInfoWidget->lockDisplaySp2();
+            break;
+        case JOIN:gameInfoWidget->lockDisplaySp1();
+            break;
+        }
     }
 }
 
@@ -355,6 +363,15 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
           guiMoveThread=0;
       }
       std::cout << "Nach guiGiveUpThread destruieren!" << endl;
+}
+
+void MainWindow::on_exitVisitorMode()
+{
+    postExecute();
+    if(game != 0){
+         delete game;
+         game=0;
+    }
 }
 
 void MainWindow::incommingMove(unsigned short column,int row)

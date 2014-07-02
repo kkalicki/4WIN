@@ -188,9 +188,11 @@ void Settings::closeHelloServer()
 
 void Settings::on_cbwatch_toggled(bool checked)
 {
-    if(checked)
-    {
-        //zuschauer optionen...
+    if(checked){
+       ui->gbplayer2->setEnabled(false);
+    }
+    else{
+         ui->gbplayer2->setEnabled(true);
     }
 }
 

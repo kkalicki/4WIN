@@ -41,8 +41,11 @@ private slots:
     void on_btnlooseright_clicked();
     void on_timeChange();
 
+    void on_pbvmexit_clicked();
+
 signals:
     void loose(Spieler* winner,bool);
+    void exitVmMode();
 
 private:
      //QPixmap imgRed;

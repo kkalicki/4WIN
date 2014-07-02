@@ -35,6 +35,7 @@ public:
 
 private slots:
     void on_endGame(Spieler* winner, bool giveUp);
+    void on_exitVisitorMode();
     void on_executeMove(unsigned short column);
     void on_resultSettings(GameSettings* gameSettings);
     void on_actionBeenden_triggered();

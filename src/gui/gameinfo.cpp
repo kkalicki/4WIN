@@ -286,3 +286,8 @@ string GameInfo::convertMillToTime(unsigned long ms)
 
     return rslt.str();
 }
+
+void GameInfo::on_pbvmexit_clicked()
+{
+    emit exitVmMode();
+}
