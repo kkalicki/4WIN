@@ -89,7 +89,6 @@ void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2,int gameId, bool visito
     if(!visitorMode){
         startTcpServer();
         this->sp2 = new Spieler(nameSpieler2);
-        this->visitorSp2 = *sp2;
         this->remoteSpieler = sp2;
         cout << "melde an..."<< endl;
         tcpClient->sendLoginRequest(nameSpieler2);
@@ -136,7 +135,8 @@ void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
     std::cout << "System ready!!!" << endl;
     std::cout << *sp1 << endl;
     std::cout << *sp2 << endl;
-
+    this->visitorSp1 = *sp1;
+    this->visitorSp2 = *sp2;
 
     //hier signal start...
     StartGameSignal();
@@ -169,10 +169,11 @@ void NetzwerkSpiel::on_loginRequest(string loginPlayerName, string ip)
     cout << "Incoming to on_loginRequest() VALUE: " << loginPlayerName << endl;
     starteSpiel(nameSpieler1,loginPlayerName,false,false);
     this->remoteSpieler = sp1;
-    this->visitorSp1 = *sp1;
     tcpClient->setIpAddress(ip);
     this->tcpClient->sendLoginReply(sp1);
 
+    this->visitorSp1 = *sp1;
+    this->visitorSp2 = *sp2;
     //hier starte spiel...
     StartGameSignal();
 }
@@ -226,8 +227,8 @@ void NetzwerkSpiel::on_visitorPackage(VisitorPackage vp)
             }
 
             for(int i = lastround; i < (int)vp.getHistorie()->getHisList()->size(); i++){
-            unsigned int col = vp.getHistorie()->getEintragAt(i)->getSpalte();
-            on_remoteMove(col);
+                unsigned int col = vp.getHistorie()->getEintragAt(i)->getSpalte();
+                on_remoteMove(col);
             }
         }
     }
