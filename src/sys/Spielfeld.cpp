@@ -109,7 +109,7 @@ int Spielfeld::werfeTestStein(unsigned short farbe, int spalte)
 }
 
 int Spielfeld::pruefeStein(int farbe) {
-    if ((checkHorizontal(farbe,spalte)) || (checkVertikal(farbe,spalte)) || (checkDiagonal(farbe,spalte)))
+    if ((checkHorizontal(farbe)) || (checkVertikal(farbe)) || (checkDiagonal(farbe)))
         return true;
     else
         return false;
@@ -384,7 +384,7 @@ bool Spielfeld::pruefeSpielfeld()
     return true;
 }
 
-int Spielfeld::checkHorizontal(int farbe, int spalte) {
+int Spielfeld::checkHorizontal(int farbe) {
     short int wert = (farbe==ROT) ? ROT : GELB;
 
         for(int i = zeilen-1; i >= 0;i--){
@@ -403,7 +403,7 @@ int Spielfeld::checkHorizontal(int farbe, int spalte) {
 }
 
 
-int Spielfeld::checkVertikal(int farbe, int spalte) {
+int Spielfeld::checkVertikal(int farbe) {
     short int wert = (farbe==ROT) ? ROT : GELB;
         for(int j = 0; j < spalten;j++){
             for(int i = zeilen-1; i >= 3;i--){
@@ -420,7 +420,7 @@ int Spielfeld::checkVertikal(int farbe, int spalte) {
         return false;
     }
 
-int Spielfeld::checkDiagonal(int farbe, int spalte) {
+int Spielfeld::checkDiagonal(int farbe) {
     short int wert = (farbe==ROT) ? ROT : GELB;
     for(int i = zeilen-1; i >= 3;i--){
         for(int j = 0; j < spalten-3;j++){

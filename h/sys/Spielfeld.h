@@ -118,7 +118,7 @@ public:
      * @param spalte
      * @return
      */
-    int pruefeStein(int farbe, int spalte);
+    int pruefeStein(int farbe);
 
     /**
      * bewertet das Spielfeld
@@ -148,7 +148,7 @@ public:
      * @param spalte
      * @return
      */
-    int checkHorizontal(int farbe, int spalte);
+    int checkHorizontal(int farbe);
 
     /**
      * prueft alle vertikale verbindungen
@@ -156,7 +156,7 @@ public:
      * @param spalte
      * @return
      */
-    int checkVertikal(int farbe, int spalte);
+    int checkVertikal(int farbe);
 
     /**
      * prueft alle diagonale verbindungen
@@ -164,7 +164,7 @@ public:
      * @param spalte
      * @return
      */
-    int checkDiagonal(int farbe, int spalte);
+    int checkDiagonal(int farbe);
 
     /**
      * Addiert alle Werte der Steine einer Farbe
@@ -175,7 +175,7 @@ public:
     int bewerteFarbe(int farbe);
 
     /**
-     * setzt einen Stein in das Feld
+     * Setzt einen Stein in das Feld
      * @param x wert der x-Achse
      * @param y Wert der y-Achse
      * @param wert Wert der gesetzt wird
