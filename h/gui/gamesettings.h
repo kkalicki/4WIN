@@ -9,7 +9,7 @@ using namespace std;
 
 enum GameMode {SVS,SVC,CVC};
 enum NetworkMode {LOCAL,OPEN,JOIN};
-enum Level {EASY=3,MEDIUM=6,HARD=10,ULTIMATE=12};
+enum Level {EASY=0,MEDIUM=3,HARD=6,ULTIMATE=9};
 
 class GameSettings{
 public:

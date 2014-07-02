@@ -15,7 +15,6 @@ Stein::Stein() {
 
 Stein::Stein(const Stein& rhs) {
 	farbe = rhs.getFarbe();
-	*pos=*rhs.pos;
     this->wert = rhs.wert;
 
 }
@@ -24,7 +23,6 @@ Stein::Stein(short int farbe, short int x, short int y) {
 	if ((farbe == ROT) || farbe == GELB)
 		this->farbe=farbe;
 	else this->farbe = 3;
-	this->setPos(x,y);
 }
 
 Stein::~Stein() {

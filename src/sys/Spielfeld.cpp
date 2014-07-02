@@ -15,6 +15,8 @@ Spielfeld::Spielfeld(unsigned short zeilen, unsigned short spalten, int schwieri
     this->spalten = spalten;
     this->aktuell = new int[spalten];
     this->schwierigkeitsstufe = schwierigkeitsstufe;
+    this->rotWin = false;
+    this->gelbWin = false;
     init();
 }
 
@@ -39,11 +41,30 @@ void Spielfeld::init()
     for(int i = 0; i < zeilen;i++){
         for(int j = 0; j < spalten;j++){
             feld[i][j].setFarbe(2);
-            feld[i][j].setPos(j,i);
             aktuell[j] = 0;
         }
     }
 }
+bool Spielfeld::getGelbWin() const
+{
+    return gelbWin;
+}
+
+void Spielfeld::setGelbWin(bool value)
+{
+    gelbWin = value;
+}
+
+bool Spielfeld::getRotWin() const
+{
+    return rotWin;
+}
+
+void Spielfeld::setRotWin(bool value)
+{
+    rotWin = value;
+}
+
 
 int Spielfeld::werfeStein(Spieler* spieler, int spalte)
 {
@@ -52,7 +73,7 @@ int Spielfeld::werfeStein(Spieler* spieler, int spalte)
         if (aktuell < zeilen){
             setFeldPos(spalte-1,aktuell,spieler->getFarbe());
             bewerteSteine();
-            if(pruefeStein(spieler->getFarbe(), spalte-1)){
+            if(pruefeStein(spieler->getFarbe())){
               return WIN;
             }
             if(pruefeSpielfeld()){
@@ -79,7 +100,7 @@ int Spielfeld::werfeTestStein(unsigned short farbe, int spalte)
        aktuell = getSpalteSteine(spalte);
        if (aktuell < zeilen){
             setFeldPos(spalte,aktuell,farbe);
-            if(pruefeStein(farbe, spalte)){
+            if(pruefeStein(farbe)){
                 ergebnis = WIN;
             }
         }
@@ -87,7 +108,7 @@ int Spielfeld::werfeTestStein(unsigned short farbe, int spalte)
     return ergebnis;
 }
 
-int Spielfeld::pruefeStein(int farbe, int spalte) {
+int Spielfeld::pruefeStein(int farbe) {
     if ((checkHorizontal(farbe,spalte)) || (checkVertikal(farbe,spalte)) || (checkDiagonal(farbe,spalte)))
         return true;
     else
@@ -99,10 +120,9 @@ int Spielfeld::bewerteSteine()
     for(int i = 0; i < zeilen;i++){
         for(int j = 0; j < spalten-1;j++){
             if (this->getFeldPos(j,i)->getFarbe() != 2)
-                    return bewerteStein(j,i);
+                    bewerteStein(j,i);
         }
     }
-
 }
 
 int Spielfeld::bewerteStein(int x, int y)
@@ -110,6 +130,7 @@ int Spielfeld::bewerteStein(int x, int y)
    Stein* stein = getFeldPos(x,y);
    unsigned short farbe = stein->getFarbe();
    int wert = 0;
+   int ergebnis = 0;
 
 
    if (x-3 >=0){
@@ -117,25 +138,27 @@ int Spielfeld::bewerteStein(int x, int y)
        if((bewerteSteinFarbe(farbe,getFeldPos(x-1,y)->getFarbe()) == 2
            && bewerteSteinFarbe(farbe,getFeldPos(x-2,y)->getFarbe()) == 2)
                && (bewerteSteinFarbe(farbe,getFeldPos(x-3,y)->getFarbe()) == 2)){
-           wert+= 100000;
+           getFeldPos(x,y)->setWert(MAXWERT);
+           (farbe== ROT) ? this->rotWin = true : this->gelbWin = true;
+           return true;
        }
        if((bewerteSteinFarbe(farbe,getFeldPos(x-1,y)->getFarbe())!=0
            && bewerteSteinFarbe(farbe,getFeldPos(x-2,y)->getFarbe())!= 0)
                && (bewerteSteinFarbe(farbe,getFeldPos(x-3,y)->getFarbe())!= 0)){
-           wert += 1;
+           wert += 10;
 
            if((bewerteSteinFarbe(farbe,getFeldPos(x-1,y)->getFarbe()) == 2)){
-               wert *= 4;
+               wert *= 5;
            }
            if((bewerteSteinFarbe(farbe,getFeldPos(x-2,y)->getFarbe()) == 2)){
-              wert *= 4;
+              wert *= 5;
            }
            if((bewerteSteinFarbe(farbe,getFeldPos(x-3,y)->getFarbe()) == 2)){
-            wert *= 4;
+            wert *= 5;
            }
        }
    }
-   int wert1 = wert;
+   ergebnis += wert;
    wert = 0;
 
    if ((x+3 < spalten)){
@@ -143,26 +166,28 @@ int Spielfeld::bewerteStein(int x, int y)
        if((bewerteSteinFarbe(farbe,getFeldPos(x+1,y)->getFarbe()) == 2
            && bewerteSteinFarbe(farbe,getFeldPos(x+2,y)->getFarbe()) == 2)
                && (bewerteSteinFarbe(farbe,getFeldPos(x+3,y)->getFarbe()) == 2)){
-           wert+= 100000;
+           getFeldPos(x,y)->setWert(MAXWERT);
+           (farbe== ROT) ? this->rotWin = true : this->gelbWin = true;
+           return farbe;
 
        }
        if((bewerteSteinFarbe(farbe,getFeldPos(x+1,y)->getFarbe())!=0
            && bewerteSteinFarbe(farbe,getFeldPos(x+2,y)->getFarbe())!= 0)
                && (bewerteSteinFarbe(farbe,getFeldPos(x+3,y)->getFarbe())!= 0)){
-                      wert += 1;
+                      wert += 10;
 
            if((bewerteSteinFarbe(farbe,getFeldPos(x+1,y)->getFarbe()) == 2)){
-               wert *= 4;
+               wert *= 5;
            }
            if((bewerteSteinFarbe(farbe,getFeldPos(x+2,y)->getFarbe()) == 2)){
-              wert *= 4;
+              wert *= 5;
            }
            if((bewerteSteinFarbe(farbe,getFeldPos(x+3,y)->getFarbe()) == 2)){
-            wert *= 4;
+            wert *= 5;
            }
        }
    }
-   int wert2 = wert;
+   ergebnis += wert;
    wert = 0;
 
    if ((x-3 >= 0)&&(y-3 >= 0)){
@@ -170,25 +195,27 @@ int Spielfeld::bewerteStein(int x, int y)
        if((bewerteSteinFarbe(farbe,getFeldPos(x-1,y-1)->getFarbe()) == 2
            && bewerteSteinFarbe(farbe,getFeldPos(x-2,y-2)->getFarbe()) == 2)
                && (bewerteSteinFarbe(farbe,getFeldPos(x-3,y-3)->getFarbe()) == 2)){
-           wert+= 100000;
+           getFeldPos(x,y)->setWert(MAXWERT);
+           (farbe== ROT) ? this->rotWin = true : this->gelbWin = true;
+           return farbe;
        }
        if((bewerteSteinFarbe(farbe,getFeldPos(x-1,y-1)->getFarbe())!=0
            && bewerteSteinFarbe(farbe,getFeldPos(x-2,y-2)->getFarbe())!= 0)
                && (bewerteSteinFarbe(farbe,getFeldPos(x-3,y-3)->getFarbe())!= 0)){
-           wert += 1;
+           wert += 10;
 
            if((bewerteSteinFarbe(farbe,getFeldPos(x-1,y-1)->getFarbe()) == 2)){
-               wert *= 4;
+               wert *= 5;
            }
            if((bewerteSteinFarbe(farbe,getFeldPos(x-2,y-2)->getFarbe()) == 2)){
-              wert *= 4;
+              wert *= 5;
            }
            if((bewerteSteinFarbe(farbe,getFeldPos(x-3,y-3)->getFarbe()) == 2)){
-            wert *= 4;
+            wert *= 5;
            }
        }
    }
-   int wert3 = wert;
+   ergebnis += wert;
    wert = 0;
 
    if ((x-3 >= 0)&&(y+3 < zeilen)){
@@ -196,26 +223,27 @@ int Spielfeld::bewerteStein(int x, int y)
        if((bewerteSteinFarbe(farbe,getFeldPos(x-1,y+1)->getFarbe()) == 2
            && bewerteSteinFarbe(farbe,getFeldPos(x-2,y+2)->getFarbe()) == 2)
                && (bewerteSteinFarbe(farbe,getFeldPos(x-3,y+3)->getFarbe()) == 2)){
-           wert+= 100000;
+           getFeldPos(x,y)->setWert(MAXWERT);
+           (farbe== ROT) ? this->rotWin = true : this->gelbWin = true;
 
        }
        if((bewerteSteinFarbe(farbe,getFeldPos(x-1,y+1)->getFarbe())!=0
            && bewerteSteinFarbe(farbe,getFeldPos(x-2,y+2)->getFarbe())!= 0)
                && (bewerteSteinFarbe(farbe,getFeldPos(x-3,y+3)->getFarbe())!= 0)){
-           wert += 1;
+           wert += 10;
 
            if((bewerteSteinFarbe(farbe,getFeldPos(x-1,y+1)->getFarbe()) == 2)){
-               wert *= 4;
+               wert *= 5;
            }
            if((bewerteSteinFarbe(farbe,getFeldPos(x-2,y+2)->getFarbe()) == 2)){
-             wert *= 4;
+             wert *= 5;
            }
            if((bewerteSteinFarbe(farbe,getFeldPos(x-3,y+3)->getFarbe()) == 2)){
-            wert *= 4;
+            wert *= 5;
            }
        }
    }
-   int wert4 = wert;
+   ergebnis += wert;
    wert = 0;
 
     if ((x+3 < spalten)&&(y-3 >= 0)){
@@ -223,25 +251,26 @@ int Spielfeld::bewerteStein(int x, int y)
         if((bewerteSteinFarbe(farbe,getFeldPos(x+1,y-1)->getFarbe()) == 2
             && bewerteSteinFarbe(farbe,getFeldPos(x+2,y-2)->getFarbe()) == 2)
                 && (bewerteSteinFarbe(farbe,getFeldPos(x+3,y-3)->getFarbe()) == 2)){
-            wert+= 100000;
+            getFeldPos(x,y)->setWert(MAXWERT);
+            (farbe== ROT) ? this->rotWin = true : this->gelbWin = true;
         }
         if((bewerteSteinFarbe(farbe,getFeldPos(x+1,y-1)->getFarbe())!=0
             && bewerteSteinFarbe(farbe,getFeldPos(x+2,y-2)->getFarbe())!= 0)
                 && (bewerteSteinFarbe(farbe,getFeldPos(x+3,y-3)->getFarbe())!= 0)){
-           wert += 1;
+           wert += 10;
 
             if((bewerteSteinFarbe(farbe,getFeldPos(x+1,y-1)->getFarbe()) == 2)){
-                wert *= 4;
+                wert *= 5;
             }
             if((bewerteSteinFarbe(farbe,getFeldPos(x+2,y-2)->getFarbe()) == 2)){
-               wert *= 4;
+               wert *= 5;
             }
             if((bewerteSteinFarbe(farbe,getFeldPos(x+3,y-3)->getFarbe()) == 2)){
-             wert *= 4;
+             wert *= 5;
             }
         }
     }
-    int wert5 = wert;
+    ergebnis += wert;
     wert = 0;
 
     if ((x+3 < spalten)&&(y+3 < zeilen)){
@@ -249,26 +278,27 @@ int Spielfeld::bewerteStein(int x, int y)
         if((bewerteSteinFarbe(farbe,getFeldPos(x+1,y+1)->getFarbe()) == 2
             && bewerteSteinFarbe(farbe,getFeldPos(x+2,y+2)->getFarbe()) == 2)
                 && (bewerteSteinFarbe(farbe,getFeldPos(x+3,y+3)->getFarbe()) == 2)){
-            wert+= 100000;
+            getFeldPos(x,y)->setWert(MAXWERT);
+            (farbe== ROT) ? this->rotWin = true : this->gelbWin = true;
         }
         if((bewerteSteinFarbe(farbe,getFeldPos(x+1,y+1)->getFarbe())!=0
             && bewerteSteinFarbe(farbe,getFeldPos(x+2,y+2)->getFarbe())!= 0)
                 && (bewerteSteinFarbe(farbe,getFeldPos(x+3,y+3)->getFarbe())!= 0)){
-            wert += 1;
+            wert += 10;
 
             if((bewerteSteinFarbe(farbe,getFeldPos(x+1,y+1)->getFarbe()) == 2)){
-               wert *= 4;
+               wert *= 5;
             }
             if((bewerteSteinFarbe(farbe,getFeldPos(x+2,y+2)->getFarbe()) == 2)){
-               wert *= 4;
+               wert *= 5;
             }
             if((bewerteSteinFarbe(farbe,getFeldPos(x+3,y+3)->getFarbe()) == 2)){
-             wert *= 4;
+             wert *= 5;
             }
         }
     }
 
-    int wert6 = wert;
+    ergebnis += wert;
     wert = 0;
 
    if ((y-3 >= 0)){
@@ -276,53 +306,55 @@ int Spielfeld::bewerteStein(int x, int y)
        if((bewerteSteinFarbe(farbe,getFeldPos(x,y-1)->getFarbe()) == 2
            && bewerteSteinFarbe(farbe,getFeldPos(x,y-2)->getFarbe()) == 2)
                && (bewerteSteinFarbe(farbe,getFeldPos(x,y-3)->getFarbe()) == 2)){
-           wert+= 100000;
+           getFeldPos(x,y)->setWert(MAXWERT);
+           (farbe== ROT) ? this->rotWin = true : this->gelbWin = true;
 
        }
        if((bewerteSteinFarbe(farbe,getFeldPos(x,y-1)->getFarbe())!=0
            && bewerteSteinFarbe(farbe,getFeldPos(x,y-2)->getFarbe())!= 0)
                && (bewerteSteinFarbe(farbe,getFeldPos(x,y-3)->getFarbe())!= 0)){
-            wert += 1;
+            wert += 10;
 
            if((bewerteSteinFarbe(farbe,getFeldPos(x,y-1)->getFarbe()) == 2)){
-               wert *= 4;
+               wert *= 5;
            }
            if((bewerteSteinFarbe(farbe,getFeldPos(x,y-2)->getFarbe()) == 2)){
-              wert *= 4;
+              wert *= 5;
            }
            if((bewerteSteinFarbe(farbe,getFeldPos(x,y-3)->getFarbe()) == 2)){
-           wert *= 4;
+           wert *= 5;
            }
        }
    }
-   int wert7 = wert;
+   ergebnis += wert;
    wert = 0;
    if ((y+3 < zeilen)){
 
        if((bewerteSteinFarbe(farbe,getFeldPos(x,y+1)->getFarbe()) == 2
            && bewerteSteinFarbe(farbe,getFeldPos(x,y+2)->getFarbe()) == 2)
                && (bewerteSteinFarbe(farbe,getFeldPos(x,y+3)->getFarbe()) == 2)){
-           wert+= 100000;
+           getFeldPos(x,y)->setWert(MAXWERT);
+           (farbe== ROT) ? this->rotWin = true : this->gelbWin = true;
 
        }
        if((bewerteSteinFarbe(farbe,getFeldPos(x,y+1)->getFarbe())!=0
            && bewerteSteinFarbe(farbe,getFeldPos(x,y+2)->getFarbe())!= 0)
                && (bewerteSteinFarbe(farbe,getFeldPos(x,y+3)->getFarbe())!= 0)){
-           wert += 1;
+           wert += 10;
 
            if((bewerteSteinFarbe(farbe,getFeldPos(x,y+1)->getFarbe()) == 2)){
-               wert *= 4;
+               wert *= 5;
            }
            if((bewerteSteinFarbe(farbe,getFeldPos(x,y+2)->getFarbe()) == 2)){
-              wert *= 4;
+              wert *= 5;
            }
            if((bewerteSteinFarbe(farbe,getFeldPos(x,y+3)->getFarbe()) == 2)){
-            wert *= 4;
+            wert *= 5;
            }
        }
    }
-   int wert8 = wert;
-   getFeldPos(x,y)->setWert(wert1+wert2+wert3+wert4+wert5+wert6+wert7+wert8);
+   ergebnis += wert;
+   getFeldPos(x,y)->setWert(ergebnis);
    return false;
 }
 
@@ -420,7 +452,7 @@ int Spielfeld::checkDiagonal(int farbe, int spalte) {
     }
     return false;
 }
-int Spielfeld::bewerteFarbe(int farbe, int spalte)
+int Spielfeld::bewerteFarbe(int farbe)
 {
     int wert = 0;
     for(int i = 0; i < zeilen;i++){
@@ -474,4 +506,3 @@ string Spielfeld::toString() const {
 
     return out.str();
 }
-

@@ -50,6 +50,10 @@ public:
 	void mehrspieler(string name1,string name2);
 
     void clear();
+
+    /**
+     * Erstellt das Spiel das ausgewaehlt wurde
+     */
     void erstelleSpiel();
 
 	virtual ~Menue();

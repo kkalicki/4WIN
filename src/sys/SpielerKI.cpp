@@ -26,22 +26,30 @@ void SpielerKI::denken()
 void *SpielerKI::starteDenkprozess(void *ptr)
 {
     SpielerKI* sp = ((SpielerKI*)ptr);
-
     unsigned short spalte;
-    do{
-        sp->besteSpalte = rand() % (sp->feld->getSpalten());
-    }while(sp->feld->getSpalteSteine(sp->besteSpalte) == sp->feld->getZeilen());
 
-    //int ergebnis = sp->pruefeZuege(sp);
-int ergebnis = -1;
+    int ergebnis = sp->pruefeZuege(sp); //Prinzipielle Pruefung auf Win und Block
     if (ergebnis >=0)
         sp->WerfeSteinSignal(ergebnis+1);
     else{
-        ergebnis = sp->denkeWeiter(sp,sp->feld->getSchwierigkeitsstufe(),sp->farbe,-10000000,10000000);
-            sp->WerfeSteinSignal(sp->besteSpalte+1);
-
+        if (sp->feld->getSchwierigkeitsstufe() == 0){ // Leicht wirft KI nur Random-Werte
+            do{
+                spalte = rand() % (sp->feld->getSpalten());
+            }while(sp->feld->getSpalteSteine(spalte) == sp->feld->getZeilen());
+            sp->WerfeSteinSignal(spalte+1);
+        }
+        else{
+            sp->denkeWeiter(sp,sp->feld->getSchwierigkeitsstufe(),sp->farbe,MINWERT,MAXWERT); //AlphaBeta
+            if (sp->feld->getSpalteSteine(sp->besteSpalte) < sp->feld->getZeilen())
+                sp->WerfeSteinSignal(sp->besteSpalte+1);
+            else{ // Falls kein guter Zug gefunden wurde -> Erkennt das jeder Zug zum verlust führt
+                do{
+                    spalte = rand() % (sp->feld->getSpalten());
+                }while(sp->feld->getSpalteSteine(spalte) == sp->feld->getZeilen());
+                sp->WerfeSteinSignal(spalte+1);
+            }
+        }
     }
-
 }
 
 int SpielerKI::pruefeZuege(SpielerKI* sp)
@@ -60,9 +68,9 @@ int SpielerKI::pruefeZuege(SpielerKI* sp)
             if (pruefeWinZug(sp->farbe,i,sp->feld)){
                 return i;
             }
-//            if (pruefeWinZug(gegnerFarbe,i,sp->feld)){ //zum Blocken
-//                block = i;
-//            }
+            if (pruefeWinZug(gegnerFarbe,i,sp->feld)){ //zum Blocken
+                block = i;
+            }
         }
     }
     return block;
@@ -83,50 +91,38 @@ int SpielerKI::denkeWeiter(SpielerKI *sp, int tiefe, unsigned short farbe, int a
 {
     unsigned short gegnerFarbe;
     (farbe == ROT) ? gegnerFarbe = GELB: gegnerFarbe = ROT;
+
+    // Ende Rekursion Bewertung jeder Endsituation
+    if (sp->feld->pruefeSpielfeld() || tiefe == 0 ){
+        int bewertung = sp->bewerteFeld(sp->feld, farbe, gegnerFarbe);
+        return bewertung;
+    }
+
+
     int maxWert = alpha;
-    int bewertung = 0;
-    int zeile=0;
-    int ergebnis;
     int aktuell;
     int wert;
 
-
-
-//    ergebnis = sp->pruefeZuege(sp);//WIN&BLOCK
-//    if (ergebnis != -1){
-//        maxWert = 10000000;
-//        if (tiefe == sp->feld->getSchwierigkeitsstufe()){
-//            sp->besteSpalte = ergebnis;
-//        }
-////        cout << "return WIN&BLOCK tiefe : " << tiefe << endl;
-//        return maxWert;
-//    }
-
-    // Ende Rekursion
-    if (sp->feld->pruefeSpielfeld() || tiefe == 0 ){
-        bewertung = sp->bewerteFeld(sp->feld, gegnerFarbe, farbe);
-        return bewertung;
-    }
     if (!sp->feld->pruefeSpielfeld()){
         for (int i = 0;i<sp->feld->getSpalten();i++){
             aktuell = feld->getSpalteSteine(i);
             if(aktuell < sp->feld->getZeilen()){
 
-                sp->feld->setFeldPos(i,aktuell,farbe);
-                if (feld->pruefeStein(farbe,0)){
-                    wert = 10000000;
+                sp->feld->setFeldPos(i,aktuell,farbe); //Wirft einen Teststein
+                if (feld->pruefeStein(farbe)){ // prueft ob der Stein zum Gewinn fuehrt
+                    wert = MAXWERT;
                 }
                 else{
-                    wert = -denkeWeiter(sp, tiefe-1, gegnerFarbe, -beta, -maxWert);
+                    wert = -denkeWeiter(sp, tiefe-1, gegnerFarbe, -beta, -maxWert); //bewertet die Beste Situation des gegner als eigene schlechteste
                 }
-                sp->feld->loescheStein(i,aktuell);
+                sp->feld->loescheStein(i,aktuell); //Loescht jeden gesetzten Stein wieder
                 if (wert > maxWert) {
                     maxWert = wert;
 
                     if (tiefe == sp->feld->getSchwierigkeitsstufe()){
                         cout << *feld << endl;
                         cout << i << endl;
-                        sp->besteSpalte = i;
+                        sp->besteSpalte = i; // Ueberschreibt die beste gefundene Spalte
                     }
                     if (maxWert >= beta)
                         break;
@@ -134,38 +130,40 @@ int SpielerKI::denkeWeiter(SpielerKI *sp, int tiefe, unsigned short farbe, int a
             }
         }
     }
-//    cout << "return denkeweiter tiefe : " << tiefe << endl;
     return maxWert;
 }
 
 int SpielerKI::bewerteFeld(Spielfeld *feld, unsigned short farbe, unsigned short gegnerFarbe)
 {
     int ergebnis = 0;
-//    ergebnis = feld->pruefeStein(gegnerFarbe,0);
-//    if (ergebnis){
-//        return -10000000;
-//    }
-//    ergebnis = feld->pruefeStein(farbe,0);
-//    if (ergebnis){
-//        return 10000000;
-//    }
 
     feld->bewerteSteine();
-//    ergebnis += feld->checkHorizontal(farbe,0);
-//    ergebnis -= feld->checkHorizontal(gegnerFarbe,0);
-//    ergebnis += feld->checkDiagonal(farbe,0);
-//    ergebnis -= feld->checkDiagonal(gegnerFarbe,0);
-//    ergebnis += feld->checkVertikal(farbe,0);
-//    ergebnis -= feld->checkVertikal(gegnerFarbe,0);
-    ergebnis = feld->bewerteFarbe(farbe,0);
-    int ergebnisGegner = feld->bewerteFarbe(gegnerFarbe,0);
+    if (farbe == ROT){
+        if (feld->getGelbWin()){
+            ergebnis =  MINWERT;
+        }
+        else{ if (feld->getRotWin())
+            ergebnis = MAXWERT;
+        }
+    }
+    else{
+        if (feld->getRotWin()){
+            ergebnis =  MINWERT;
+        }
+        else{ if (feld->getGelbWin())
+            ergebnis = MAXWERT;
+        }
+    }
 
+    feld->setRotWin(false);
+    feld->setGelbWin(false);
+    if (ergebnis!=0)
+        return ergebnis;
 
-//    if (ergebnis< ergebnisGegner){
-//        return -ergebnisGegner;
-//    }else{
+    ergebnis = feld->bewerteFarbe(farbe);
+    int ergebnisGegner = feld->bewerteFarbe(gegnerFarbe);
+
         return ergebnis - ergebnisGegner;
-//    }
 }
 
 SpielerKI::~SpielerKI() {

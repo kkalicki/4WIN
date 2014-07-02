@@ -67,40 +67,113 @@ public:
     int getSpalteSteine(int x) const{
         return aktuell[x];
     }
-    bool spalteVoll(int spalte){
-        if (getSpalteSteine(spalte) < this->zeilen )
-            return true;
-        return false;
-    }
 
+    /**
+     * Getter fuer die Anzahl der Spalten
+     * @return
+     */
     unsigned short getSpalten() const{
         return this->spalten;
     }
+
+    /**
+     * Getter fuer die Anzahl der Zeilen
+     * @return
+     */
     unsigned short getZeilen() const{
         return this->zeilen;
     }
+
+    /**
+     * Loescht einen Stein und zahlt die variable fur die Anzahl der Steine in der Spalte runter
+     * @param x
+     * @param y
+     */
     void loescheStein(int x, int y) {
         feld[y][x].setFarbe(2);
         aktuell[x]--;
     }
-    void loescheSteinSpalte(int spalte){
-        int zeile = this->getSpalteSteine(spalte);
-        if (zeile > 0)
-            loescheStein(spalte,(this->getSpalteSteine(spalte-1)));
-    }
 
-    unsigned short pruefeWurf(unsigned short farbe, unsigned short spalte);
+    /**
+     * Getter fuer den schwierigkeitsgrad
+     * @return
+     */
     unsigned short getSchwierigkeitsstufe() const;
+
+    /**
+     * Setter fuer den Schwierigkeitsgrad
+     * @param value
+     */
     void setSchwierigkeitsstufe(unsigned short value);
+
+    /**
+     * Prueft ob noch Zuege Moeglich sind
+     * @return
+     */
     bool pruefeSpielfeld();
+
+    /**
+     * Prueft ob ob die Farbe gewonnen hat
+     * @param farbe
+     * @param spalte
+     * @return
+     */
     int pruefeStein(int farbe, int spalte);
+
+    /**
+     * bewertet das Spielfeld
+     * @return
+     */
     int bewerteSteine();
+
+    /**
+     * bewertet den Stein mit allen umliegenden Richtugen und nachbarn
+     * @param x
+     * @param y
+     * @return
+     */
     int bewerteStein(int x, int y);
+
+    /**
+     * vergleicht zwei felder miteinander
+     * @param farbe
+     * @param steinFarbe
+     * @return
+     */
     int bewerteSteinFarbe(int farbe, int steinFarbe);
+
+    /**
+     * prueft alle horizontale verbindungen
+     * @param farbe
+     * @param spalte
+     * @return
+     */
     int checkHorizontal(int farbe, int spalte);
+
+    /**
+     * prueft alle vertikale verbindungen
+     * @param farbe
+     * @param spalte
+     * @return
+     */
     int checkVertikal(int farbe, int spalte);
+
+    /**
+     * prueft alle diagonale verbindungen
+     * @param farbe
+     * @param spalte
+     * @return
+     */
     int checkDiagonal(int farbe, int spalte);
-    int bewerteFarbe(int farbe, int spalte);
+
+    /**
+     * Addiert alle Werte der Steine einer Farbe
+     * @param farbe
+     * @param spalte
+     * @return
+     */
+    int bewerteFarbe(int farbe);
+
     /**
      * setzt einen Stein in das Feld
      * @param x wert der x-Achse
@@ -112,18 +185,44 @@ public:
         aktuell[x]++;
     }
 
+    /**
+     * Getter fuer rotWin
+     * @return
+     */
+    bool getRotWin() const;
+
+    /**
+     * Setter fuer rotWin
+     * @param value
+     */
+    void setRotWin(bool value);
+
+    /**
+     * Getter fuer gelbWin
+     * @return
+     */
+    bool getGelbWin() const;
+
+    /**
+     * Setter fuer gelbWin
+     * @param value
+     */
+    void setGelbWin(bool value);
+
 private:
 
     void init();
 
-	/**
-	 * das Spielfeld als mehrdimensionales Array
+    /**
+     * das Spielfeld als mehrdimensionales Array
 	 */
     Stein **feld;
     int *aktuell;
     unsigned short schwierigkeitsstufe;
     unsigned short zeilen;
     unsigned short spalten;
+    bool rotWin;
+    bool gelbWin;
 };
 
 #endif /* SPIELFELD_H_ */
