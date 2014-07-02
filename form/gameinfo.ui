@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>820</width>
-    <height>120</height>
+    <height>119</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -500,6 +500,19 @@
    </property>
    <property name="text">
     <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pbvmexit">
+   <property name="geometry">
+    <rect>
+     <x>503</x>
+     <y>91</y>
+     <width>81</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Beenden</string>
    </property>
   </widget>
  </widget>

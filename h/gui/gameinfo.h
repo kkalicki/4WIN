@@ -28,6 +28,7 @@ public:
     void unlock();
     void lockDisplaySp1();
     void lockDisplaySp2();
+    void visitorMode();
     void initPlayer(Spieler* player1,Spieler* player2);
     void changePlayer(Spieler* currentPlayer, unsigned short round, string lastMove);
     void initPlayerDisplays(Spieler* player1,Spieler* player2);

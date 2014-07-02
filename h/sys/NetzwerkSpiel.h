@@ -54,6 +54,8 @@ protected:
     string nameSpieler1;
     Spieler * remoteSpieler;
     bool visitorMode;
+    Spieler visitorSp1;
+    Spieler visitorSp2;
 };
 
 #endif // NETZWERKSPIEL_H

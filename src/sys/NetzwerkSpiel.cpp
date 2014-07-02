@@ -89,6 +89,7 @@ void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2,int gameId, bool visito
     if(!visitorMode){
         startTcpServer();
         this->sp2 = new Spieler(nameSpieler2);
+        this->visitorSp2 = *sp2;
         this->remoteSpieler = sp2;
         cout << "melde an..."<< endl;
         tcpClient->sendLoginRequest(nameSpieler2);
@@ -146,7 +147,7 @@ int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
     int rslt = Spiel::naechsterZug(spieler,spalte);
     tcpClient->sendMove(spalte);
 
-    VisitorPackage vp(sp1,sp2,historie,id);
+    VisitorPackage vp(&visitorSp1,&visitorSp2,historie,id);
     tcpClient->sendVisitorPackageBroadcast(&vp);
     return rslt;
 }
@@ -168,6 +169,7 @@ void NetzwerkSpiel::on_loginRequest(string loginPlayerName, string ip)
     cout << "Incoming to on_loginRequest() VALUE: " << loginPlayerName << endl;
     starteSpiel(nameSpieler1,loginPlayerName,false,false);
     this->remoteSpieler = sp1;
+    this->visitorSp1 = *sp1;
     tcpClient->setIpAddress(ip);
     this->tcpClient->sendLoginReply(sp1);
 

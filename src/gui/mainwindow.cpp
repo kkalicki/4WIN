@@ -148,7 +148,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
                 gameInfoWidget->setSysMsg("Warte auf Antwort...");
                 gameInfoWidget->lockDisplaySp1();
                 if(gameSettings->getVisitorMode())
-                    gameInfoWidget->lockDisplaySp2();
+                    gameInfoWidget->visitorMode();
                 initNetworkSignalSlot();
             break;
         default: // Do Nothing...

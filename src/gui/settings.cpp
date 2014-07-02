@@ -14,7 +14,6 @@ Settings::Settings(QWidget *parent) :
     this->openGameThread=0;
     this->helloServer = 0;
     this->guiThread = 0;
-
 }
 
 Settings::~Settings()
