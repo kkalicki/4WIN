@@ -1,7 +1,6 @@
 #include "ui_mainwindow.h"
 #include "../h/gui/mainwindow.h"
 #include "../h/gui/settings.h"
-#include "../h/gui/test.h"
 #include "../h/gui/gameinfo.h"
 #include "../h/gui/bord.h"
 #include "../h/sys/FourWinExceptions.h"

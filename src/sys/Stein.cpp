@@ -1,8 +1,6 @@
 /*
- * Stein.cpp
- *
- *  Created on: 19.04.2014
- *      Author: K
+ * Das Spielfeld besteht in diesem Spiel aus einem zweidimensionalen Array aus Steinen
+ * Der Stein besitzt einen Wert für die
  */
 
 #include "../h/sys/Stein.h"

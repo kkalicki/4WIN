@@ -10,6 +10,7 @@
 #include <string>
 #include "../h/sys/Konstanten.h"
 #include "../h/sys/Spielfeld.h"
+#include "../h/sys/Spieler.h"
 #include "../h/sys/Historie.h"
 #include "boost/signals2.hpp"
 #include <iostream>
