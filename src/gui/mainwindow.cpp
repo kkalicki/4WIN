@@ -362,13 +362,13 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
           guiGiveUpThread=0;
       }
 
-      if(guiMoveThread != 0){
-          guiMoveThread->terminate();
+     /* if(guiMoveThread != 0){
+          guiMoveThread->exit();
           guiMoveThread->wait();
           delete guiMoveThread;
           delete guiUpdaterThread;
           guiMoveThread=0;
-      }
+      }*/
       std::cout << "Nach guiGiveUpThread destruieren!" << endl;
 }
 
