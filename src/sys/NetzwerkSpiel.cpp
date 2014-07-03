@@ -8,6 +8,23 @@
 
 NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Spiel(zeilen,spalten)
 {
+    this->tcpClient = new TcpClient();
+    this->tcpServer = 0;
+    this->udpServer = 0;
+}
+
+NetzwerkSpiel::~NetzwerkSpiel()
+{
+    std::cout << "schließe Netzwerkspiel!!!" << endl;
+    stopTcpServer();
+    stopUdpServer();
+    delete tcpClient;
+    tcpClient=0;
+    std::cout << "Netzwerkspiel geschlossen!!!" << endl;
+}
+
+void NetzwerkSpiel::startTcpServer()
+{
     this->tcpServer = new TcpServer();
     dynamic_cast<TcpServer*>(tcpServer)->LoginRequestSignal.connect(boost::bind(&NetzwerkSpiel::on_loginRequest, this,_1,_2));
     dynamic_cast<TcpServer*>(tcpServer)->LoginReplySignal.connect(boost::bind(&NetzwerkSpiel::on_loginReply, this,_1));
@@ -16,35 +33,44 @@ NetzwerkSpiel::NetzwerkSpiel(unsigned short zeilen, unsigned short spalten) : Sp
     //dynamic_cast<TcpServer*>(tcpServer)->HelloReplySignal.connect(boost::bind(&NetzwerkSpiel::on_helloReply, this,_1));
     tcpServer->start();
 
+}
+
+void NetzwerkSpiel::stopTcpServer()
+{
+    if(tcpServer != 0){
+        dynamic_cast<TcpServer*>(tcpServer)->LoginRequestSignal.disconnect(&NetzwerkSpiel::on_loginRequest);
+        dynamic_cast<TcpServer*>(tcpServer)->LoginReplySignal.disconnect(&NetzwerkSpiel::on_loginReply);
+        dynamic_cast<TcpServer*>(tcpServer)->RemoteMoveSignal.disconnect(&NetzwerkSpiel::on_remoteMove);
+        dynamic_cast<TcpServer*>(tcpServer)->GiveUpSignal.disconnect(&NetzwerkSpiel::on_giveUp);
+
+        if(tcpServer->getIsActive())
+            tcpServer->stop();
+
+         delete tcpServer;
+        tcpServer = 0;
+    }
+}
+
+void NetzwerkSpiel::startUdpServer()
+{
     this->udpServer = new UdpServer();
     dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.connect(boost::bind(&NetzwerkSpiel::on_udpHello, this,_1));
     dynamic_cast<UdpServer*>(udpServer)->VisitorPackageSignal.connect(boost::bind(&NetzwerkSpiel::on_visitorPackage, this,_1));
     udpServer->start();
-
-    this->tcpClient = new TcpClient();
 }
 
-void NetzwerkSpiel::disconnectAllSignals()
+void NetzwerkSpiel::stopUdpServer()
 {
-    dynamic_cast<TcpServer*>(tcpServer)->LoginRequestSignal.disconnect(&NetzwerkSpiel::on_loginRequest);
-    dynamic_cast<TcpServer*>(tcpServer)->LoginReplySignal.disconnect(&NetzwerkSpiel::on_loginReply);
-    dynamic_cast<TcpServer*>(tcpServer)->RemoteMoveSignal.disconnect(&NetzwerkSpiel::on_remoteMove);
-    dynamic_cast<TcpServer*>(tcpServer)->GiveUpSignal.disconnect(&NetzwerkSpiel::on_giveUp);
-    dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.disconnect(&NetzwerkSpiel::on_udpHello);
-    dynamic_cast<UdpServer*>(udpServer)->VisitorPackageSignal.disconnect(&NetzwerkSpiel::on_visitorPackage);
-}
+    if(udpServer != 0){
+        dynamic_cast<UdpServer*>(udpServer)->UdpHelloSignal.disconnect(&NetzwerkSpiel::on_udpHello);
+        dynamic_cast<UdpServer*>(udpServer)->VisitorPackageSignal.disconnect(&NetzwerkSpiel::on_visitorPackage);
 
-NetzwerkSpiel::~NetzwerkSpiel()
-{
-    disconnectAllSignals();
+        if(udpServer->getIsActive())
+           udpServer->stop();
 
-    closeServer();
-    std::cout << "schließe Netzwerkspiel!!!" << endl;
-    delete tcpServer;
-    delete udpServer;
-    delete tcpClient;
-    tcpClient=0;
-    std::cout << "Netzwerkspiel geschlossen!!!" << endl;
+        delete udpServer;
+        udpServer = 0;
+    }
 }
 
 void NetzwerkSpiel::starteNetzwerkSpiel(string spielerName)
@@ -52,6 +78,8 @@ void NetzwerkSpiel::starteNetzwerkSpiel(string spielerName)
    cout << "starte Netzwerkspiel..."<< endl;
    this->nameSpieler1 = spielerName;
    this->visitorMode = false;
+   startTcpServer();
+   startUdpServer();
 }
 
 void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2,int gameId, bool visitorMode)
@@ -59,10 +87,14 @@ void NetzwerkSpiel::anmeldenNetzwerk(string nameSpieler2,int gameId, bool visito
     this->id = gameId;
     this->visitorMode = visitorMode;
     if(!visitorMode){
+        startTcpServer();
         this->sp2 = new Spieler(nameSpieler2);
         this->remoteSpieler = sp2;
         cout << "melde an..."<< endl;
         tcpClient->sendLoginRequest(nameSpieler2);
+    }
+    else{
+         startUdpServer();
     }
 }
 
@@ -87,6 +119,7 @@ void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
         sp2->setFarbe(ROT);
     }
 
+
     //finde heraus wer anfaengt!
     if(sp1->getIstAmZug())
     {
@@ -102,7 +135,8 @@ void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
     std::cout << "System ready!!!" << endl;
     std::cout << *sp1 << endl;
     std::cout << *sp2 << endl;
-
+    this->visitorSp1 = *sp1;
+    this->visitorSp2 = *sp2;
 
     //hier signal start...
     StartGameSignal();
@@ -111,10 +145,13 @@ void NetzwerkSpiel::rueckgabeSpielerInfo(Spieler spieler)
 int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
 {
     int rslt = Spiel::naechsterZug(spieler,spalte);
-    tcpClient->sendMove(spalte);
 
-    VisitorPackage vp(sp1,sp2,historie,id);
-    tcpClient->sendVisitorPackageBroadcast(&vp);
+    if(!visitorMode){
+        tcpClient->sendMove(spalte);
+
+        VisitorPackage vp(&visitorSp1,&visitorSp2,historie,id);
+        tcpClient->sendVisitorPackageBroadcast(&vp);
+    }
     return rslt;
 }
 
@@ -126,16 +163,8 @@ void NetzwerkSpiel::aufgeben()
 void NetzwerkSpiel::beenden()
 {
     Spiel::beenden();
-    closeServer();
-}
-
-void NetzwerkSpiel::closeServer()
-{
-    if(tcpServer->getIsActive())
-        tcpServer->stop();
-
-    if(udpServer->getIsActive())
-       udpServer->stop();
+    stopTcpServer();
+    stopUdpServer();
 }
 
 void NetzwerkSpiel::on_loginRequest(string loginPlayerName, string ip)
@@ -146,6 +175,8 @@ void NetzwerkSpiel::on_loginRequest(string loginPlayerName, string ip)
     tcpClient->setIpAddress(ip);
     this->tcpClient->sendLoginReply(sp1);
 
+    this->visitorSp1 = *sp1;
+    this->visitorSp2 = *sp2;
     //hier starte spiel...
     StartGameSignal();
 }
@@ -177,14 +208,27 @@ void NetzwerkSpiel::on_helloReply(HelloReply reply)
 
 void NetzwerkSpiel::on_visitorPackage(VisitorPackage vp)
 {
+    cout << "Incoming to on_visitorPackage VALUE: " << vp << endl;
+
+    if(sp1 == 0){
+         sp1 = new Spieler(vp.getSp1());
+         sp2 = new Spieler(vp.getSp2());
+         if(sp1->getIstAmZug()){
+            aktuellerSpieler = sp1;
+         }else{
+             aktuellerSpieler = sp2;
+         }
+         StartGameSignal();
+    }
+
     if(visitorMode){
         //pruefe ID obs die richtige ist...
-        int lastround = this->getHistorie()->getLetztenEintrag()->getRunde();
         if(vp.getGameId() == id){
-           for(int i = lastround; i < vp.getHistorie()->getHisList()->size(); i++){
-               unsigned int col = vp.getHistorie()->getEintragAt(i)->getSpalte();
-               on_remoteMove(col);
-           }
+            int lastround  = 0;
+            if(this->getHistorie()->getHisList()->size() > 0){
+                lastround = this->getHistorie()->getLetztenEintrag()->getRunde();
+            }
+            VisitorPackageSignal(vp,lastround);
         }
     }
 }
@@ -205,4 +249,6 @@ void NetzwerkSpiel::sendHello()
 {
     tcpClient->sendHelloBroadcast();
 }
+
+
 

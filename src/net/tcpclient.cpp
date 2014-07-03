@@ -108,7 +108,7 @@ void TcpClient::openConnectionBroadcast()
     udpsock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     int broadcastPermission = 1;
         if (setsockopt(udpsock, SOL_SOCKET, SO_BROADCAST, (void *) &broadcastPermission, sizeof(broadcastPermission)) < 0)
-            printf("setsockopt() failed");
+            throw ClientException("Client konnte keine UDP-Socketoptionen setzten");
 }
 
 void TcpClient::sendHelloBroadcast()
@@ -141,20 +141,20 @@ void TcpClient::sendVisitorPackageBroadcast(VisitorPackage* pack)
     o << *pack;
     int len= strlen(o.str().c_str());
 
-    cout << "VisitorPackage als String" << endl;
-    cout << o.str() << endl;
+    //cout << "VisitorPackage als String" << endl;
+    //cout << o.str() << endl;
 
-    cout << "VisitorPackage in Object to String" << endl;
-    VisitorPackage test;
-    test.fromStream(o.str());
-    cout << test << endl;
+    //cout << "VisitorPackage in Object to String" << endl;
+    //VisitorPackage test;
+    //test.fromStream(o.str());
+    //cout << test << endl;
 
-    //openConnectionBroadcast();
-    //sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
-    //sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
-    //sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
-
-    //close(udpsock);
+    openConnectionBroadcast();
+    sendto(udpsock,&networkMessage,sizeof(NetworkMessage),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+    sendto(udpsock,(char*) &len,sizeof(int),MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+    sendto(udpsock,o.str().c_str(),len,MSG_SEND,(struct sockaddr*)&address, sizeof(address));
+    close(udpsock);
+    cout<< "VISITORPACKAGE gesendet!"<< endl;
 }
 
 void TcpClient::sendHelloReply(string ip, HelloReply *reply)

@@ -24,24 +24,29 @@ public:
     virtual void aufgeben();
     virtual void beenden();
 
-    void disconnectAllSignals();
-
     void sendHello();
-    void closeServer();
+
+    void startTcpServer();
+    void stopTcpServer();
+
+    void startUdpServer();
+    void stopUdpServer();
 
     void on_loginRequest(string loginPlayerName,string ip);
     void on_loginReply(Spieler spieler);
     void on_remoteMove(unsigned short column);
     void on_giveUp();
     void on_helloReply(HelloReply reply);
-    void on_visitorPackage(VisitorPackage vp);
 
+
+    void on_visitorPackage(VisitorPackage vp);
     void on_udpHello(string remoteIp);
 
     boost::signals2::signal<void(unsigned short, int)> RemoteMoveSignal;
     boost::signals2::signal<void()> StartGameSignal;
     boost::signals2::signal<void(Spieler*,bool)> GiveUpRemotePlayerSignal;
     boost::signals2::signal<void(HelloReply)> HelloReplySignal;
+    boost::signals2::signal<void(VisitorPackage,int)> VisitorPackageSignal;
 
 protected:
     Server4Win* tcpServer;
@@ -50,6 +55,8 @@ protected:
     string nameSpieler1;
     Spieler * remoteSpieler;
     bool visitorMode;
+    Spieler visitorSp1;
+    Spieler visitorSp2;
 };
 
 #endif // NETZWERKSPIEL_H

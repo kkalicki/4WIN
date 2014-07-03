@@ -54,6 +54,7 @@ void MainWindow::init()
     this->giveUpThread = 0;
 
     connect( gameInfoWidget, SIGNAL(loose(Spieler*,bool)), this, SLOT(on_endGame(Spieler*,bool)));
+    connect( gameInfoWidget, SIGNAL(exitVmMode()), this, SLOT(on_exitVisitorMode()));
 }
 
 void MainWindow::load4WinWidgets()
@@ -146,6 +147,8 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
                 dynamic_cast<NetzwerkSpiel*>(game)->anmeldenNetzwerk(gameSettings->getPlayer2Name(),gameSettings->getGameId(),gameSettings->getVisitorMode());
                 gameInfoWidget->setSysMsg("Warte auf Antwort...");
                 gameInfoWidget->lockDisplaySp1();
+                if(gameSettings->getVisitorMode())
+                    gameInfoWidget->visitorMode();
                 initNetworkSignalSlot();
             break;
         default: // Do Nothing...
@@ -165,6 +168,7 @@ void MainWindow::on_resultSettings(GameSettings* gameSettings)
 void MainWindow::initNetworkSignalSlot()
 {
     dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.connect(boost::bind(&MainWindow::incommingMove, this,_1,_2));
+    dynamic_cast<NetzwerkSpiel*>(game)->VisitorPackageSignal.connect(boost::bind(&MainWindow::incommingVp, this,_1,_2));
     dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.connect(boost::bind(&MainWindow::startGame, this));
     dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.connect(boost::bind(&MainWindow::incommingGiveUp, this,_1,_2));
 }
@@ -172,6 +176,7 @@ void MainWindow::initNetworkSignalSlot()
 void MainWindow::killNetworkSignalSlot()
 {
     dynamic_cast<NetzwerkSpiel*>(game)->RemoteMoveSignal.disconnect(&MainWindow::incommingMove);
+    dynamic_cast<NetzwerkSpiel*>(game)->VisitorPackageSignal.disconnect(&MainWindow::incommingVp);
     dynamic_cast<NetzwerkSpiel*>(game)->StartGameSignal.disconnect(&MainWindow::startGame);
     dynamic_cast<NetzwerkSpiel*>(game)->GiveUpRemotePlayerSignal.disconnect(&MainWindow::incommingGiveUp);
 }
@@ -205,10 +210,15 @@ void MainWindow::lockBoad()
             }
         break;
     case JOIN:
-            if(game->getSp2()->getIstAmZug()){
-                bordWidget->setIsLocked(false);
-            }
-            else{
+            if(!gameSettings->getVisitorMode()){
+                if(game->getSp2()->getIstAmZug()){
+                    bordWidget->setIsLocked(false);
+                }
+                else{
+                    bordWidget->setIsLocked(true);
+                }
+            }else
+            {
                 bordWidget->setIsLocked(true);
             }
         break;
@@ -224,11 +234,18 @@ void MainWindow::startGame()
     preExecute();
     lockBoad();
 
-    switch(gameSettings->getNetworkMode()){
-    case OPEN:gameInfoWidget->lockDisplaySp2();
-        break;
-    case JOIN:gameInfoWidget->lockDisplaySp1();
-        break;
+    if(!gameSettings->getVisitorMode()){
+        switch(gameSettings->getNetworkMode()){
+        case OPEN:gameInfoWidget->lockDisplaySp2();
+            break;
+        case JOIN:gameInfoWidget->lockDisplaySp1();
+            break;
+        }
+    }
+    else
+    {
+        gameInfoWidget->lockDisplaySp1();
+        gameInfoWidget->lockDisplaySp2();
     }
 }
 
@@ -354,6 +371,15 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
       std::cout << "Nach guiGiveUpThread destruieren!" << endl;
 }
 
+void MainWindow::on_exitVisitorMode()
+{
+    postExecute();
+    if(game != 0){
+         delete game;
+         game=0;
+    }
+}
+
 void MainWindow::incommingMove(unsigned short column,int row)
 {
     guiMoveThread = new QThread;
@@ -364,6 +390,17 @@ void MainWindow::incommingMove(unsigned short column,int row)
     connect(guiUpdaterThread, SIGNAL(updateGui(unsigned short,int)), this, SLOT(update(unsigned short, int)));
     guiMoveThread->start();
 
+}
+
+void MainWindow::incommingVp(VisitorPackage vp, int lastround)
+{
+    guiVpThread = new QThread;
+    visitorThread = new VisitorThread(vp,lastround);
+    visitorThread->moveToThread(guiVpThread);
+    connect(guiVpThread, SIGNAL(started()), visitorThread, SLOT(process()));
+    //connect(guiVpThread, SIGNAL(finished()), this, SLOT(stopMoveThread()));
+    connect(visitorThread, SIGNAL(updateGui(unsigned short)), this, SLOT(on_executeMove(unsigned short)));
+    guiVpThread->start();
 }
 
 void MainWindow::incommingGiveUp(Spieler *remoteSpieler, bool giveUp)

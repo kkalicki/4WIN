@@ -34,6 +34,7 @@ void GameInfo::init()
     this->setFixedSize(this->size().width(),this->size().height());
     ui->lblleft->setVisible(false);
     ui->lblright->setVisible(false);
+    ui->pbvmexit->setVisible(false);
     timer = 0;
     timerWorker = 0;
     timePlayer1 = 0;
@@ -85,6 +86,7 @@ void GameInfo::postExecute()
     }
     ui->lblleft->setVisible(false);
     ui->lblright->setVisible(false);
+    ui->pbvmexit->setVisible(false);
 }
 
 void GameInfo::lock()
@@ -111,7 +113,13 @@ void GameInfo::lockDisplaySp1()
 
 void GameInfo::lockDisplaySp2()
 {
-     ui->gbdisplaysp2->setEnabled(false);
+    ui->gbdisplaysp2->setEnabled(false);
+}
+
+void GameInfo::visitorMode()
+{
+   ui->pbvmexit->setVisible(true);
+   lockDisplaySp2();
 }
 
 void GameInfo::initPlayer(Spieler *player1,Spieler* player2)
@@ -277,4 +285,9 @@ string GameInfo::convertMillToTime(unsigned long ms)
     rslt << std << ":" << min << ":" << sec;
 
     return rslt.str();
+}
+
+void GameInfo::on_pbvmexit_clicked()
+{
+    emit exitVmMode();
 }
