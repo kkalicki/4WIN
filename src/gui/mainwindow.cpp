@@ -51,6 +51,7 @@ void MainWindow::init()
     load4WinWidgets();
     this->game = 0;
     this->guiUpdaterThread = 0;
+    this->guiMoveThread=0;
     this->giveUpThread = 0;
 
     connect( gameInfoWidget, SIGNAL(loose(Spieler*,bool)), this, SLOT(on_endGame(Spieler*,bool)));
@@ -361,13 +362,13 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
           guiGiveUpThread=0;
       }
 
-     /* if(guiMoveThread != 0){
-          guiMoveThread->exit();
+     if(guiMoveThread != 0){
+          guiMoveThread->terminate();
           guiMoveThread->wait();
           delete guiMoveThread;
           delete guiUpdaterThread;
           guiMoveThread=0;
-      }*/
+      }
       std::cout << "Nach guiGiveUpThread destruieren!" << endl;
 }
 

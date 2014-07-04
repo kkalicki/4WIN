@@ -171,6 +171,7 @@ void NetzwerkSpiel::on_loginRequest(string loginPlayerName, string ip)
 {
     cout << "Incoming to on_loginRequest() VALUE: " << loginPlayerName << endl;
     starteSpiel(nameSpieler1,loginPlayerName,false,false);
+    stopUdpServer();
     this->remoteSpieler = sp1;
     tcpClient->setIpAddress(ip);
     this->tcpClient->sendLoginReply(sp1);
