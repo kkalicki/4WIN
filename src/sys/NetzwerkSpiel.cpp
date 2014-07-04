@@ -158,6 +158,7 @@ int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
 void NetzwerkSpiel::aufgeben()
 {
     tcpClient->sendGiveUp();
+    beenden();
 }
 
 void NetzwerkSpiel::beenden()
