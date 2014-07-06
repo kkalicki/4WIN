@@ -57,9 +57,13 @@ void MainWindow::init()
     //Movethread init
     this->guiMoveThread=0;
     this->guiUpdaterThread = 0;
+<<<<<<< HEAD
 
     //Giveuphtread init
     this->guiGiveUpThread=0;
+=======
+    this->guiMoveThread=0;
+>>>>>>> 0fe6d77561603c9c1c58e42414c5c6dc7de91ae4
     this->giveUpThread = 0;
 
     //VisitorThread init
@@ -352,6 +356,7 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
              game=0;
         }
 
+<<<<<<< HEAD
           std::cout << "Nach GAME destruieren!" << endl;
 
            if(guiGiveUpThread != 0)
@@ -394,6 +399,33 @@ void MainWindow::on_endGame(Spieler* winner,bool giveUp)
      catch(exception& e){
           showException(e);
      }
+=======
+   if(game != 0)
+   {
+        delete game;
+        game=0;
+   }
+
+     std::cout << "Nach GAME destruieren!" << endl;
+
+      if(guiGiveUpThread != 0)
+      {
+          guiGiveUpThread->terminate();
+          guiGiveUpThread->wait();
+          delete guiGiveUpThread;
+          delete giveUpThread;
+          guiGiveUpThread=0;
+      }
+
+     if(guiMoveThread != 0){
+          guiMoveThread->terminate();
+          guiMoveThread->wait();
+          delete guiMoveThread;
+          delete guiUpdaterThread;
+          guiMoveThread=0;
+      }
+      std::cout << "Nach guiGiveUpThread destruieren!" << endl;
+>>>>>>> 0fe6d77561603c9c1c58e42414c5c6dc7de91ae4
 }
 
 void MainWindow::on_exitVisitorMode()
