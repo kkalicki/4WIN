@@ -12,6 +12,9 @@
 #include "boost/signals2.hpp"
 #include <pthread.h>
 
+/**
+ * Die KI des Spiels, erbt von der Klasse Spieler. Startet einen eigenen Thread um den Algorithmus zur Zugermittlung zu starten.
+ */
 class SpielerKI : public Spieler{
 public:
     /**

@@ -13,6 +13,9 @@
 
 using namespace std;
 
+/**
+ * Der Spieler besitzt eine Farbe und einen Namen. Der Spieler kann ueberprueft werden, ob er dran ist und ob er ein realer Spieler ist oder KI
+ */
 class Spieler {
 public:
     /**

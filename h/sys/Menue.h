@@ -14,6 +14,9 @@
 
 using namespace std;
 
+/**
+ * Menuestruktur zur Steuerung mit der Konsole
+ */
 class Menue {
 public:
 

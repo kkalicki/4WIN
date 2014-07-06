@@ -10,6 +10,10 @@
 
 using namespace std;
 
+/**
+ * Die NetzwerkSpiel-Klasse dient zur eröffnung eines Netzwerkspiels. zusätzlich bietet das Netzwerkspiel noch einen Besuchermodus.
+ * Die Klasse erbt von der Klasse Spiel.
+ */
 class NetzwerkSpiel : public Spiel
 {
 public:

@@ -1,10 +1,3 @@
-/*
- * Stein.h
- *
- *  Created on: 19.04.2014
- *      Author: K
- */
-
 #ifndef STEIN_H_
 #define STEIN_H_
 #include <string>
@@ -13,6 +6,10 @@
 
 using namespace std;
 
+/**
+ * Der Stein des Spielfeldes. Nimmt die Farbe eines Spielers an. Besitzt einen Wert, wie gut der Stein in Bezug zu seinen umliegenden Nachbarn ist
+ * zur
+ */
 class Stein {
 public:
 	/**

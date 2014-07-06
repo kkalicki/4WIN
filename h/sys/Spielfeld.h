@@ -15,6 +15,11 @@
 
 using namespace std;
 
+/**
+ * The Spielfeld class
+ * Die Spielfeldklasse Besteht aus einem zweidimensionalen Array des Typs Stein.
+ * Spieler werfen Ihre Steine in das Spielfeld. Das Spielfeld besitzt die Spiellogik, Gewinnprüfung und Bewertungsmechanismen.
+ */
 class Spielfeld {
 public:
 	/**

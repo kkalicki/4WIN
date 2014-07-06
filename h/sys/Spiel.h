@@ -15,6 +15,11 @@
 #include "boost/signals2.hpp"
 #include <iostream>
 
+/**
+ * Die Spielklasse dient dem kompletten Handling des Spiels. Von hier aus wird das Spiel gestartet, beendet und alles erstellt, was für das Spiel gebraucht wird.
+ * Zentrales Element der Implementierung.
+ *
+ */
 class Spiel {
 
 public:
