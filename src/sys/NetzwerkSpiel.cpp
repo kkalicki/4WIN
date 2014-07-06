@@ -149,8 +149,8 @@ int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
     if(!visitorMode){
         tcpClient->sendMove(spalte);
 
-        VisitorPackage vp(&visitorSp1,&visitorSp2,historie,id);
-        tcpClient->sendVisitorPackageBroadcast(&vp);
+        //VisitorPackage vp(&visitorSp1,&visitorSp2,historie,id);
+        //tcpClient->sendVisitorPackageBroadcast(&vp);
     }
     return rslt;
 }
@@ -174,7 +174,7 @@ void NetzwerkSpiel::on_loginRequest(string loginPlayerName, string ip)
 {
     cout << "Incoming to on_loginRequest() VALUE: " << loginPlayerName << endl;
     starteSpiel(nameSpieler1,loginPlayerName,false,false);
-    //stopUdpServer();
+    stopUdpServer();
     this->remoteSpieler = sp1;
     tcpClient->setIpAddress(ip);
     this->tcpClient->sendLoginReply(sp1);

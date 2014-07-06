@@ -414,7 +414,6 @@ void MainWindow::incommingMove(unsigned short column,int row)
     connect(guiUpdaterThread, SIGNAL(finished()), this, SLOT(stopMoveThread()));
     connect(guiUpdaterThread, SIGNAL(updateGui(unsigned short,int)), this, SLOT(update(unsigned short, int)));
     guiMoveThread->start();
-
 }
 
 void MainWindow::incommingVp(VisitorPackage vp, int lastround)
@@ -443,8 +442,7 @@ void MainWindow::stopMoveThread()
 {
     if(guiMoveThread != 0){
        guiMoveThread->terminate();
-        guiMoveThread=0;
-        guiUpdaterThread=0;
+       guiMoveThread->quit();
     }
 }
 
