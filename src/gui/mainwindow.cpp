@@ -39,6 +39,9 @@ MainWindow::~MainWindow()
     if(giveUpThread == 0)
         delete giveUpThread;
 
+    if(visitorThread == 0)
+        delete visitorThread;
+
     delete ui;
 }
 
@@ -50,9 +53,18 @@ void MainWindow::init()
     this->setStyleSheet("MainWindow {border-image: url(:/image/back3.png); };");
     load4WinWidgets();
     this->game = 0;
-    this->guiUpdaterThread = 0;
+
+    //Movethread init
     this->guiMoveThread=0;
+    this->guiUpdaterThread = 0;
+
+    //Giveuphtread init
+    this->guiGiveUpThread=0;
     this->giveUpThread = 0;
+
+    //VisitorThread init
+    this->visitorThread=0;
+    this->guiVpThread = 0;
 
     connect( gameInfoWidget, SIGNAL(loose(Spieler*,bool)), this, SLOT(on_endGame(Spieler*,bool)));
     connect( gameInfoWidget, SIGNAL(exitVmMode()), this, SLOT(on_exitVisitorMode()));
@@ -266,6 +278,15 @@ void MainWindow::on_executeMove(unsigned short column)
     catch(SpielFeldException& e){
         showException(e);
     }
+    catch(ClientException& e){
+        showException(e);
+    }
+    catch(Server4WinException& e){
+        showException(e);
+    }
+    catch(exception& e){
+         showException(e);
+    }
 }
 
 void MainWindow::update(unsigned short column, int result)
@@ -296,80 +317,83 @@ void MainWindow::update(unsigned short column, int result)
     std::cout << "Nach guiMoveThread destruieren!" << endl;
 }
 
-void MainWindow::stopMoveThread()
-{
-    if(guiMoveThread != 0){
-        guiMoveThread->quit();
-        guiMoveThread=0;
-    }
-
-    std::cout << "Nach stopMoveThread destruieren!" << endl;
-
-}
-
-void MainWindow::stopGiveUpThread()
-{
-   if(guiGiveUpThread != 0)
-    {
-        guiGiveUpThread->quit();
-        guiGiveUpThread=0;
-    }
-    std::cout << "Nach guiGiveUpThread destruieren!" << endl;
-}
-
 void MainWindow::on_endGame(Spieler* winner,bool giveUp)
 {
 
-    postExecute();
+     postExecute();
 
-    if(giveUp)
-        game->aufgeben();
+     try{
+         if(giveUp)
+             game->aufgeben();
 
-    if(winner == 0)
-    {
-        //UNENTSCHIEDEN...
-        QMessageBox msg;
-        msg.setText("Unentschieden!");
-        msg.exec();
-    }
-    else
-    {
-        //Gewonnen
-        //MessageBox show!!!!! sound abspielen: WE ARE THE CHAMPIONS :-D
-        QMessageBox msg;
-        string strmsg = winner->getName() + " hat gewonnen!";
-        msg.setText(QString::fromStdString(strmsg));
-        msg.exec();
-    }
+         if(winner == 0)
+         {
+             //UNENTSCHIEDEN...
+             QMessageBox msg;
+             msg.setText("Unentschieden!");
+             msg.exec();
+         }
+         else
+         {
+             //Gewonnen
+             //MessageBox show!!!!! sound abspielen: WE ARE THE CHAMPIONS :-D
+             QMessageBox msg;
+             string strmsg = winner->getName() + " hat gewonnen!";
+             msg.setText(QString::fromStdString(strmsg));
+             msg.exec();
+         }
 
-    if(gameSettings->getNetworkMode() == JOIN ||  gameSettings->getNetworkMode() == OPEN)
-        killNetworkSignalSlot();
+         if(gameSettings->getNetworkMode() == JOIN ||  gameSettings->getNetworkMode() == OPEN)
+             killNetworkSignalSlot();
 
-   if(game != 0)
-   {
-        delete game;
-        game=0;
-   }
+        if(game != 0)
+        {
+             delete game;
+             game=0;
+        }
 
-     std::cout << "Nach GAME destruieren!" << endl;
+          std::cout << "Nach GAME destruieren!" << endl;
 
-      if(guiGiveUpThread != 0)
-      {
-          guiGiveUpThread->terminate();
-          guiGiveUpThread->wait();
-          delete guiGiveUpThread;
-          delete giveUpThread;
-          guiGiveUpThread=0;
-      }
+           if(guiGiveUpThread != 0)
+           {
+               guiGiveUpThread->terminate();
+               guiGiveUpThread->wait();
+               delete guiGiveUpThread;
+               delete giveUpThread;
+               guiGiveUpThread=0;
+           }
 
-     if(guiMoveThread != 0){
-          guiMoveThread->terminate();
-          guiMoveThread->wait();
-          delete guiMoveThread;
-          delete guiUpdaterThread;
-          guiMoveThread=0;
-      }
-      std::cout << "Nach guiGiveUpThread destruieren!" << endl;
+          if(guiMoveThread != 0){
+               guiMoveThread->terminate();
+               guiMoveThread->wait();
+               delete guiMoveThread;
+               delete guiUpdaterThread;
+               guiMoveThread=0;
+           }
+
+          if(guiVpThread != 0){
+               guiVpThread->terminate();
+               guiVpThread->wait();
+               delete guiVpThread;
+               delete visitorThread;
+               guiVpThread=0;
+               visitorThread=0;
+           }
+           std::cout << "Nach guiGiveUpThread destruieren!" << endl;
+     }
+     catch(TcpServerException& e){
+         showException(e);
+
+     }catch(ClientException& e){
+          showException(e);
+
+     }catch(Server4WinException& e){
+         showException(e);
+
+     }
+     catch(exception& e){
+          showException(e);
+     }
 }
 
 void MainWindow::on_exitVisitorMode()
@@ -387,7 +411,7 @@ void MainWindow::incommingMove(unsigned short column,int row)
     guiUpdaterThread = new MoveThread(column,row);
     guiUpdaterThread->moveToThread(guiMoveThread);
     connect(guiMoveThread, SIGNAL(started()), guiUpdaterThread, SLOT(process()));
-    connect(guiMoveThread, SIGNAL(finished()), this, SLOT(stopMoveThread()));
+    connect(guiUpdaterThread, SIGNAL(finished()), this, SLOT(stopMoveThread()));
     connect(guiUpdaterThread, SIGNAL(updateGui(unsigned short,int)), this, SLOT(update(unsigned short, int)));
     guiMoveThread->start();
 
@@ -399,7 +423,7 @@ void MainWindow::incommingVp(VisitorPackage vp, int lastround)
     visitorThread = new VisitorThread(vp,lastround);
     visitorThread->moveToThread(guiVpThread);
     connect(guiVpThread, SIGNAL(started()), visitorThread, SLOT(process()));
-    //connect(guiVpThread, SIGNAL(finished()), this, SLOT(stopMoveThread()));
+    connect(visitorThread, SIGNAL(finished()), this, SLOT(stopVpThread()));
     connect(visitorThread, SIGNAL(updateGui(unsigned short)), this, SLOT(on_executeMove(unsigned short)));
     guiVpThread->start();
 }
@@ -410,9 +434,37 @@ void MainWindow::incommingGiveUp(Spieler *remoteSpieler, bool giveUp)
     giveUpThread = new GiveUpThread(remoteSpieler,giveUp);
     giveUpThread->moveToThread(guiGiveUpThread);
     connect(guiGiveUpThread, SIGNAL(started()), giveUpThread, SLOT(process()));
-    connect(guiGiveUpThread, SIGNAL(finished()), this, SLOT(stopGiveUpThread()));
+    connect(giveUpThread, SIGNAL(finished()), this, SLOT(stopGiveUpThread()));
     connect(giveUpThread, SIGNAL(updateGui(Spieler*,bool)), this, SLOT(on_endGame(Spieler*, bool)));
     guiGiveUpThread->start();
+}
+
+void MainWindow::stopMoveThread()
+{
+    if(guiMoveThread != 0){
+       guiMoveThread->terminate();
+        guiMoveThread=0;
+        guiUpdaterThread=0;
+    }
+}
+
+void MainWindow::stopGiveUpThread()
+{
+   if(guiGiveUpThread != 0){
+        guiGiveUpThread->terminate();
+        guiGiveUpThread=0;
+        giveUpThread=0;
+    }
+}
+
+void MainWindow::stopVpThread()
+{
+   if(guiVpThread != 0){
+        guiVpThread->terminate();
+        guiVpThread=0;
+        visitorThread=0;
+    }
+    std::cout << "Nach stopVpThread destruieren!" << endl;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

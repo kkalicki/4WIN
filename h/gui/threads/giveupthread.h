@@ -33,6 +33,7 @@ signals:
      * @param giveUp        Parameter, der für die GUI zwingend erforderlich ist.
      */
     void updateGui(Spieler* remotePlayer, bool giveUp);
+    void finished();
 private:
     /**
      * @brief remotePlayer

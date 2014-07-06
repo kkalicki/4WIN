@@ -35,6 +35,7 @@ signals:
      * Signal, welches die Funktion, on_incomingMove in der GUI ausloest
      */
     void updateGui(unsigned short column, int row);
+    void finished();
 
 private:
     /**

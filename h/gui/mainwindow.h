@@ -137,6 +137,8 @@ private slots:
      */
     void stopGiveUpThread();
 
+    void stopVpThread();
+
     /**
      * @brief incommingMove Funktion, um einen Zug aus dem System zu taetigen. KISpieler, RemoteSpieler
      * @param column Spalte in die geworfen wird
@@ -207,6 +209,7 @@ private:
      * @brief visitorThread Thread der die Informationen fuer den Zuschauermodus verarbeitet
      */
     VisitorThread *visitorThread;
+
     QThread * guiMoveThread;
     QThread * guiGiveUpThread;
     QThread * guiVpThread;

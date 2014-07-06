@@ -18,4 +18,5 @@ void VisitorThread::process()
         unsigned short col = vp.getHistorie()->getEintragAt(i)->getSpalte();
         updateGui(col);
     }
+    emit finished();
 }

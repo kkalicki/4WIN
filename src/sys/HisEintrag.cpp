@@ -1,6 +1,9 @@
 
 #include "../h/sys/HisEintrag.h"
+#include "../h/sys/FourWinExceptions.h"
 #include <sstream>
+#include <iostream>
+using namespace std;
 
 HisEintrag::HisEintrag()
 {
@@ -76,23 +79,45 @@ void HisEintrag::fromCsvString(string csvString)
     char *ptr;
 
     ptr = strtok(buffer, delimiter1);
-    this->spieler = new Spieler();
+    if(ptr == NULL){
+        cout << "Fehler beim parsen des Spielers (HisEintrag)" << endl;
+        throw Server4WinException("Fehler beim parsen des Spielers (HisEintrag)");
+    }
+
     string spstr = ptr;
 
     ptr = strtok(NULL, delimiter1);
+    if(ptr == NULL){
+        cout << "Fehler beim parsen des Hisvalue (HisEintrag)" << endl;
+        throw Server4WinException("Fehler beim parsen des Spielers (HisEintrag)");
+    }
+
     string hisValues(ptr);
     char * buffer2 = new char[hisValues.length()];
     strcpy(buffer2,hisValues.c_str());
 
     ptr = strtok(buffer2, delimiter2);
+    if(ptr == NULL){
+        cout << "Fehler beim parsen der zeile (HisEintrag)" << endl;
+        throw Server4WinException("Fehler beim parsen des Spielers (HisEintrag)");
+    }
     this->zeile = atoi(ptr);
 
     ptr = strtok(NULL, delimiter2);
+    if(ptr == NULL){
+        cout << "Fehler beim parsen der spalte (HisEintrag)" << endl;
+        throw Server4WinException("Fehler beim parsen des Spielers (HisEintrag)");
+    }
     this->spalte = atoi(ptr);
 
     ptr = strtok(NULL, delimiter2);
+    if(ptr == NULL){
+        cout << "Fehler beim parsen der runde (HisEintrag)" << endl;
+        throw Server4WinException("Fehler beim parsen des Spielers (HisEintrag)");
+    }
     this->runde = atoi(ptr);
 
+    this->spieler = new Spieler();
     spieler->fromCsvString(spstr);
 }
 

@@ -10,4 +10,5 @@ GiveUpThread::GiveUpThread(Spieler *remotePlayer, bool giveUp)
 void GiveUpThread::process()
 {
     emit updateGui(remotePlayer,giveUp);
+    emit finished();
 }

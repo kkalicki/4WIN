@@ -265,6 +265,8 @@ void Settings::openGamesUpdate(HelloReply* incomingVal)
 
     if(guiThread != 0){
         guiThread->terminate();
+        guiThread=0;
+        openGameThread=0;
     }
 
 }

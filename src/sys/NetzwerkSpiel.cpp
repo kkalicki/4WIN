@@ -157,7 +157,9 @@ int NetzwerkSpiel::naechsterZug(Spieler *spieler, unsigned short spalte)
 
 void NetzwerkSpiel::aufgeben()
 {
-    tcpClient->sendGiveUp();
+    if(!visitorMode)
+        tcpClient->sendGiveUp();
+
     beenden();
 }
 
@@ -172,7 +174,7 @@ void NetzwerkSpiel::on_loginRequest(string loginPlayerName, string ip)
 {
     cout << "Incoming to on_loginRequest() VALUE: " << loginPlayerName << endl;
     starteSpiel(nameSpieler1,loginPlayerName,false,false);
-    stopUdpServer();
+    //stopUdpServer();
     this->remoteSpieler = sp1;
     tcpClient->setIpAddress(ip);
     this->tcpClient->sendLoginReply(sp1);

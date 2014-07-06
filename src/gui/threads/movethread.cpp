@@ -9,5 +9,6 @@ MoveThread::MoveThread(unsigned short column, int row)
 
 void MoveThread::process()
 {
-     emit updateGui(column, row);
+    emit updateGui(column, row);
+    emit finished();
 }

@@ -6,6 +6,7 @@
  */
 
 #include "../h/sys/Spieler.h"
+#include "../h/sys/FourWinExceptions.h"
 #include <sstream>
 #include <cstring>
 
@@ -33,12 +34,24 @@ void Spieler::fromCsvString(string csv)
     char *ptr;
 
     ptr = strtok(buffer, delimiter);
+    if(ptr == NULL){
+        cout << "Fehler beim parsen des names (SPieler)" << endl;
+        throw Server4WinException("Fehler beim parsen des names (HisEintrag)");
+    }
     this->name = ptr;
 
     ptr = strtok(NULL, delimiter);
+    if(ptr == NULL){
+        cout << "Fehler beim parsen der farbe (SPieler)" << endl;
+        throw Server4WinException("Fehler beim parsen des farbe (HisEintrag)");
+    }
     this->farbe = atoi(ptr);
 
     ptr = strtok(NULL, delimiter);
+    if(ptr == NULL){
+        cout << "Fehler beim parsen istAmZug (SPieler)" << endl;
+        throw Server4WinException("Fehler beim parsen des istAmZug (HisEintrag)");
+    }
     this->istAmZug = atoi(ptr);
 
 }

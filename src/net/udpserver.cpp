@@ -17,8 +17,8 @@ UdpServer::UdpServer(int port) : Server4Win(UDP,port)
 UdpServer::~UdpServer()
 {
     //kein new...
+    close(sock);
 }
-
 
 void UdpServer::connect()
 {
@@ -81,10 +81,18 @@ void *UdpServer::processThread(struct sockaddr_in sender,void *ptr, NetworkMessa
         string temp;
         temp.assign(buffer,len);
         VisitorPackage incomingVisitorPackage;
-        incomingVisitorPackage.fromStream(temp);
+        try{
+            incomingVisitorPackage.fromStream(temp);
 
-        if(!((UdpServer*)ptr)->isOwnAddress(sender))
-            ((UdpServer*)ptr)->VisitorPackageSignal(incomingVisitorPackage);
+            if(!((UdpServer*)ptr)->isOwnAddress(sender))
+                ((UdpServer*)ptr)->VisitorPackageSignal(incomingVisitorPackage);
+
+        }catch(Server4WinException& e)
+        {
+           cout << e.what() << endl;
+        }
+
+
     }
     default: // Do Nothing...
     break;

@@ -48,6 +48,7 @@ signals:
     * Signal, welches die Funktion fuer die Zuege in der GUI aufruft
     */
    void updateGui(unsigned short col);
+   void finished();
 };
 
 #endif // VISITORTHREAD_H
