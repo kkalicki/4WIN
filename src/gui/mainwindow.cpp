@@ -442,7 +442,7 @@ void MainWindow::stopMoveThread()
 {
     if(guiMoveThread != 0){
        guiMoveThread->terminate();
-       guiMoveThread->quit();
+       //guiMoveThread->quit();
     }
 }
 
